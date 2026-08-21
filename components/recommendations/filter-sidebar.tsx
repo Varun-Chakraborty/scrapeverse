@@ -1,7 +1,8 @@
 "use client";
 
+import { HugeiconsIcon } from "@hugeicons/react";
+import { RefreshIcon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -22,7 +23,7 @@ const difficultyLevels = [
   { value: "beginner", label: "Beginner" },
   { value: "intermediate", label: "Intermediate" },
   { value: "advanced", label: "Advanced" },
-];
+] as const;
 
 const languages = ["any", ...languageOptions.map((l) => l.value)];
 
@@ -32,58 +33,71 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
   };
 
   return (
-    <div className="w-full lg:w-64 shrink-0 space-y-6">
+    <div className="w-full space-y-6">
       <div>
-        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 className="mb-3 text-[11px] font-bold tracking-[0.14em] text-foreground uppercase">
           Difficulty
         </h3>
-        <div className="flex flex-wrap gap-1.5">
-          {difficultyLevels.map((d) => (
-            <button
-              key={d.value}
-              onClick={() => update("maxDifficulty", d.value as Filters["maxDifficulty"])}
-              className={cn(
-                "px-3 py-1.5 rounded-md border text-[11px] font-medium transition-all cursor-pointer",
-                filters.maxDifficulty === d.value
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
-              )}
-            >
-              {d.label}
-            </button>
-          ))}
+        <div
+          className="flex flex-wrap gap-1.5"
+          role="group"
+          aria-label="Filter by difficulty"
+        >
+          {difficultyLevels.map((d) => {
+            const isActive = filters.maxDifficulty === d.value;
+            return (
+              <button
+                key={d.value}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() =>
+                  update("maxDifficulty", d.value as Filters["maxDifficulty"])
+                }
+                className={cn(
+                  "cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold transition-all duration-200",
+                  isActive
+                    ? "border-primary bg-primary text-white shadow-[0_4px_12px_-4px_rgb(201_54_99/0.5)]"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/35 hover:text-secondary-foreground"
+                )}
+              >
+                {d.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <div className="h-px bg-border/70" />
 
       <div>
-        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 className="mb-3 text-[11px] font-bold tracking-[0.14em] text-foreground uppercase">
           Language
         </h3>
         <Select
           value={filters.language}
           onValueChange={(value) => update("language", value ?? "any")}
         >
-          <SelectTrigger className="w-full h-8 text-xs">
-            <SelectValue placeholder="Any Language" />
+          <SelectTrigger className="h-10 w-full rounded-xl border-input bg-card text-sm hover:border-primary/35">
+            <SelectValue placeholder="Any language" />
           </SelectTrigger>
           <SelectContent>
             {languages.map((l) => (
               <SelectItem key={l} value={l} className="text-xs">
-                {l === "any" ? "Any Language" : l}
+                {l === "any" ? "Any language" : l}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      <Separator className="bg-border/50" />
+      <div className="h-px bg-border/70" />
 
       <button
+        type="button"
         onClick={() => onChange(defaultFilters)}
-        className="w-full text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-1"
+        className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-border py-2 text-xs font-semibold text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary-softer hover:text-primary"
       >
+        <HugeiconsIcon icon={RefreshIcon} size={13} />
         Reset all filters
       </button>
     </div>

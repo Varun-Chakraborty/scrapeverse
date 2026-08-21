@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import type { ProgrammingLanguage } from "@/lib/types";
@@ -48,29 +50,35 @@ export function StepLanguages({
   const allCustom = customLanguages;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3">
+    <div className="mx-auto w-full">
+      <div className="mb-8 text-center">
+        <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
+          Step 4 of 5
+        </p>
+        <h2 className="font-heading mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
           What languages do you use?
         </h2>
-        <p className="text-sm text-muted-foreground">
-          Select your preferred languages or add custom ones.
+        <p className="mt-2.5 text-sm text-muted-foreground">
+          Select your preferred languages or add your own.
         </p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2.5 mb-6">
-        {languageOptions.map((lang) => {
+      <div className="mb-6 flex flex-wrap justify-center gap-2.5" role="group" aria-label="Your languages">
+        {languageOptions.map((lang, i) => {
           const isSelected = selected.includes(lang.value);
           return (
             <button
               key={lang.value}
+              type="button"
+              aria-pressed={isSelected}
               onClick={() => onToggle(lang.value)}
+              style={{ animationDelay: `${i * 35}ms` }}
               className={cn(
-                "px-4 py-2.5 rounded-full border text-sm font-medium transition-all duration-200 cursor-pointer",
-                "hover:border-muted-foreground/50",
+                "animate-fade-up cursor-pointer rounded-full border px-4 py-2.5 text-sm font-medium transition-all duration-200 ease-out",
+                "hover:-translate-y-0.5 hover:shadow-soft active:scale-[0.97]",
                 isSelected
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground"
+                  ? "border-primary bg-primary text-white shadow-[0_6px_16px_-6px_rgb(201_54_99/0.55)]"
+                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-secondary-foreground"
               )}
             >
               {lang.label}
@@ -81,36 +89,42 @@ export function StepLanguages({
         {allCustom.map((lang) => (
           <button
             key={lang}
+            type="button"
             onClick={() => onRemoveCustom(lang)}
-            className="px-4 py-2.5 rounded-full border border-foreground bg-card text-foreground text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-destructive/10 hover:border-destructive hover:text-destructive group flex items-center gap-2"
+            aria-label={`Remove ${lang}`}
+            className="group flex cursor-pointer items-center gap-2 rounded-full border border-primary/40 bg-primary-softer px-4 py-2.5 text-sm font-medium text-secondary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-destructive/50 hover:bg-destructive-soft hover:text-destructive active:scale-[0.97]"
           >
             {lang}
-            <span className="text-[10px] text-muted-foreground group-hover:text-destructive">
-              ✕
-            </span>
+            <HugeiconsIcon
+              icon={Cancel01Icon}
+              size={12}
+              className="text-muted-foreground transition-colors group-hover:text-destructive"
+            />
           </button>
         ))}
       </div>
 
-      <div className="flex items-center gap-2 max-w-xs mx-auto">
+      <div className="mx-auto flex max-w-xs items-center gap-2">
         <Input
-          placeholder="Add custom language..."
+          placeholder="Add custom language…"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="h-9"
+          aria-label="Add a custom language"
         />
         <button
+          type="button"
           onClick={handleAddCustom}
           disabled={!inputValue.trim()}
-          className="h-9 px-4 rounded-md border border-border bg-card text-sm font-medium text-muted-foreground hover:text-foreground hover:border-muted-foreground/50 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shrink-0"
+          aria-label="Add language"
+          className="flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-primary/30 bg-primary-soft px-4 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40"
         >
-          Add
+          <HugeiconsIcon icon={Add01Icon} size={16} />
         </button>
       </div>
 
       {(selected.length > 0 || allCustom.length > 0) && (
-        <p className="text-center text-xs text-muted-foreground mt-6">
+        <p className="animate-fade-in mt-6 text-center text-xs font-medium text-muted-foreground">
           {selected.length + allCustom.length}{" "}
           {selected.length + allCustom.length === 1 ? "language" : "languages"}{" "}
           selected

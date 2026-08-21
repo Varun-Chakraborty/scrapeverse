@@ -1,24 +1,34 @@
 "use client";
 
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowUpRight01Icon,
+  StarIcon,
+  Comment01Icon,
+} from "@hugeicons/core-free-icons";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import type { Recommendation, MatchScoreBreakdown } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
+  index?: number;
 }
 
-const difficultyColorMap: Record<string, string> = {
-  beginner: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  intermediate: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  advanced: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+const difficultyStyleMap: Record<string, string> = {
+  beginner: "bg-mint text-mint-foreground",
+  intermediate: "bg-sky text-sky-foreground",
+  advanced: "bg-amber-soft text-amber-foreground",
 };
 
-const matchedLabelColorMap: Record<string, string> = {
-  "Beginner Friendly": "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  "Help Wanted": "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  "Bug Fix": "bg-red-500/10 text-red-400 border-red-500/20",
-  Documentation: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+const labelVariantMap: Record<
+  string,
+  "secondary" | "info" | "destructive" | "lavender" | "outline"
+> = {
+  "Beginner Friendly": "secondary",
+  "Help Wanted": "info",
+  "Bug Fix": "destructive",
+  Documentation: "lavender",
 };
 
 const languageColorMap: Record<string, string> = {
@@ -34,33 +44,40 @@ const languageColorMap: Record<string, string> = {
   Zig: "#ec915c",
 };
 
-const setupComplexityMap: Record<string, { label: string; color: string }> = {
-  simple: { label: "Simple Setup", color: "text-emerald-400" },
-  moderate: { label: "Moderate Setup", color: "text-amber-400" },
-  complex: { label: "Complex Setup", color: "text-red-400" },
-  unknown: { label: "Setup Unknown", color: "text-muted-foreground" },
+const setupComplexityMap: Record<string, { label: string }> = {
+  simple: { label: "Simple setup" },
+  moderate: { label: "Moderate setup" },
+  complex: { label: "Complex setup" },
+  unknown: { label: "Setup unknown" },
 };
 
 const categoryColorMap: Record<string, string> = {
-  language: "text-sky-400",
-  interest: "text-violet-400",
-  issue: "text-emerald-400",
-  project: "text-amber-400",
-  goal: "text-rose-400",
+  language: "text-sky-foreground",
+  interest: "text-lavender-foreground",
+  issue: "text-mint-foreground",
+  project: "text-amber-foreground",
+  goal: "text-secondary-foreground",
 };
 
-function ScoreBreakdownGroup({ items, label }: { items: MatchScoreBreakdown[]; label: string }) {
+function ScoreBreakdownGroup({
+  items,
+  label,
+}: {
+  items: MatchScoreBreakdown[];
+  label: string;
+}) {
   if (items.length === 0) return null;
   return (
-    <div className="flex items-center gap-1.5">
-      <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider w-14 shrink-0">
+    <div className="flex items-start gap-1.5">
+      <span className="w-14 shrink-0 text-[10px] tracking-wider text-muted-foreground/70 uppercase">
         {label}
       </span>
       <div className="flex flex-wrap gap-x-2 gap-y-0.5">
         {items.map((item) => (
           <span key={item.label} className="flex items-center gap-0.5 text-[10px]">
-            <span className={`font-medium ${categoryColorMap[item.category]}`}>
-              {item.points > 0 ? "+" : ""}{item.points}
+            <span className={`font-semibold ${categoryColorMap[item.category]}`}>
+              {item.points > 0 ? "+" : ""}
+              {item.points}
             </span>
             <span className="text-muted-foreground">{item.label}</span>
           </span>
@@ -70,48 +87,97 @@ function ScoreBreakdownGroup({ items, label }: { items: MatchScoreBreakdown[]; l
   );
 }
 
-export function RecommendationCard({ recommendation }: RecommendationCardProps) {
+function CheckItem({ children }: { children: React.ReactNode }) {
+  return (
+    <li className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 12 12"
+        fill="none"
+        aria-hidden="true"
+        className="mt-1 shrink-0 text-primary"
+      >
+        <path
+          d="M2.5 6L5 8.5L9.5 3.5"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      {children}
+    </li>
+  );
+}
+
+export function RecommendationCard({
+  recommendation,
+  index = 0,
+}: RecommendationCardProps) {
   const { readme, matchScore, readinessScore } = recommendation;
   const setupInfo = readme ? setupComplexityMap[readme.setupComplexity] : null;
 
-  const languageItems = matchScore.breakdown.filter((b) => b.category === "language");
-  const interestItems = matchScore.breakdown.filter((b) => b.category === "interest");
+  const languageItems = matchScore.breakdown.filter(
+    (b) => b.category === "language"
+  );
+  const interestItems = matchScore.breakdown.filter(
+    (b) => b.category === "interest"
+  );
   const issueItems = matchScore.breakdown.filter((b) => b.category === "issue");
-  const projectItems = matchScore.breakdown.filter((b) => b.category === "project");
+  const projectItems = matchScore.breakdown.filter(
+    (b) => b.category === "project"
+  );
   const goalItems = matchScore.breakdown.filter((b) => b.category === "goal");
 
   return (
-    <Card className="p-0 overflow-hidden border-border/50 hover:border-border transition-all duration-300 group">
-      <div className="p-5">
-        <div className="flex items-start justify-between mb-3">
+    <article
+      style={{ animationDelay: `${Math.min(index, 8) * 70}ms` }}
+      className="animate-fade-up group flex h-full flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-soft transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-lift"
+    >
+      <div className="flex flex-1 flex-col p-5">
+        <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] text-muted-foreground mb-0.5">
-              {recommendation.organization}/{recommendation.repository}
+            <p className="mb-1 truncate text-[11px] font-medium text-muted-foreground">
+              {recommendation.organization}
+              <span aria-hidden="true" className="mx-1 text-border">/</span>
+              <span className="text-secondary-foreground">
+                {recommendation.repository}
+              </span>
             </p>
             <a
               href={recommendation.issueUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-semibold text-foreground hover:text-primary transition-colors line-clamp-2"
+              className="group/link inline-flex items-start gap-1 font-heading text-sm font-semibold leading-snug text-foreground transition-colors line-clamp-2 hover:text-primary"
             >
-              #{recommendation.issueNumber} {recommendation.issueTitle}
+              <span>
+                #{recommendation.issueNumber} {recommendation.issueTitle}
+              </span>
+              <HugeiconsIcon
+                icon={ArrowUpRight01Icon}
+                size={14}
+                className="mt-0.5 shrink-0 opacity-0 transition-all duration-200 group-hover/link:translate-x-0.5 group-hover/link:opacity-100"
+              />
             </a>
           </div>
-          <div className="shrink-0 ml-3 flex flex-col items-end gap-1">
-            <div className="text-lg font-bold text-foreground tabular-nums">
+          <div className="flex shrink-0 flex-col items-end gap-1">
+            <div className="font-heading text-lg font-bold tabular-nums text-primary">
               {matchScore.total}
             </div>
-            <Badge
-              variant="outline"
-              className={`text-[10px] px-2 py-0.5 ${difficultyColorMap[recommendation.difficulty]}`}
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-1 text-[10px] font-semibold capitalize",
+                difficultyStyleMap[recommendation.difficulty]
+              )}
             >
               {recommendation.difficulty}
-            </Badge>
+            </span>
           </div>
         </div>
 
         {matchScore.breakdown.length > 0 && (
-          <div className="space-y-1 mb-3">
+          <div className="mb-4 space-y-1 rounded-xl bg-muted/40 p-3">
             <ScoreBreakdownGroup items={languageItems} label="Lang" />
             <ScoreBreakdownGroup items={interestItems} label="Fit" />
             <ScoreBreakdownGroup items={issueItems} label="Issue" />
@@ -123,120 +189,108 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
         )}
 
         <div className="mb-4">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              Contribution Readiness
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-[10px] tracking-wider text-muted-foreground uppercase">
+              Contribution readiness
             </span>
             <span
-              className={`text-[11px] font-semibold tabular-nums ${
+              className={cn(
+                "text-[11px] font-semibold tabular-nums",
                 readinessScore >= 80
-                  ? "text-emerald-400"
+                  ? "text-mint-foreground"
                   : readinessScore >= 60
-                  ? "text-amber-400"
-                  : readinessScore >= 40
-                  ? "text-orange-400"
-                  : "text-red-400"
-              }`}
+                    ? "text-amber-foreground"
+                    : readinessScore >= 40
+                      ? "text-peach-foreground"
+                      : "text-destructive"
+              )}
             >
               {readinessScore}/100
             </span>
           </div>
-          <div className="h-1.5 rounded-full bg-muted/50 overflow-hidden">
+          <div className="h-1.5 overflow-hidden rounded-full bg-muted/60">
             <div
-              className={`h-full rounded-full transition-all ${
+              className={cn(
+                "h-full rounded-full transition-all duration-500",
                 readinessScore >= 80
-                  ? "bg-emerald-400"
+                  ? "bg-success"
                   : readinessScore >= 60
-                  ? "bg-amber-400"
-                  : readinessScore >= 40
-                  ? "bg-orange-400"
-                  : "bg-red-400"
-              }`}
+                    ? "bg-amber-foreground"
+                    : readinessScore >= 40
+                      ? "bg-peach-foreground"
+                      : "bg-destructive"
+              )}
               style={{ width: `${readinessScore}%` }}
             />
           </div>
         </div>
 
-        <div className="flex items-center gap-3 text-[11px] text-muted-foreground mb-4">
+        <div className="mb-4 flex items-center gap-2.5 text-[11px] font-medium text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: languageColorMap[recommendation.repoLanguage] ?? "#888" }}
+              className="size-2 rounded-full"
+              style={{
+                backgroundColor:
+                  languageColorMap[recommendation.repoLanguage] ?? "#857079",
+              }}
+              aria-hidden="true"
             />
             {recommendation.repoLanguage}
           </span>
-          <span className="text-border">·</span>
-          <span>★ {recommendation.repoStars.toLocaleString()}</span>
-          <span className="text-border">·</span>
-          <span>{recommendation.comments} comments</span>
+          <span aria-hidden="true" className="text-border">·</span>
+          <span className="flex items-center gap-1">
+            <HugeiconsIcon icon={StarIcon} size={12} />
+            {recommendation.repoStars.toLocaleString()}
+          </span>
+          <span aria-hidden="true" className="text-border">·</span>
+          <span className="flex items-center gap-1">
+            <HugeiconsIcon icon={Comment01Icon} size={12} />
+            {recommendation.comments}
+          </span>
         </div>
 
         {recommendation.matchedLabels.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          <div className="mb-4 flex flex-wrap gap-1.5">
             {recommendation.matchedLabels.map((label) => (
               <Badge
                 key={label}
-                variant="outline"
-                className={`text-[10px] px-2 py-0.5 ${matchedLabelColorMap[label] ?? "bg-muted/50 text-muted-foreground border-border"}`}
+                variant={labelVariantMap[label] ?? "outline"}
+                className="text-[10px]"
               >
                 {label}
               </Badge>
             ))}
           </div>
         )}
-      </div>
 
-      <div className="border-t border-border/50 px-5 py-3 bg-muted/30">
-        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">
-          Why this project
-        </p>
-
-        <div className="space-y-1.5 mb-3">
-          {recommendation.whyRecommended.map((reason, i) => (
-            <div
-              key={i}
-              className="text-[11px] text-muted-foreground flex items-start gap-1.5"
-            >
-              <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
-              {reason}
-            </div>
-          ))}
+        <div className="mt-auto rounded-xl bg-secondary/70 p-4">
+          <p className="mb-2 text-[10px] font-bold tracking-[0.14em] text-secondary-foreground uppercase">
+            Why this issue
+          </p>
+          <ul className="space-y-1.5">
+            {recommendation.whyRecommended.map((reason, i) => (
+              <CheckItem key={i}>{reason}</CheckItem>
+            ))}
+            {readme?.hasContributionGuide && (
+              <CheckItem>Has contribution guide</CheckItem>
+            )}
+            {setupInfo && <CheckItem>{setupInfo.label}</CheckItem>}
+            {readme && readme.techStack.length > 0 && (
+              <CheckItem>
+                Tech: {readme.techStack.slice(0, 5).join(", ")}
+                {readme.techStack.length > 5 &&
+                  ` +${readme.techStack.length - 5} more`}
+              </CheckItem>
+            )}
+            {readme && readme.architectureKeywords.length > 0 && (
+              <CheckItem>
+                Architecture:{" "}
+                {readme.architectureKeywords.slice(0, 3).join(", ")}
+              </CheckItem>
+            )}
+          </ul>
         </div>
-
-        {readme && (
-          <div className="pt-2 border-t border-border/30 space-y-1.5">
-            {readme.hasContributionGuide && (
-              <div className="text-[11px] text-muted-foreground flex items-center gap-1.5">
-                <span className="text-emerald-400">✓</span>
-                Has contribution guide
-              </div>
-            )}
-            {setupInfo && (
-              <div className="text-[11px] flex items-center gap-1.5">
-                <span className={setupInfo.color}>✓</span>
-                <span className="text-muted-foreground">{setupInfo.label}</span>
-              </div>
-            )}
-            {readme.techStack.length > 0 && (
-              <div className="text-[11px] text-muted-foreground flex items-start gap-1.5">
-                <span className="text-blue-400 mt-0.5 shrink-0">✓</span>
-                <span>
-                  Tech: {readme.techStack.slice(0, 5).join(", ")}
-                  {readme.techStack.length > 5 && ` +${readme.techStack.length - 5} more`}
-                </span>
-              </div>
-            )}
-            {readme.architectureKeywords.length > 0 && (
-              <div className="text-[11px] text-muted-foreground flex items-start gap-1.5">
-                <span className="text-purple-400 mt-0.5 shrink-0">✓</span>
-                <span>
-                  Architecture: {readme.architectureKeywords.slice(0, 3).join(", ")}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
       </div>
-    </Card>
+    </article>
   );
 }

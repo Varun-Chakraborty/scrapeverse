@@ -1,5 +1,7 @@
 "use client";
 
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
 import { ProgressBar } from "./progress-bar";
 import { StepInterests } from "./step-interests";
 import { StepExperience } from "./step-experience";
@@ -84,40 +86,50 @@ export function OnboardingFlow({
   );
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
-      <ProgressBar currentStep={currentStep} totalSteps={TOTAL_STEPS} />
-
-      <div className="flex-1 flex items-center w-full">
-        {currentStep === 1 && (
-          <StepInterests selected={interests} onToggle={onToggleInterest} />
-        )}
-        {currentStep === 2 && (
-          <StepExperience
-            selected={experienceLevel}
-            onSelect={onSelectExperience}
-          />
-        )}
-        {currentStep === 3 && (
-          <StepGoals selected={goals} onToggle={onToggleGoal} />
-        )}
-        {currentStep === 4 && (
-          <StepLanguages
-            selected={languages}
-            customLanguages={customLanguages}
-            onToggle={onToggleLanguage}
-            onAddCustom={onAddCustomLanguage}
-            onRemoveCustom={onRemoveCustomLanguage}
-          />
-        )}
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-12">
+      {/* Soft background */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10">
+        <div className="bg-grid-rose mask-fade-b absolute inset-0" />
+        <div className="absolute -top-24 left-1/2 h-96 w-[680px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(229_107_149/0.13),transparent)] blur-2xl" />
+        <div className="animate-float absolute top-1/3 -left-24 size-64 rounded-full bg-[radial-gradient(closest-side,rgb(155_140_240/0.12),transparent)] blur-2xl" />
+        <div className="animate-float-delayed absolute right-[-6rem] bottom-10 size-72 rounded-full bg-[radial-gradient(closest-side,rgb(244_162_107/0.11),transparent)] blur-2xl" />
       </div>
 
-      <div className="flex items-center gap-3 mt-8">
+      <ProgressBar currentStep={currentStep} totalSteps={TOTAL_STEPS} />
+
+      <div className="flex w-full flex-1 items-center">
+        <div
+          key={currentStep}
+          className="animate-step-in mx-auto w-full max-w-2xl rounded-3xl border border-border/80 bg-white/85 p-6 shadow-lift backdrop-blur-xl sm:p-9"
+        >
+          {currentStep === 1 && (
+            <StepInterests selected={interests} onToggle={onToggleInterest} />
+          )}
+          {currentStep === 2 && (
+            <StepExperience
+              selected={experienceLevel}
+              onSelect={onSelectExperience}
+            />
+          )}
+          {currentStep === 3 && (
+            <StepGoals selected={goals} onToggle={onToggleGoal} />
+          )}
+          {currentStep === 4 && (
+            <StepLanguages
+              selected={languages}
+              customLanguages={customLanguages}
+              onToggle={onToggleLanguage}
+              onAddCustom={onAddCustomLanguage}
+              onRemoveCustom={onRemoveCustomLanguage}
+            />
+          )}
+        </div>
+      </div>
+
+      <div className="mt-8 flex items-center gap-3">
         {currentStep > 1 && (
-          <Button
-            variant="ghost"
-            onClick={onBack}
-            className="cursor-pointer"
-          >
+          <Button variant="ghost" size="lg" onClick={onBack}>
+            <HugeiconsIcon icon={ArrowLeft01Icon} />
             Back
           </Button>
         )}
@@ -125,9 +137,20 @@ export function OnboardingFlow({
           onClick={isLastStep ? onComplete : onNext}
           disabled={!canGo}
           size="lg"
-          className="px-8 cursor-pointer"
+          variant="gradient"
+          className="px-8"
         >
-          {isLastStep ? "See My Recommendations" : "Continue"}
+          {isLastStep ? (
+            <>
+              <HugeiconsIcon icon={SparklesIcon} />
+              See my recommendations
+            </>
+          ) : (
+            <>
+              Continue
+              <HugeiconsIcon icon={ArrowRight01Icon} />
+            </>
+          )}
         </Button>
       </div>
     </div>
