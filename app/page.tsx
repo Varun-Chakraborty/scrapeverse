@@ -2,6 +2,10 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { Hero } from "@/components/landing/hero";
+import { Navbar } from "@/components/landing/navbar";
+import { StatsSection } from "@/components/landing/stats-section";
+import { ExportFormats } from "@/components/landing/export-formats";
+import { Footer } from "@/components/landing/footer";
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
 import { ResultsPage } from "@/components/recommendations/results-page";
 import { AuthModal } from "@/components/auth/auth-modal";
@@ -179,14 +183,20 @@ export default function Home() {
 
   if (view === "landing") {
     return (
-      <>
-        <Hero onGetStarted={handleGetStarted} />
+      <div className="min-h-screen">
+        <Navbar onGetStarted={handleGetStarted} />
+        <main>
+          <Hero onGetStarted={handleGetStarted} />
+          <StatsSection />
+          <ExportFormats />
+        </main>
+        <Footer />
         <AuthModal
           open={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           onSuccess={handleAuthSuccess}
         />
-      </>
+      </div>
     );
   }
 

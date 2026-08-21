@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Open Source Opportunity Finder",
+  title: "ScrapeX - Turn the Web Into Structured Data",
   description:
-    "Discover open-source projects that match your interests, skill level, and contribution goals. Get personalized recommendations in under 30 seconds.",
+    "Extract, transform, and structure data from any website instantly. Turn messy HTML into clean JSON with our intelligent scraper.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={cn(
-        "h-full dark",
+        "h-full",
         "antialiased",
         geistSans.variable,
         geistMono.variable,
