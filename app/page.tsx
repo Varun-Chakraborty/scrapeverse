@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import { Hero } from "@/components/landing/hero";
+import { LandingPage } from "@/components/landing/landing-page";
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
 import { ResultsPage } from "@/components/recommendations/results-page";
 import { AuthModal } from "@/components/auth/auth-modal";
@@ -167,8 +167,13 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-muted-foreground border-t-foreground rounded-full animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <div className="size-8 animate-spin rounded-full border-[3px] border-primary-soft border-t-primary" />
+          <p className="text-xs font-medium tracking-wide text-muted-foreground">
+            Loading your workspace…
+          </p>
+        </div>
       </div>
     );
   }
@@ -180,7 +185,7 @@ export default function Home() {
   if (view === "landing") {
     return (
       <>
-        <Hero onGetStarted={handleGetStarted} />
+        <LandingPage onGetStarted={handleGetStarted} />
         <AuthModal
           open={authModalOpen}
           onClose={() => setAuthModalOpen(false)}

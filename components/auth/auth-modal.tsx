@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useState, useEffect, useRef } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  Alert02Icon,
+  TickDouble02Icon,
+  LockIcon,
+  Mail01Icon,
+} from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Logo } from "@/components/landing/logo";
 import { useAuth } from "@/lib/auth-context";
 import type { OnboardingPreferences } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface AuthModalProps {
   open: boolean;
@@ -25,6 +34,20 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
   const [resetSuccess, setResetSuccess] = useState(false);
 
   const { signUp, signIn } = useAuth();
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -119,110 +142,139 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
     }
   };
 
+  const titles: Record<Tab, string> = {
+    "sign-in": "Welcome back",
+    "sign-up": "Create your account",
+    "forgot-password": "Reset your password",
+  };
+
+  const descriptions: Record<Tab, string> = {
+    "sign-in": "Sign in to access your saved preferences.",
+    "sign-up": "Save your preferences and pick up where you left off.",
+    "forgot-password": "Enter your email and choose a new password.",
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="animate-overlay-in fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={titles[tab]}
+    >
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#3d1f2b]/35 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
-      <Card className="relative z-10 w-full max-w-md">
-        <CardHeader className="text-center pb-4">
-          <CardTitle className="text-lg">
-            {tab === "sign-in" && "Welcome back"}
-            {tab === "sign-up" && "Create your account"}
-            {tab === "forgot-password" && "Reset password"}
-          </CardTitle>
-          <CardDescription className="text-xs">
-            {tab === "sign-in" && "Sign in to access your saved preferences"}
-            {tab === "sign-up" && "Save your preferences and pick up where you left off"}
-            {tab === "forgot-password" && "Enter your email and a new password"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+
+      <div
+        ref={dialogRef}
+        className="animate-modal-in relative z-10 max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl border border-border/70 bg-white shadow-[0_32px_80px_-16px_rgb(61_31_43/0.3)]"
+      >
+        {/* Decorative top gradient */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-28 rounded-t-3xl bg-linear-to-b from-primary-softer to-transparent"
+        />
+
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close dialog"
+          className="absolute top-4 right-4 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} size={16} />
+        </button>
+
+        <div className="relative px-6 pt-9 pb-7 sm:px-8">
+          <div className="mb-6 flex flex-col items-center text-center">
+            <Logo />
+            <h2 className="font-heading mt-5 text-xl font-bold tracking-tight text-foreground">
+              {titles[tab]}
+            </h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              {descriptions[tab]}
+            </p>
+          </div>
+
           {tab !== "forgot-password" && (
-            <div className="flex border border-border rounded-md mb-4 p-0.5">
-              <button
-                onClick={() => handleTabSwitch("sign-in")}
-                className={`flex-1 py-1.5 text-xs font-medium rounded-[5px] transition-all cursor-pointer ${
-                  tab === "sign-in"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => handleTabSwitch("sign-up")}
-                className={`flex-1 py-1.5 text-xs font-medium rounded-[5px] transition-all cursor-pointer ${
-                  tab === "sign-up"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Sign Up
-              </button>
+            <div
+              className="mb-5 flex rounded-full border border-border bg-secondary/60 p-1"
+              role="tablist"
+              aria-label="Authentication options"
+            >
+              {(["sign-in", "sign-up"] as const).map((t) => (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={tab === t}
+                  onClick={() => handleTabSwitch(t)}
+                  className={cn(
+                    "flex-1 cursor-pointer rounded-full py-2 text-xs font-semibold transition-all duration-300",
+                    tab === t
+                      ? "bg-white text-primary shadow-soft"
+                      : "text-muted-foreground hover:text-secondary-foreground"
+                  )}
+                >
+                  {t === "sign-in" ? "Sign in" : "Sign up"}
+                </button>
+              ))}
             </div>
           )}
 
           {tab === "forgot-password" && !resetSuccess && (
-            <form onSubmit={handleResetPassword} className="space-y-3">
-              <div>
-                <label className="block text-[11px] text-muted-foreground mb-1">
-                  Email
-                </label>
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <Field label="Email" icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}>
                 <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="h-8"
+                  autoComplete="email"
+                  autoFocus
                 />
-              </div>
+              </Field>
 
-              <div>
-                <label className="block text-[11px] text-muted-foreground mb-1">
-                  New Password
-                </label>
+              <Field label="New password" icon={<HugeiconsIcon icon={LockIcon} size={15} />}>
                 <Input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="h-8"
+                  autoComplete="new-password"
                 />
-              </div>
+              </Field>
 
-              {error && (
-                <p className="text-xs text-destructive">{error}</p>
-              )}
+              {error && <ErrorAlert message={error} />}
 
               <Button
                 type="submit"
-                className="w-full cursor-pointer"
+                variant="gradient"
+                className="w-full"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Resetting..." : "Reset Password"}
+                {isSubmitting ? "Resetting…" : "Reset password"}
               </Button>
 
-              <p className="text-center text-[11px] text-muted-foreground mt-4">
-                <button
-                  onClick={() => handleTabSwitch("sign-in")}
-                  className="text-foreground underline underline-offset-2 cursor-pointer"
-                >
-                  Back to sign in
-                </button>
-              </p>
+              <BackToSignIn onBack={() => handleTabSwitch("sign-in")} />
             </form>
           )}
 
           {tab === "forgot-password" && resetSuccess && (
-            <div className="text-center space-y-4">
-              <p className="text-sm text-emerald-400">
+            <div className="animate-scale-in flex flex-col items-center py-4 text-center">
+              <span className="flex size-14 items-center justify-center rounded-full bg-mint text-mint-foreground">
+                <HugeiconsIcon icon={TickDouble02Icon} size={26} />
+              </span>
+              <p className="mt-4 text-sm font-semibold text-foreground">
                 Password reset successfully
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                You can now sign in with your new password.
               </p>
               <Button
                 onClick={() => handleTabSwitch("sign-in")}
-                className="cursor-pointer"
+                variant="gradient"
+                className="mt-6 w-full"
               >
                 Sign in with new password
               </Button>
@@ -231,79 +283,78 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
 
           {tab !== "forgot-password" && (
             <>
-              <form onSubmit={handleSubmit} className="space-y-3">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 {tab === "sign-up" && (
-                  <div>
-                    <label className="block text-[11px] text-muted-foreground mb-1">
-                      Name
-                    </label>
+                  <Field label="Name">
                     <Input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Your name"
-                      className="h-8"
+                      autoComplete="name"
+                      autoFocus
                     />
-                  </div>
+                  </Field>
                 )}
 
-                <div>
-                  <label className="block text-[11px] text-muted-foreground mb-1">
-                    Email
-                  </label>
+                <Field label="Email" icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}>
                   <Input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="h-8"
+                    autoComplete="email"
+                    autoFocus={tab === "sign-in"}
                   />
-                </div>
+                </Field>
 
-                <div>
-                  <label className="block text-[11px] text-muted-foreground mb-1">
-                    Password
-                  </label>
+                <Field label="Password" icon={<HugeiconsIcon icon={LockIcon} size={15} />}>
                   <Input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="h-8"
+                    autoComplete={tab === "sign-up" ? "new-password" : "current-password"}
                   />
-                </div>
+                </Field>
 
                 {tab === "sign-in" && (
                   <div className="flex justify-end">
                     <button
                       type="button"
                       onClick={() => handleTabSwitch("forgot-password")}
-                      className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
+                      className="cursor-pointer text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
                     >
                       Forgot password?
                     </button>
                   </div>
                 )}
 
-                {error && (
-                  <p className="text-xs text-destructive">{error}</p>
-                )}
+                {error && <ErrorAlert message={error} />}
 
                 <Button
                   type="submit"
-                  className="w-full cursor-pointer"
+                  variant="gradient"
+                  className="w-full"
                   disabled={isSubmitting}
                 >
-                  {tab === "sign-in" ? "Sign In" : "Create Account"}
+                  {isSubmitting
+                    ? tab === "sign-up"
+                      ? "Creating account…"
+                      : "Signing in…"
+                    : tab === "sign-up"
+                      ? "Create account"
+                      : "Sign in"}
                 </Button>
               </form>
 
-              <p className="text-center text-[11px] text-muted-foreground mt-4">
+              <p className="mt-5 text-center text-xs text-muted-foreground">
                 {tab === "sign-in" ? (
                   <>
                     Don&apos;t have an account?{" "}
                     <button
+                      type="button"
                       onClick={() => handleTabSwitch("sign-up")}
-                      className="text-foreground underline underline-offset-2 cursor-pointer"
+                      className="cursor-pointer font-semibold text-primary underline-offset-2 hover:underline"
                     >
                       Sign up
                     </button>
@@ -312,8 +363,9 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                   <>
                     Already have an account?{" "}
                     <button
+                      type="button"
                       onClick={() => handleTabSwitch("sign-in")}
-                      className="text-foreground underline underline-offset-2 cursor-pointer"
+                      className="cursor-pointer font-semibold text-primary underline-offset-2 hover:underline"
                     >
                       Sign in
                     </button>
@@ -321,28 +373,70 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 )}
               </p>
 
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
+              <div className="relative my-5">
+                <div aria-hidden="true" className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-card px-2 text-[11px] text-muted-foreground">
+                  <span className="bg-white px-3 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
                     or
                   </span>
                 </div>
               </div>
 
-              <Button
-                variant="outline"
-                className="w-full cursor-pointer"
-                onClick={onClose}
-              >
+              <Button variant="outline" className="w-full" onClick={onClose}>
                 Continue without account
               </Button>
             </>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function Field({
+  label,
+  children,
+  icon,
+}: {
+  label: string;
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-foreground">
+        {icon && <span className="text-muted-foreground">{icon}</span>}
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+function ErrorAlert({ message }: { message: string }) {
+  return (
+    <div
+      role="alert"
+      className="animate-slide-up-sm flex items-start gap-2.5 rounded-xl border border-destructive/20 bg-destructive-soft px-3.5 py-2.5"
+    >
+      <HugeiconsIcon icon={Alert02Icon} size={15} className="mt-px shrink-0 text-destructive" />
+      <p className="text-xs font-medium leading-relaxed text-destructive">{message}</p>
+    </div>
+  );
+}
+
+function BackToSignIn({ onBack }: { onBack: () => void }) {
+  return (
+    <p className="mt-4 text-center">
+      <button
+        type="button"
+        onClick={onBack}
+        className="cursor-pointer text-xs font-semibold text-primary underline-offset-2 hover:underline"
+      >
+        Back to sign in
+      </button>
+    </p>
   );
 }

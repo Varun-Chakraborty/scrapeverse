@@ -3,12 +3,22 @@ import { bdclient } from "@brightdata/sdk";
 const TRENDING_SCRAPER_ID = "c_mszmts63lwxh4wh0h";
 const REPO_SCRAPER_ID = "c_mszma8ux1xoygpchmn";
 
-const client = new bdclient({
-  apiKey: process.env.BRIGHTDATA_API_KEY!,
-  logLevel: "WARNING",
-  structuredLogging: false,
-  verbose: false,
-});
+// Lazily create the client so importing this module never throws at build
+// time when BRIGHTDATA_API_KEY is not configured. The client is created on
+// first use instead, preserving the original runtime behavior.
+let _client: bdclient | null = null;
+
+function getClient(): bdclient {
+  if (!_client) {
+    _client = new bdclient({
+      apiKey: process.env.BRIGHTDATA_API_KEY!,
+      logLevel: "WARNING",
+      structuredLogging: false,
+      verbose: false,
+    });
+  }
+  return _client;
+}
 
 export interface TrendingEntry {
   product_page_url: string;
@@ -37,7 +47,7 @@ export interface IssueData {
 
 export async function discoverTrendingRepos(): Promise<string[]> {
   try {
-    const results = await client.scraperStudio.run(TRENDING_SCRAPER_ID, {
+    const results = await getClient().scraperStudio.run(TRENDING_SCRAPER_ID, {
       input: { url: "https://github.com/trending" },
     });
     const urls: string[] = [];
@@ -60,7 +70,7 @@ export async function discoverTrendingRepos(): Promise<string[]> {
 
 export async function scrapeRepo(url: string): Promise<RepoData | null> {
   try {
-    const results = await client.scraperStudio.run(REPO_SCRAPER_ID, {
+    const results = await getClient().scraperStudio.run(REPO_SCRAPER_ID, {
       input: { url },
     });
     const first = results[0];
@@ -77,7 +87,7 @@ export async function scrapeRepo(url: string): Promise<RepoData | null> {
 export async function scrapeRepos(urls: string[]): Promise<RepoData[]> {
   try {
     const inputs = urls.map((url) => ({ url }));
-    const results = await client.scraperStudio.run(REPO_SCRAPER_ID, {
+    const results = await getClient().scraperStudio.run(REPO_SCRAPER_ID, {
       input: inputs,
     });
     return results
@@ -139,5 +149,5 @@ export async function fetchIssues(
 }
 
 export async function closeClient(): Promise<void> {
-  await client.close();
+  await getClient().close();
 }

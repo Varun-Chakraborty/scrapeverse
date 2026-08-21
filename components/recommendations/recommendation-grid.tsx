@@ -11,9 +11,9 @@ export function RecommendationGrid({
   recommendations,
 }: RecommendationGridProps) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {recommendations.map((rec) => (
-        <RecommendationCard key={rec.id} recommendation={rec} />
+    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      {recommendations.map((rec, i) => (
+        <RecommendationCard key={rec.id} recommendation={rec} index={i} />
       ))}
     </div>
   );

@@ -11,72 +11,80 @@ interface StepGoalsProps {
 
 export function StepGoals({ selected, onToggle }: StepGoalsProps) {
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3">
+    <div className="mx-auto w-full">
+      <div className="mb-8 text-center">
+        <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
+          Step 3 of 5
+        </p>
+        <h2 className="font-heading mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
           What are your goals?
         </h2>
-        <p className="text-sm text-muted-foreground">
-          Select what you want to achieve. Pick as many as apply.
+        <p className="mt-2.5 text-sm text-muted-foreground">
+          Select what you want to achieve — pick as many as apply.
         </p>
       </div>
 
-      <div className="grid gap-3">
-        {goalOptions.map((goal) => {
+      <div className="grid gap-3" role="group" aria-label="Your goals">
+        {goalOptions.map((goal, i) => {
           const isSelected = selected.includes(goal.value);
           return (
             <button
               key={goal.value}
+              type="button"
+              aria-pressed={isSelected}
               onClick={() => onToggle(goal.value)}
+              style={{ animationDelay: `${i * 50}ms` }}
               className={cn(
-                "flex items-center gap-4 p-4 rounded-lg border text-left transition-all duration-200 cursor-pointer",
-                "hover:border-muted-foreground/50",
+                "animate-fade-up group flex cursor-pointer items-center gap-4 rounded-2xl border p-4 text-left transition-all duration-200",
+                "hover:-translate-y-0.5 hover:shadow-soft",
                 isSelected
-                  ? "border-foreground bg-card"
-                  : "border-border bg-card/50"
+                  ? "border-primary/50 bg-primary-softer shadow-[0_0_0_1px_rgb(201_54_99/0.25)]"
+                  : "border-border bg-card hover:border-primary/30"
               )}
             >
-              <div
+              <span
+                aria-hidden="true"
                 className={cn(
-                  "w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-all duration-200",
+                  "flex size-5 shrink-0 items-center justify-center rounded-md border transition-all duration-200",
                   isSelected
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-transparent"
+                    ? "scale-100 border-primary bg-primary text-white"
+                    : "border-input bg-card group-hover:border-primary/40"
                 )}
               >
-                {isSelected && (
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    className="text-background"
-                  >
-                    <path
-                      d="M2.5 6L5 8.5L9.5 3.5"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
-              </div>
-              <div>
-                <span className="text-sm font-medium text-foreground">
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  className={cn(
+                    "transition-all duration-200",
+                    isSelected ? "scale-100 opacity-100" : "scale-50 opacity-0"
+                  )}
+                >
+                  <path
+                    d="M2.5 6L5 8.5L9.5 3.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span>
+                <span className="text-sm font-semibold text-foreground">
                   {goal.label}
                 </span>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   {goal.description}
                 </p>
-              </div>
+              </span>
             </button>
           );
         })}
       </div>
 
       {selected.length > 0 && (
-        <p className="text-center text-xs text-muted-foreground mt-6">
+        <p className="animate-fade-in mt-6 text-center text-xs font-medium text-muted-foreground">
           {selected.length} {selected.length === 1 ? "goal" : "goals"} selected
         </p>
       )}
