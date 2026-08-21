@@ -1,144 +1,80 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { useAuth } from "@/lib/auth-context";
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
+import { UrlInput } from "@/components/landing/url-input";
+import { FeatureBadges } from "@/components/landing/feature-badges";
+import { ScraperVisualization } from "@/components/landing/scraper-visualization";
 
 interface HeroProps {
   onGetStarted: () => void;
 }
 
-function PreviewCard({
-  name,
-  org,
-  language,
-  stars,
-  badges,
-}: {
-  name: string;
-  org: string;
-  language: string;
-  stars: number;
-  badges: string[];
-}) {
-  return (
-    <Card className="p-4 bg-card/60 backdrop-blur-sm border-border/50 min-w-55 shrink-0">
-      <div className="flex items-start justify-between mb-2">
-        <div>
-          <p className="text-[11px] text-muted-foreground">{org}</p>
-          <p className="text-sm font-medium text-foreground">{name}</p>
-        </div>
-        <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-          ★ {stars.toLocaleString()}
-        </span>
-      </div>
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-[11px] text-muted-foreground">{language}</span>
-        <span className="text-border">·</span>
-        <span className="text-[11px] text-muted-foreground">Updated 2h ago</span>
-      </div>
-      <div className="flex flex-wrap gap-1">
-        {badges.map((b) => (
-          <Badge key={b} variant="secondary" className="text-[10px]">
-            {b}
-          </Badge>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-const previewCards = [
-  {
-    name: "rust-analyzer",
-    org: "rust-lang",
-    language: "Rust",
-    stars: 9800,
-    badges: ["Beginner Friendly"],
-  },
-  {
-    name: "deno",
-    org: "denoland",
-    language: "TypeScript",
-    stars: 100300,
-    badges: ["High Activity"],
-  },
-  {
-    name: "llama.cpp",
-    org: "ggml-org",
-    language: "C++",
-    stars: 82400,
-    badges: ["Great Documentation"],
-  },
-];
-
 export function Hero({ onGetStarted }: HeroProps) {
-  const { user, signOut } = useAuth();
-
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(var(--primary)/0.12),transparent)]" />
+    <section id="home" className="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28">
+      {/* Background accents */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.12)_0%,transparent_65%)]" />
+        <div className="absolute top-1/3 -right-52 w-[560px] h-[560px] rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.08)_0%,transparent_70%)]" />
+        <div className="absolute -bottom-40 -left-40 w-[480px] h-[480px] rounded-full bg-[radial-gradient(circle,rgba(191,219,254,0.18)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.03)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_35%,black,transparent)]" />
+      </div>
 
-      {user && (
-        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-          <span className="text-xs text-muted-foreground hidden sm:block">
-            {user.name}
-          </span>
-          <button
-            onClick={signOut}
-            className="text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer underline underline-offset-2"
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 lg:gap-12 items-center">
+        {/* Left column */}
+        <div className="text-center lg:text-left">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-4 py-1.5 mb-7"
           >
-            Sign out
-          </button>
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <span className="text-xs font-semibold tracking-wide text-primary uppercase">
+              AI Powered Web Scraper
+            </span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.05] mb-6"
+          >
+            Turn the Web Into{" "}
+            <span className="bg-linear-to-r from-primary via-sky-500 to-cyan-400 bg-clip-text text-transparent">
+              Structured Data.
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0 mb-9"
+          >
+            Extract, transform and structure data from any website instantly.
+            One URL in, clean data out — no setup required.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex justify-center lg:justify-start mb-8"
+          >
+            <UrlInput onStartScraping={onGetStarted} />
+          </motion.div>
+
+          <div className="flex justify-center lg:justify-start">
+            <FeatureBadges />
+          </div>
         </div>
-      )}
 
-      <div className="relative z-10 max-w-3xl mx-auto text-center mb-12 p-12">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-6 leading-[1.1]">
-          Find Open Source Projects{" "}
-          <span className="bg-linear-to-r from-muted-foreground to-foreground bg-clip-text text-transparent">
-            Worth Contributing To
-          </span>
-        </h1>
-
-        <Badge variant="outline" className="mb-6 text-xs px-3 py-1">
-          Discover · Contribute · Grow
-        </Badge>
-
-        <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
-          Discover active projects, beginner-friendly issues, and communities
-          that match your interests. Get personalized recommendations in under
-          30 seconds.
-        </p>
-
-        <Button
-          size="lg"
-          onClick={onGetStarted}
-          className="text-base px-8 py-6 font-medium cursor-pointer"
-        >
-          Find My Projects
-        </Button>
+        {/* Right column — 3D visualization */}
+        <ScraperVisualization />
       </div>
-
-      <div className="relative z-10 w-full max-w-4xl mx-auto">
-        <div className="flex gap-4 overflow-x-auto pb-4 px-4 snap-x snap-mandatory scrollbar-hide">
-          {previewCards.map((card) => (
-            <div key={card.name} className="snap-center">
-              <PreviewCard {...card} />
-            </div>
-          ))}
-        </div>
-        <div className="absolute inset-y-0 left-0 w-16 bg-linear-to-r from-background to-transparent pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-16 bg-linear-to-l from-background to-transparent pointer-events-none" />
-      </div>
-
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground">
-        <span className="text-[11px] tracking-widest uppercase">Scroll to explore</span>
-        <div className="w-5 h-8 border border-border rounded-full flex justify-center pt-1.5">
-          <div className="w-1 h-2 bg-muted-foreground rounded-full animate-bounce" />
-        </div>
-      </div>
-    </div>
+    </section>
   );
 }
