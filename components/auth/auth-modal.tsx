@@ -169,7 +169,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
 
       <div
         ref={dialogRef}
-        className="animate-modal-in relative z-10 max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl border border-border/70 bg-popover shadow-[0_32px_80px_-16px_rgb(61_31_43/0.3)]"
+        className="animate-modal-in relative z-10 max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-3xl border border-border/70 bg-popover shadow-[0_32px_80px_-16px_rgb(61_31_43/0.3)]"
       >
         {/* Decorative top gradient */}
         <div
@@ -181,7 +181,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           type="button"
           onClick={onClose}
           aria-label="Close dialog"
-          className="absolute top-4 right-4 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
+          className="absolute top-4 right-4 z-10 flex size-11 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground"
         >
           <HugeiconsIcon icon={Cancel01Icon} size={16} />
         </button>
@@ -210,7 +210,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                   aria-selected={tab === t}
                   onClick={() => handleTabSwitch(t)}
                   className={cn(
-                    "flex-1 cursor-pointer rounded-full py-2 text-xs font-semibold transition-all duration-300",
+                    "flex-1 cursor-pointer rounded-full py-2.5 text-xs font-semibold transition-all duration-300",
                     tab === t
                       ? "bg-background text-primary shadow-soft"
                       : "text-muted-foreground hover:text-secondary-foreground"
@@ -231,7 +231,6 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   autoComplete="email"
-                  autoFocus
                 />
               </Field>
 
@@ -291,7 +290,6 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Your name"
                       autoComplete="name"
-                      autoFocus
                     />
                   </Field>
                 )}
@@ -303,7 +301,6 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     autoComplete="email"
-                    autoFocus={tab === "sign-in"}
                   />
                 </Field>
 

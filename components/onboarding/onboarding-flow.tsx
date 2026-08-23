@@ -86,7 +86,7 @@ export function OnboardingFlow({
   );
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-12">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-12">
       {/* Soft background */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <div className="bg-grid-rose mask-fade-b absolute inset-0" />

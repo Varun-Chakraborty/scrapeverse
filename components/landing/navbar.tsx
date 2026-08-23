@@ -117,7 +117,7 @@ export function Navbar({ onGetStarted }: NavbarProps) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="fixed inset-0 top-16 z-40 bg-background md:hidden">
+        <div className="fixed inset-0 top-16 z-40 overflow-y-auto bg-background md:hidden">
           <div className="animate-fade-up flex flex-col gap-1 px-4 py-6">
             {links.map((link, i) => (
               <a

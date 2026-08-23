@@ -141,9 +141,9 @@ export function ResultsPage({
                 </span>
                 {scrapeStatus && (
                   <>
-                    <span className="mx-1.5">·</span>
+                    <span className="mx-1.5 hidden sm:inline">·</span>
                     <span
-                      className="text-muted-foreground/70"
+                      className="hidden text-muted-foreground/70 sm:inline"
                       title={`${scrapeStatus.repos} repos, ${scrapeStatus.issues} issues, ${scrapeStatus.readmes} readmes`}
                     >
                       Scraped{" "}
@@ -167,11 +167,11 @@ export function ResultsPage({
               className="cursor-pointer lg:hidden"
             >
               <HugeiconsIcon icon={FilterHorizontalIcon} size={14} />
-              Filters
+              <span className="hidden sm:inline">Filters</span>
             </Button>
             <Button variant="ghost" size="sm" onClick={onRestart}>
               <HugeiconsIcon icon={RefreshIcon} size={14} />
-              Start over
+              <span className="hidden sm:inline">Start over</span>
             </Button>
             <UserMenu />
           </div>

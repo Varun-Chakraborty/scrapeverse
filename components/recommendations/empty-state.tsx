@@ -48,7 +48,7 @@ export function EmptyState({ onBroadenSearch, onSelectTechnology }: EmptyStatePr
             <button
               key={tech}
               onClick={() => onSelectTechnology?.(tech)}
-              className="text-xs px-2.5 py-1 rounded-md border border-border bg-muted/30 text-muted-foreground hover:text-foreground hover:border-muted-foreground/50 transition-all cursor-pointer"
+              className="text-xs px-3 py-1.5 rounded-md border border-border bg-muted/30 text-muted-foreground hover:text-foreground hover:border-muted-foreground/50 transition-all cursor-pointer"
             >
               {tech}
             </button>

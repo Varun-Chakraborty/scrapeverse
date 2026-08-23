@@ -49,7 +49,7 @@ export function UserMenu() {
         aria-haspopup="menu"
         aria-label="Account menu"
         className={cn(
-          "flex h-9 cursor-pointer items-center gap-2 rounded-full border border-border bg-card pr-1 pl-1 transition-all duration-200",
+          "flex h-11 cursor-pointer items-center gap-2 rounded-full border border-border bg-card pr-1 pl-1 transition-all duration-200",
           open
             ? "border-primary/40 shadow-soft"
             : "hover:border-primary/30 hover:shadow-soft"

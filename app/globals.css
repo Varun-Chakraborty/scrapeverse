@@ -492,8 +492,10 @@
     transform: translateX(-130%) skewX(-18deg);
     pointer-events: none;
   }
-  .card-shine:hover::after {
-    animation: shine-sweep 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  @media (hover: hover) {
+    .card-shine:hover::after {
+      animation: shine-sweep 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
   }
 
   /* Rotating iridescent border glow on hover */
@@ -524,9 +526,11 @@
     transition: opacity 0.45s ease;
     pointer-events: none;
   }
-  .gloss-border:hover::before {
-    opacity: 1;
-    animation: gloss-rotate 3.2s linear infinite;
+  @media (hover: hover) {
+    .gloss-border:hover::before {
+      opacity: 1;
+      animation: gloss-rotate 3.2s linear infinite;
+    }
   }
 
   /* Shimmering gradient text */
@@ -542,7 +546,11 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: shimmer-text 3s linear infinite;
+  }
+  @media (min-width: 640px) {
+    .text-shimmer {
+      animation: shimmer-text 3s linear infinite;
+    }
   }
 
   /* Aurora wash for page backgrounds */

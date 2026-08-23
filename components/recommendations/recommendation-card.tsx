@@ -224,16 +224,18 @@ export function RecommendationCard({
               href={recommendation.issueUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group/link inline-flex items-start gap-1 font-heading text-sm font-semibold leading-snug text-foreground transition-colors line-clamp-2 hover:text-primary"
+              className="group/link block font-heading text-sm font-semibold leading-snug text-foreground transition-colors line-clamp-2 hover:text-primary"
             >
-              <span>
-                #{recommendation.issueNumber} {recommendation.issueTitle}
+              <span className="inline-flex items-start gap-1">
+                <span>
+                  #{recommendation.issueNumber} {recommendation.issueTitle}
+                </span>
+                <HugeiconsIcon
+                  icon={ArrowUpRight01Icon}
+                  size={14}
+                  className="mt-0.5 shrink-0 opacity-0 transition-all duration-200 group-hover/link:translate-x-0.5 group-hover/link:opacity-100"
+                />
               </span>
-              <HugeiconsIcon
-                icon={ArrowUpRight01Icon}
-                size={14}
-                className="mt-0.5 shrink-0 opacity-0 transition-all duration-200 group-hover/link:translate-x-0.5 group-hover/link:opacity-100"
-              />
             </a>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
