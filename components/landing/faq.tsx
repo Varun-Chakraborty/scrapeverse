@@ -15,7 +15,7 @@ const faqs = [
   {
     question: "Where do the project recommendations come from?",
     answer:
-      "We continuously scrape public issue trackers across major open-source repositories, then score each issue against your profile: languages, interests, experience level, and goals.",
+      "We scrape public issue trackers across major open-source repositories every 6 hours, then score each issue against your profile: languages, interests, experience level, and goals.",
   },
   {
     question: "I'm a complete beginner. Is this for me?",
@@ -30,7 +30,7 @@ const faqs = [
   {
     question: "How fresh is the issue data?",
     answer:
-      "The pipeline refreshes continuously and automatically re-scrapes when data goes stale, so you're always looking at live, open issues rather than stale snapshots.",
+      "The pipeline refreshes every 6 hours and automatically re-scrapes when data goes stale, so you're always looking at live, open issues rather than stale snapshots.",
   },
 ];
 

@@ -31,7 +31,7 @@ const features = [
     tint: "bg-peach text-peach-foreground",
     title: "Always fresh data",
     description:
-      "Issues are scraped and refreshed continuously, so you never waste an evening on something merged weeks ago.",
+      "Issues are scraped and refreshed every 6 hours, so you never waste an evening on something merged weeks ago.",
   },
   {
     icon: FilterHorizontalIcon,

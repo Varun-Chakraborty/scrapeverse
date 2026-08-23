@@ -111,7 +111,7 @@ function PreviewWindow() {
           <HugeiconsIcon icon={StarIcon} size={15} />
         </span>
         <div>
-          <p className="text-xs font-semibold text-foreground">1,200+ issues</p>
+          <p className="text-xs font-semibold text-foreground">100+ issues</p>
           <p className="text-[10px] text-muted-foreground">scanned every hour</p>
         </div>
       </div>

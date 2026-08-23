@@ -18,7 +18,7 @@ const steps = [
     step: "02",
     title: "We scan the ecosystem",
     description:
-      "Our pipeline continuously scrapes live issues across major repositories and scores them against your profile.",
+      "Our pipeline every 6 hours scrapes live issues across major repositories and scores them against your profile.",
   },
   {
     icon: Rocket02Icon,

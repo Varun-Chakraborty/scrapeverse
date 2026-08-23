@@ -35,6 +35,7 @@ function timeSince(iso: string): string {
 interface ResultsPageProps {
   recommendations: Recommendation[];
   onRestart: () => void;
+  onHome: () => void;
   initialDifficulty?: Filters["maxDifficulty"];
   dataSource?: "live" | "mock";
 }
@@ -42,6 +43,7 @@ interface ResultsPageProps {
 export function ResultsPage({
   recommendations,
   onRestart,
+  onHome,
   initialDifficulty = "any",
   dataSource = "mock",
 }: ResultsPageProps) {
@@ -86,7 +88,7 @@ export function ResultsPage({
           <div className="flex items-center gap-4">
             <button
               type="button"
-              onClick={onRestart}
+              onClick={onHome}
               aria-label="Back to home"
               className="hidden transition-opacity hover:opacity-75 sm:block"
             >

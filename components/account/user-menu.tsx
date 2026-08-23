@@ -100,7 +100,7 @@ export function UserMenu() {
                   </span>
                 ))}
                 {user.preferences.languages.length > 3 && (
-                  <span className="text-[10px] font-medium text-muted-foreground">
+                  <span className="text-[10px] font-medium text-muted-foreground flex justify-center items-center">
                     +{user.preferences.languages.length - 3}
                   </span>
                 )}
