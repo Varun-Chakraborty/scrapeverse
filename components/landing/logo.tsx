@@ -19,7 +19,7 @@ export function Logo({ className }: { className?: string }) {
           <path d="M11 8.5v5M8.5 11h5" />
         </svg>
       </span>
-      <span className="font-heading text-lg font-bold tracking-tight text-foreground">
+      <span className="hidden font-heading text-lg font-bold tracking-tight text-foreground sm:inline">
         Scrapeverse
       </span>
     </span>

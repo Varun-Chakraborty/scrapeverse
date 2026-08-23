@@ -111,7 +111,7 @@ export function ResultsPage({
               type="button"
               onClick={onHome}
               aria-label="Back to home"
-              className="hidden transition-opacity hover:opacity-75 sm:block"
+              className="transition-opacity hover:opacity-75"
             >
               <Logo />
             </button>
