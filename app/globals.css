@@ -192,6 +192,8 @@
   --animate-slide-up-sm: slide-up-sm 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-step-in: step-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+  --animate-bar-fill: bar-fill 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-orb-drift: orb-drift 18s ease-in-out infinite;
 }
 
 @keyframes fade-up {
@@ -299,6 +301,59 @@
   }
 }
 
+/* ------------------------------------------------------------------ */
+/*  Glossy effects — shine sweep, iridescent border, shimmer, aurora   */
+/* ------------------------------------------------------------------ */
+
+@property --gloss-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gloss-rotate {
+  to {
+    --gloss-angle: 360deg;
+  }
+}
+
+@keyframes shine-sweep {
+  from {
+    transform: translateX(-130%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(260%) skewX(-18deg);
+  }
+}
+
+@keyframes shimmer-text {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -60% 0;
+  }
+}
+
+@keyframes bar-fill {
+  from {
+    width: 0%;
+  }
+}
+
+@keyframes orb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3rem, -2rem, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-2.5rem, 2.5rem, 0) scale(0.95);
+  }
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -377,6 +432,136 @@
 
   .mask-fade-b {
     mask-image: linear-gradient(to bottom, black 55%, transparent);
+  }
+
+  /* Diagonal glossy sheen that sweeps across on hover */
+  .card-shine::after {
+    content: "";
+    position: absolute;
+    inset-block: -20%;
+    left: 0;
+    width: 10000%;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      rgb(255 255 255 / 0.05) 30%,
+      rgb(255 255 255 / 0.65) 50%,
+      rgb(229 107 149 / 0.12) 62%,
+      transparent 100%
+    );
+    transform: translateX(-130%) skewX(-18deg);
+    pointer-events: none;
+  }
+  .card-shine:hover::after {
+    animation: shine-sweep 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Rotating iridescent border glow on hover */
+  .gloss-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--gloss-angle),
+      transparent 0%,
+      #e56b95 8%,
+      #9b8cf0 16%,
+      #57c49d 24%,
+      transparent 34%,
+      transparent 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box exclude,
+      linear-gradient(#fff 0 0);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+  .gloss-border:hover::before {
+    opacity: 1;
+    animation: gloss-rotate 3.2s linear infinite;
+  }
+
+  /* Shimmering gradient text */
+  .text-shimmer {
+    background: linear-gradient(
+      110deg,
+      var(--primary) 38%,
+      #f0a3c0 47%,
+      #9b8cf0 53%,
+      var(--primary) 62%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer-text 3s linear infinite;
+  }
+
+  /* Aurora wash for page backgrounds */
+  .bg-aurora {
+    background-image:
+      radial-gradient(42rem 26rem at 10% -6%, rgb(229 107 149 / 0.13), transparent 60%),
+      radial-gradient(36rem 24rem at 92% 2%, rgb(155 140 240 / 0.11), transparent 62%),
+      radial-gradient(34rem 28rem at 50% 112%, rgb(87 196 157 / 0.09), transparent 64%);
+  }
+
+  /* Small dot-matrix texture */
+  .bg-matrix {
+    background-image: radial-gradient(
+      circle,
+      rgb(201 54 99 / 0.14) 1px,
+      transparent 1px
+    );
+    background-size: 10px 10px;
+  }
+  .bg-matrix-fine {
+    background-image: radial-gradient(
+      circle,
+      rgb(201 54 99 / 0.1) 1px,
+      transparent 1px
+    );
+    background-size: 7px 7px;
+  }
+  .mask-radial-fade {
+    -webkit-mask-image: radial-gradient(
+      ellipse 70% 60% at 50% 30%,
+      black 30%,
+      transparent 75%
+    );
+    mask-image: radial-gradient(
+      ellipse 70% 60% at 50% 30%,
+      black 30%,
+      transparent 75%
+    );
+  }
+
+  /* Glossy hairline highlight (top glass edge) */
+  .glass-edge {
+    position: relative;
+  }
+  .glass-edge::before {
+    content: "";
+    position: absolute;
+    inset-inline: 12%;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 0.95),
+      rgb(229 107 149 / 0.35),
+      transparent
+    );
+    z-index: 2;
+    pointer-events: none;
   }
 }
 

@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowUpRight01Icon,
+  SparklesIcon,
   StarIcon,
   Comment01Icon,
 } from "@hugeicons/core-free-icons";
@@ -10,9 +12,60 @@ import { Badge } from "@/components/ui/badge";
 import type { Recommendation, MatchScoreBreakdown } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function useCountUp(target: number, duration = 900): number {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    let frame: number;
+    const start = performance.now();
+    const tick = (now: number) => {
+      if (prefersReducedMotion()) {
+        setValue(target);
+        return;
+      }
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(eased * target));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [target, duration]);
+
+  return value;
+}
+
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || inView) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [inView]);
+
+  return { ref, inView };
+}
+
 interface RecommendationCardProps {
   recommendation: Recommendation;
   index?: number;
+  featured?: boolean;
 }
 
 const difficultyStyleMap: Record<string, string> = {
@@ -114,9 +167,13 @@ function CheckItem({ children }: { children: React.ReactNode }) {
 export function RecommendationCard({
   recommendation,
   index = 0,
+  featured = false,
 }: RecommendationCardProps) {
   const { readme, matchScore, readinessScore } = recommendation;
   const setupInfo = readme ? setupComplexityMap[readme.setupComplexity] : null;
+  const { ref, inView } = useInView<HTMLElement>();
+  const displayScore = useCountUp(matchScore.total, 900);
+  const barDelay = Math.min(index, 8) * 90;
 
   const languageItems = matchScore.breakdown.filter(
     (b) => b.category === "language"
@@ -132,10 +189,22 @@ export function RecommendationCard({
 
   return (
     <article
+      ref={ref}
       style={{ animationDelay: `${Math.min(index, 8) * 70}ms` }}
-      className="animate-fade-up group flex h-full flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-soft transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-lift"
+      className={cn(
+        "card-shine gloss-border animate-fade-up group relative flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5",
+        featured
+          ? "border-primary/35 bg-gradient-to-b from-primary-softer to-card shadow-glow hover:border-primary/45"
+          : "border-border/80 bg-card shadow-soft hover:border-primary/25 hover:shadow-glow"
+      )}
     >
-      <div className="flex flex-1 flex-col p-5">
+      <div className="glass-edge flex flex-1 flex-col p-5">
+        {featured && (
+          <span className="card-shine relative mb-3 inline-flex w-fit items-center gap-1 overflow-hidden rounded-full bg-gradient-to-r from-primary via-[#e56b95] to-[#9b8cf0] px-2.5 py-1 text-[9px] font-bold tracking-[0.14em] whitespace-nowrap text-white uppercase shadow-glow animate-fade-in">
+            <HugeiconsIcon icon={SparklesIcon} size={11} />
+            Recommended for you
+          </span>
+        )}
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <a
@@ -168,8 +237,11 @@ export function RecommendationCard({
             </a>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
-            <div className="font-heading text-lg font-bold tabular-nums text-primary">
-              {matchScore.total}
+            <div
+              className="text-shimmer font-heading text-lg font-bold tabular-nums"
+              title={`Match score: ${matchScore.total}`}
+            >
+              {displayScore}
             </div>
             <span
               className={cn(
@@ -217,16 +289,20 @@ export function RecommendationCard({
           <div className="h-1.5 overflow-hidden rounded-full bg-muted/60">
             <div
               className={cn(
-                "h-full rounded-full transition-all duration-500",
+                "h-full rounded-full transition-[filter] duration-500",
+                inView && "animate-bar-fill",
                 readinessScore >= 80
-                  ? "bg-success"
+                  ? "bg-success hover:brightness-110"
                   : readinessScore >= 60
                     ? "bg-amber-foreground"
                     : readinessScore >= 40
                       ? "bg-peach-foreground"
                       : "bg-destructive"
               )}
-              style={{ width: `${readinessScore}%` }}
+              style={{
+                width: `${readinessScore}%`,
+                animationDelay: `${barDelay}ms`,
+              }}
             />
           </div>
         </div>

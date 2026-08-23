@@ -13,7 +13,12 @@ export function RecommendationGrid({
   return (
     <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
       {recommendations.map((rec, i) => (
-        <RecommendationCard key={rec.id} recommendation={rec} index={i} />
+        <RecommendationCard
+          key={rec.id}
+          recommendation={rec}
+          index={i}
+          featured={i === 0}
+        />
       ))}
     </div>
   );
