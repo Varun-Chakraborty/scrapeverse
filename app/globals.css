@@ -187,8 +187,6 @@
   --animate-float: float 7s ease-in-out infinite;
   --animate-float-delayed: float 8s ease-in-out 1.2s infinite;
   --animate-gradient-pan: gradient-pan 8s ease infinite;
-  --animate-marquee: marquee 36s linear infinite;
-  --animate-shimmer: shimmer 2.4s linear infinite;
   --animate-modal-in: modal-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-overlay-in: overlay-in 0.3s ease both;
   --animate-slide-up-sm: slide-up-sm 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -244,24 +242,6 @@
   }
   50% {
     background-position: 100% 50%;
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes shimmer {
-  from {
-    background-position: 200% 0;
-  }
-  to {
-    background-position: -200% 0;
   }
 }
 
@@ -376,14 +356,6 @@
 }
 
 @layer utilities {
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
   .text-gradient-rose {
     background: linear-gradient(
       120deg,
@@ -401,16 +373,6 @@
       linear-gradient(to right, rgb(201 54 99 / 0.045) 1px, transparent 1px),
       linear-gradient(to bottom, rgb(201 54 99 / 0.045) 1px, transparent 1px);
     background-size: 44px 44px;
-  }
-
-  .mask-fade-x {
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 12%,
-      black 88%,
-      transparent
-    );
   }
 
   .mask-fade-b {
