@@ -112,7 +112,7 @@ function PreviewWindow() {
         </span>
         <div>
           <p className="text-xs font-semibold text-foreground">100+ issues</p>
-          <p className="text-[10px] text-muted-foreground">scanned every hour</p>
+          <p className="text-[10px] text-muted-foreground">scanned every 6 hours</p>
         </div>
       </div>
     </div>
