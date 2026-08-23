@@ -138,13 +138,19 @@ export function RecommendationCard({
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <p className="mb-1 truncate text-[11px] font-medium text-muted-foreground">
+            <a
+              href={`https://github.com/${recommendation.organization}/${recommendation.repository}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${recommendation.organization} repository on GitHub`}
+              className="group/repo mb-1 block w-fit max-w-full truncate text-[11px] font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
               {recommendation.organization}
               <span aria-hidden="true" className="mx-1 text-border">/</span>
-              <span className="text-secondary-foreground">
+              <span className="text-secondary-foreground group-hover/repo:underline">
                 {recommendation.repository}
               </span>
-            </p>
+            </a>
             <a
               href={recommendation.issueUrl}
               target="_blank"

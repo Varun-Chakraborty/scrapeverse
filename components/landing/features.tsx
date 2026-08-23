@@ -17,7 +17,7 @@ const features = [
     tint: "bg-primary-soft text-primary",
     title: "Matched to your profile",
     description:
-      "Recommendations ranked by your languages, interests, experience level, and weekly time commitment — not by hype.",
+      "Recommendations ranked by your languages, interests, experience level, and goals — not by hype.",
   },
   {
     icon: SparklesIcon,

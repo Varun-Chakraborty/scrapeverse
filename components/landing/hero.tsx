@@ -154,7 +154,7 @@ export function Hero({ onGetStarted }: HeroProps) {
             style={{ animationDelay: "180ms" }}
             className="animate-fade-up mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
           >
-            Tell us your interests, stack, and schedule — we scan thousands of
+            Tell us your interests and stack — we scan thousands of
             live issues and surface the ones where you can actually land your
             first (or next) pull request.
           </p>

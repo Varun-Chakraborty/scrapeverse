@@ -11,7 +11,7 @@ const steps = [
     step: "01",
     title: "Tell us about you",
     description:
-      "A 5-step quiz captures your interests, experience, goals, languages, and how much time you have.",
+      "A quick 4-step quiz captures your interests, experience, goals, and languages.",
   },
   {
     icon: SearchFocusIcon,

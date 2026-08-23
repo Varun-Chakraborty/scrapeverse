@@ -28,8 +28,8 @@ export function Footer() {
           <div className="max-w-xs">
             <Logo />
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              Personalized open-source recommendations that match your skills,
-              interests, and schedule.
+              Personalized open-source recommendations that match your skills
+              and interests.
             </p>
           </div>
 

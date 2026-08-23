@@ -26,7 +26,7 @@ export function StepExperience({ selected, onSelect }: StepExperienceProps) {
       </div>
 
       <RadioGroup
-        value={selected ?? undefined}
+        value={selected ?? ""}
         onValueChange={(value) => onSelect(value as ExperienceLevel)}
         className="grid gap-3.5"
       >

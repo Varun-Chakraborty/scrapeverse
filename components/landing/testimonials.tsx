@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/reveal";
 const stats = [
   { value: "1,200+", label: "Issues scanned hourly" },
   { value: "30s", label: "Average setup time" },
-  { value: "5", label: "Profile dimensions matched" },
+  { value: "4", label: "Profile dimensions matched" },
   { value: "100%", label: "Free to use" },
 ];
 

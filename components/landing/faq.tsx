@@ -15,7 +15,7 @@ const faqs = [
   {
     question: "Where do the project recommendations come from?",
     answer:
-      "We continuously scrape public issue trackers across major open-source repositories, then score each issue against your profile: languages, interests, experience level, goals, and available time.",
+      "We continuously scrape public issue trackers across major open-source repositories, then score each issue against your profile: languages, interests, experience level, and goals.",
   },
   {
     question: "I'm a complete beginner. Is this for me?",
