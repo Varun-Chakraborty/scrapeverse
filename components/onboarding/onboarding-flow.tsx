@@ -100,7 +100,7 @@ export function OnboardingFlow({
       <div className="flex w-full flex-1 items-center">
         <div
           key={currentStep}
-          className="animate-step-in mx-auto w-full max-w-2xl rounded-3xl border border-border/80 bg-white/85 p-6 shadow-lift backdrop-blur-xl sm:p-9"
+          className="animate-step-in mx-auto w-full max-w-2xl rounded-3xl border border-border/80 bg-card/85 p-6 shadow-lift backdrop-blur-xl sm:p-9"
         >
           {currentStep === 1 && (
             <StepInterests selected={interests} onToggle={onToggleInterest} />

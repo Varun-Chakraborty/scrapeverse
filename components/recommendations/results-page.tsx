@@ -8,6 +8,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/landing/logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { UserMenu } from "@/components/account/user-menu";
 import { RecommendationGrid } from "./recommendation-grid";
 import { FilterSidebar } from "./filter-sidebar";
@@ -82,7 +83,7 @@ export function ResultsPage({
   };
 
   return (
-    <div className="bg-aurora relative min-h-screen overflow-hidden bg-[#fffafc]">
+    <div className="bg-aurora relative min-h-screen overflow-hidden bg-background">
       {/* Drifting glossy orbs */}
       <div
         aria-hidden="true"
@@ -103,7 +104,7 @@ export function ResultsPage({
         className="bg-matrix mask-radial-fade pointer-events-none absolute inset-x-0 top-0 h-[34rem]"
       />
 
-      <header className="glass-edge sticky top-0 z-20 border-b border-border/70 bg-white/80 backdrop-blur-xl">
+      <header className="glass-edge sticky top-0 z-20 border-b border-border/70 bg-background/80 backdrop-blur-xl">
         <div className="animate-fade-up mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
           <div className="flex items-center gap-4">
             <button
@@ -157,6 +158,7 @@ export function ResultsPage({
           </div>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button
               variant="secondary"
               size="sm"

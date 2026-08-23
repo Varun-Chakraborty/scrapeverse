@@ -200,7 +200,7 @@ export function RecommendationCard({
     >
       <div className="glass-edge flex flex-1 flex-col p-5">
         {featured && (
-          <span className="card-shine relative mb-3 inline-flex w-fit items-center gap-1 overflow-hidden rounded-full bg-gradient-to-r from-primary via-[#e56b95] to-[#9b8cf0] px-2.5 py-1 text-[9px] font-bold tracking-[0.14em] whitespace-nowrap text-white uppercase shadow-glow animate-fade-in">
+          <span className="card-shine relative mb-3 inline-flex w-fit items-center gap-1 overflow-hidden rounded-full bg-gradient-to-r from-primary via-brand-mid to-brand-end px-2.5 py-1 text-[9px] font-bold tracking-[0.14em] whitespace-nowrap text-primary-foreground uppercase shadow-glow animate-fade-in">
             <HugeiconsIcon icon={SparklesIcon} size={11} />
             Recommended for you
           </span>

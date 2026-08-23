@@ -22,7 +22,7 @@ const columns = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/70 bg-[#fffafc]">
+    <footer className="border-t border-border/70 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div className="flex flex-col justify-between gap-10 md:flex-row">
           <div className="max-w-xs">

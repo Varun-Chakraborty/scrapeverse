@@ -35,7 +35,7 @@ export function HowItWorks({ onGetStarted }: { onGetStarted: () => void }) {
       {/* Soft band background */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-linear-to-b from-white via-[#fff7fa] to-white"
+        className="absolute inset-0 -z-10 bg-linear-to-b from-background via-card to-background"
       />
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
@@ -57,7 +57,7 @@ export function HowItWorks({ onGetStarted }: { onGetStarted: () => void }) {
           {steps.map((step, i) => (
             <Reveal key={step.step} delay={i * 120}>
               <div className="group relative flex flex-col items-center text-center">
-                <div className="relative z-10 flex size-14 items-center justify-center rounded-2xl border border-primary/15 bg-white text-primary shadow-soft transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-lift">
+                <div className="relative z-10 flex size-14 items-center justify-center rounded-2xl border border-primary/15 bg-card text-primary shadow-soft transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-lift">
                   <HugeiconsIcon icon={step.icon} size={24} />
                   <span className="absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-[0_4px_10px_-2px_rgb(201_54_99/0.5)]">
                     {i + 1}

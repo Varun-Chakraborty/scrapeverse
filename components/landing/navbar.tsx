@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Menu03Icon, Cancel01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +50,7 @@ export function Navbar({ onGetStarted }: NavbarProps) {
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-all duration-500",
         scrolled
-          ? "border-b border-border/70 bg-white/80 shadow-[0_4px_24px_-12px_rgb(201_54_99/0.15)] backdrop-blur-xl"
+          ? "border-b border-border/70 bg-background/80 shadow-soft backdrop-blur-xl"
           : "border-b border-transparent bg-transparent"
       )}
     >
@@ -74,6 +75,7 @@ export function Navbar({ onGetStarted }: NavbarProps) {
         </div>
 
         <div className="hidden items-center gap-2.5 md:flex">
+          <ThemeToggle />
           {user ? (
             <>
               <span className="max-w-[140px] truncate text-sm text-muted-foreground">
@@ -99,20 +101,23 @@ export function Navbar({ onGetStarted }: NavbarProps) {
           )}
         </div>
 
-        <button
-          type="button"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((v) => !v)}
-          className="flex size-10 items-center justify-center rounded-full border border-border bg-card/80 text-foreground backdrop-blur transition-colors hover:border-primary/30 md:hidden"
-        >
-          <HugeiconsIcon icon={menuOpen ? Cancel01Icon : Menu03Icon} size={18} />
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
+            className="flex size-10 items-center justify-center rounded-full border border-border bg-card/80 text-foreground backdrop-blur transition-colors hover:border-primary/30"
+          >
+            <HugeiconsIcon icon={menuOpen ? Cancel01Icon : Menu03Icon} size={18} />
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="fixed inset-0 top-16 z-40 bg-white md:hidden">
+        <div className="fixed inset-0 top-16 z-40 bg-background md:hidden">
           <div className="animate-fade-up flex flex-col gap-1 px-4 py-6">
             {links.map((link, i) => (
               <a

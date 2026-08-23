@@ -3,6 +3,10 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/lib/auth-context";
+import {
+  ThemeProvider,
+  ThemeInitScript,
+} from "@/components/theme/theme-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,8 +39,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "font-sans"
       )}
     >
+      <head>
+        <script
+          id="theme-init"
+          dangerouslySetInnerHTML={{ __html: ThemeInitScript }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

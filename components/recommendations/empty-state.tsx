@@ -20,13 +20,13 @@ const adjacentTechnologies = [
 
 export function EmptyState({ onBroadenSearch, onSelectTechnology }: EmptyStateProps) {
   return (
-    <div className="animate-fade-up flex flex-col items-center justify-center rounded-3xl border border-dashed border-primary/25 bg-white/70 px-4 py-20 text-center backdrop-blur-sm">
+    <div className="animate-fade-up flex flex-col items-center justify-center rounded-3xl border border-dashed border-primary/25 bg-card/60 px-4 py-20 text-center backdrop-blur-sm">
       <div className="relative">
         <div
           aria-hidden="true"
           className="absolute inset-0 -z-10 animate-pulse-dot rounded-full bg-primary-soft blur-xl"
         />
-        <div className="flex size-16 items-center justify-center rounded-2xl border border-primary/15 bg-white text-primary shadow-soft">
+        <div className="flex size-16 items-center justify-center rounded-2xl border border-primary/15 bg-card text-primary shadow-soft">
           <HugeiconsIcon icon={SearchRemoveIcon} size={26} />
         </div>
       </div>

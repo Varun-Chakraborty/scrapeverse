@@ -81,6 +81,10 @@
   /* Fonts */
   --font-mono: ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
 
+  /* Brand gradient stops */
+  --brand-mid: #d94f7c;
+  --brand-end: #9b8cf0;
+
   /* Soft rose-tinted shadows */
   --shadow-soft:
     0 1px 2px rgb(201 54 99 / 0.04),
@@ -93,25 +97,93 @@
     0 12px 40px -8px rgb(229 107 149 / 0.35);
 }
 
+/* ------------------------------------------------------------------ */
+/*  Dark — Obsidian + Graphite + Ivory + Champagne Gold                */
+/* ------------------------------------------------------------------ */
+
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  color-scheme: dark;
+
+  /* Base surfaces — obsidian */
+  --background: #0b0b0e;
+  --foreground: #f2efe6;
+
+  --card: #15151a;
+  --card-foreground: #f2efe6;
+
+  --popover: #17171d;
+  --popover-foreground: #f2efe6;
+
+  /* Brand — champagne gold on obsidian */
+  --primary: #d4b483;
+  --primary-hover: #c9a876;
+  --primary-foreground: #201a10;
+  --primary-soft: #262115;
+  --primary-softer: #1a1712;
+
+  /* Secondary & muted — graphite */
+  --secondary: #1e1e25;
+  --secondary-foreground: #e6dfcc;
+  --muted: #191920;
+  --muted-foreground: #a29d8e;
+
+  --accent: #23232b;
+  --accent-foreground: #eee9da;
+
+  /* Supporting tints — deep graphite with ivory-toned labels */
+  --lavender: #222033;
+  --lavender-foreground: #b7aef0;
+  --peach: #2b2118;
+  --peach-foreground: #eebd92;
+  --mint: #16241e;
+  --mint-foreground: #7fd4ac;
+  --sky: #17222f;
+  --sky-foreground: #93c2f2;
+  --amber-soft: #2a2113;
+  --amber-foreground: #e3bc6e;
+
+  --destructive: #ef4444;
+  --destructive-soft: #2a1414;
+
+  --success: #4ade80;
+  --success-soft: #12241a;
+
+  /* Borders & inputs — graphite hairlines, gold focus */
+  --border: #282830;
+  --input: #33333c;
+  --ring: #d4b483;
+
+  /* Charts — champagne-led */
+  --chart-1: #d4b483;
+  --chart-2: #a99bf2;
+  --chart-3: #f4a26b;
+  --chart-4: #57c49d;
+  --chart-5: #6aa9f0;
+
+  /* Sidebar */
+  --sidebar: #101014;
+  --sidebar-foreground: #f2efe6;
+  --sidebar-primary: #d4b483;
+  --sidebar-primary-foreground: #201a10;
+  --sidebar-accent: #1e1e25;
+  --sidebar-accent-foreground: #eee9da;
+  --sidebar-border: #26262e;
+  --sidebar-ring: #d4b483;
+
+  /* Deep shadows with a faint gold bloom */
+  --shadow-soft:
+    0 1px 2px rgb(0 0 0 / 0.5),
+    0 8px 24px -12px rgb(0 0 0 / 0.65);
+  --shadow-lift:
+    0 2px 4px rgb(0 0 0 / 0.5),
+    0 20px 40px -16px rgb(0 0 0 / 0.75);
+  --shadow-glow:
+    0 0 0 1px rgb(212 180 131 / 0.14),
+    0 12px 40px -8px rgb(212 180 131 / 0.22);
+
+  /* Brand gradient stops follow the gold lead */
+  --brand-mid: #e8cfa0;
+  --brand-end: #a98a5f;
 }
 
 @theme inline {
@@ -165,6 +237,8 @@
   --color-sky-foreground: var(--sky-foreground);
   --color-amber-soft: var(--amber-soft);
   --color-amber-foreground: var(--amber-foreground);
+  --color-brand-mid: var(--brand-mid);
+  --color-brand-end: var(--brand-end);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -354,40 +428,6 @@
   }
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -563,6 +603,78 @@
     z-index: 2;
     pointer-events: none;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Dark adaptations for fixed-color utilities                         */
+/* ------------------------------------------------------------------ */
+
+.dark .text-gradient-rose {
+  background-image: linear-gradient(
+    120deg,
+    var(--primary) 0%,
+    #e8cfa0 45%,
+    #b99668 110%
+  );
+}
+
+.dark .text-shimmer {
+  background-image: linear-gradient(
+    110deg,
+    var(--primary) 38%,
+    #f3e2c2 47%,
+    #a98a5f 53%,
+    var(--primary) 62%
+  );
+  background-size: 250% 100%;
+}
+
+.dark .bg-grid-rose {
+  background-image:
+    linear-gradient(to right, rgb(212 180 131 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(212 180 131 / 0.05) 1px, transparent 1px);
+}
+
+.dark .bg-matrix {
+  background-image: radial-gradient(
+    circle,
+    rgb(212 180 131 / 0.16) 1px,
+    transparent 1px
+  );
+}
+.dark .bg-matrix-fine {
+  background-image: radial-gradient(
+    circle,
+    rgb(212 180 131 / 0.11) 1px,
+    transparent 1px
+  );
+}
+
+.dark .bg-aurora {
+  background-image:
+    radial-gradient(42rem 26rem at 10% -6%, rgb(212 180 131 / 0.09), transparent 60%),
+    radial-gradient(36rem 24rem at 92% 2%, rgb(169 155 242 / 0.07), transparent 62%),
+    radial-gradient(34rem 28rem at 50% 112%, rgb(87 196 157 / 0.06), transparent 64%);
+}
+
+.dark .gloss-border::before {
+  background: conic-gradient(
+    from var(--gloss-angle),
+    transparent 0%,
+    #e8cfa0 8%,
+    #d4b483 16%,
+    #a98a5f 24%,
+    transparent 34%,
+    transparent 100%
+  );
+}
+
+/* Champagne-gold surfaces flip "white" labels to obsidian ink for contrast */
+.dark [class*="bg-primary"].text-white {
+  color: var(--primary-foreground);
+}
+.dark .hover\:text-white:hover {
+  color: var(--primary-foreground);
 }
 
 /* Scroll-triggered reveal (driven by <Reveal/>) */

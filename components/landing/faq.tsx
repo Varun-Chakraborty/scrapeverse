@@ -41,7 +41,7 @@ export function Faq() {
     <section id="faq" className="relative py-20 sm:py-28">
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-linear-to-b from-white via-[#fff7fa] to-white"
+        className="absolute inset-0 -z-10 bg-linear-to-b from-background via-card to-background"
       />
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <Reveal className="text-center">

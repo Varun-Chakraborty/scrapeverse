@@ -55,7 +55,7 @@ export function UserMenu() {
             : "hover:border-primary/30 hover:shadow-soft"
         )}
       >
-        <span className="flex size-7 items-center justify-center rounded-full bg-linear-to-br from-primary to-[#9b8cf0] text-[10px] font-bold text-white">
+        <span className="flex size-7 items-center justify-center rounded-full bg-linear-to-br from-primary to-brand-end text-[10px] font-bold text-white">
           {initials}
         </span>
         <span className="max-w-[100px] truncate text-xs font-semibold text-foreground sm:block hidden">
@@ -74,7 +74,7 @@ export function UserMenu() {
       {open && (
         <div
           role="menu"
-          className="animate-slide-up-sm absolute top-full right-0 z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-border/80 bg-white shadow-lift"
+          className="animate-slide-up-sm absolute top-full right-0 z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-border/80 bg-popover shadow-lift"
         >
           <div className="border-b border-border/70 bg-secondary/50 px-4 py-3.5">
             <p className="truncate text-sm font-semibold text-foreground">

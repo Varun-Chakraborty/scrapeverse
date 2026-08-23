@@ -44,7 +44,7 @@ export function Testimonials() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* Stats band */}
         <Reveal>
-          <div className="grid grid-cols-2 gap-y-10 rounded-3xl border border-border/80 bg-linear-to-br from-[#fff7fa] via-white to-[#f6f4ff] px-6 py-10 shadow-soft sm:px-12 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-y-10 rounded-3xl border border-border/80 bg-linear-to-br from-[#fff7fa] via-white to-[#f6f4ff] px-6 py-10 shadow-soft sm:px-12 lg:grid-cols-4 dark:from-[#1a1712] dark:via-[#15151a] dark:to-[#191722]">
             {stats.map((stat) => (
               <div key={stat.label} className="text-center">
                 <p className="font-heading text-3xl font-extrabold tracking-tight text-gradient-rose sm:text-4xl">

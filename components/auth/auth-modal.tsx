@@ -162,14 +162,14 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
       aria-label={titles[tab]}
     >
       <div
-        className="absolute inset-0 bg-[#3d1f2b]/35 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/45 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
       <div
         ref={dialogRef}
-        className="animate-modal-in relative z-10 max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl border border-border/70 bg-white shadow-[0_32px_80px_-16px_rgb(61_31_43/0.3)]"
+        className="animate-modal-in relative z-10 max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl border border-border/70 bg-popover shadow-[0_32px_80px_-16px_rgb(61_31_43/0.3)]"
       >
         {/* Decorative top gradient */}
         <div
@@ -212,7 +212,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                   className={cn(
                     "flex-1 cursor-pointer rounded-full py-2 text-xs font-semibold transition-all duration-300",
                     tab === t
-                      ? "bg-white text-primary shadow-soft"
+                      ? "bg-background text-primary shadow-soft"
                       : "text-muted-foreground hover:text-secondary-foreground"
                   )}
                 >
@@ -378,7 +378,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                   <div className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-white px-3 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                  <span className="bg-popover px-3 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
                     or
                   </span>
                 </div>

@@ -12,11 +12,11 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground shadow-[0_8px_20px_-8px_rgb(201_54_99/0.55)] hover:bg-primary-hover hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-10px_rgb(201_54_99/0.6)]",
         gradient:
-          "bg-linear-to-r from-primary via-[#d94f7c] to-[#9b8cf0] bg-[length:180%_100%] bg-left text-white shadow-[0_8px_24px_-8px_rgb(201_54_99/0.55)] transition-[background-position,transform,box-shadow] duration-500 hover:bg-right hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-10px_rgb(201_54_99/0.55)]",
+          "bg-linear-to-r from-primary via-brand-mid to-brand-end bg-[length:180%_100%] bg-left text-primary-foreground shadow-[0_8px_24px_-8px_rgb(201_54_99/0.55)] transition-[background-position,transform,box-shadow] duration-500 hover:bg-right hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-10px_rgb(201_54_99/0.55)]",
         outline:
           "border-border bg-card text-foreground shadow-soft hover:-translate-y-0.5 hover:border-primary/30 hover:text-primary hover:shadow-lift",
         secondary:
-          "bg-primary-soft text-secondary-foreground hover:bg-[#fbdfe9]",
+          "bg-primary-soft text-secondary-foreground hover:bg-secondary",
         ghost:
           "text-muted-foreground hover:bg-primary-soft hover:text-primary",
         destructive:

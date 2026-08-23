@@ -14,7 +14,7 @@ export function Cta({ onGetStarted }: CtaProps) {
     <section className="py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#c93663] via-[#d94f7c] to-[#9b8cf0] px-6 py-16 text-center shadow-glow sm:px-12 sm:py-20">
+          <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#c93663] via-[#d94f7c] to-[#9b8cf0] px-6 py-16 text-center shadow-glow sm:px-12 sm:py-20 dark:from-[#3a2c17] dark:via-[#8a6d3f] dark:to-[#b08d57]">
             {/* Decorative shapes */}
             <div
               aria-hidden="true"

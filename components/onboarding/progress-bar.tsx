@@ -45,7 +45,7 @@ export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
                     "border-primary/30 bg-primary-soft text-primary",
                   !isActive &&
                     !isComplete &&
-                    "border-border bg-white text-muted-foreground/50"
+                    "border-border bg-card text-muted-foreground/50"
                 )}
               >
                 {isComplete ? (
