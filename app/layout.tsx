@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -28,9 +29,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      data-scroll-behavior="smooth"
+      <html
+        lang="en"
+        data-scroll-behavior="smooth"
+        suppressHydrationWarning
       className={cn(
         "h-full",
         "antialiased",
@@ -40,8 +42,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <head>
-        <script
+        <Script
           id="theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: ThemeInitScript }}
         />
       </head>
