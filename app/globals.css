@@ -409,6 +409,15 @@
   }
 }
 
+@keyframes gloss-sweep {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
 @keyframes bar-fill {
   from {
     width: 0%;
@@ -549,8 +558,32 @@
   }
   @media (min-width: 640px) {
     .text-shimmer {
-      animation: shimmer-text 3s linear infinite;
+      animation: shimmer-text 10s linear infinite;
     }
+  }
+
+  /* Glossy gradient text — thin specular sheen sweeping left-to-right */
+  .text-gloss {
+    background-image: linear-gradient(
+      110deg,
+      var(--primary) 0%,
+      var(--brand-mid) 14%,
+      #ffffff 23.5%,
+      var(--brand-mid) 26%,
+      var(--brand-end) 36%,
+      var(--primary) 50%,
+      var(--brand-mid) 64%,
+      #ffffff 73.5%,
+      var(--brand-mid) 76%,
+      var(--brand-end) 86%,
+      var(--primary) 100%
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gloss-sweep 4s linear infinite;
+    will-change: background-position;
   }
 
   /* Aurora wash for page backgrounds */
@@ -635,6 +668,23 @@
     var(--primary) 62%
   );
   background-size: 250% 100%;
+}
+
+.dark .text-gloss {
+  background-image: linear-gradient(
+    110deg,
+    #b99668 0%,
+    var(--primary) 12%,
+    #fffdf4 23.5%,
+    #e8cfa0 26%,
+    #8a6f47 36%,
+    #b99668 50%,
+    var(--primary) 62%,
+    #fffdf4 73.5%,
+    #e8cfa0 76%,
+    #8a6f47 86%,
+    #b99668 100%
+  );
 }
 
 .dark .bg-grid-rose {

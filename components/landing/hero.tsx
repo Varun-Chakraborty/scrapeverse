@@ -8,7 +8,6 @@ import {
   PlayCircleIcon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface HeroProps {
   onGetStarted: () => void;
@@ -137,7 +136,7 @@ export function Hero({ onGetStarted }: HeroProps) {
             className="animate-fade-up font-heading text-4xl font-extrabold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
             Find open-source projects{" "}
-            <span className="text-gradient-rose animate-gradient-pan bg-[length:200%_auto]">
+            <span className="text-gloss">
               worth contributing to
             </span>
           </h1>
