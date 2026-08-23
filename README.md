@@ -4,14 +4,16 @@ Discover open-source projects that match your interests, skill level, and contri
 
 ## Features
 
-- **Smart Onboarding** — 5-step flow to capture your interests, experience, goals, languages, and time commitment
+- **Marketing Landing Page** — hero, features, how-it-works, testimonials, and FAQ with scroll reveal animations
+- **Smart Onboarding** — 4-step flow to capture your interests, experience, goals, and languages
 - **Personalized Recommendations** — Filtered issue cards with repo details, difficulty levels, and contributor-friendly labels
 - **Explainability** — Every recommendation explains why it was suggested
 - **README Intelligence** — Contribution guide detection, setup complexity, tech stack, and architecture analysis
-- **Filters** — Difficulty, language, and beginner-friendly filters
+- **Filters** — Difficulty and language filters with a friendly empty state
+- **Direct GitHub Links** — Every card links to the live issue and its repository
 - **User Accounts** — Sign up / sign in with persistent preferences stored in PostgreSQL
-- **Preferences Editor** — Update your profile and change password anytime from the results page
-- **Dark Mode First** — Premium developer-tool aesthetic
+- **Scheduled Scraping** — GitHub Action re-scrapes every 6 hours; run manually via `scripts/scrape.ts`
+- **Polished Theme** — Rose-accented design system with light/dark support via CSS variables
 
 ## Tech Stack
 
@@ -19,7 +21,7 @@ Discover open-source projects that match your interests, skill level, and contri
 |-------|-----------|
 | Framework | Next.js 16 (App Router) |
 | UI | React 19, TypeScript, Tailwind CSS v4, ShadCN (base-mira) |
-| Database | PostgreSQL 18 via Prisma 6 |
+| Database | PostgreSQL 17 via Prisma 6 |
 | Auth | JWT (jose) + bcryptjs, httpOnly cookies |
 | Data Sources | GitHub API (details, issues, READMEs), Bright Data (trending discovery) |
 | Proxy | Next.js 16 `proxy.ts` (middleware replacement) |
@@ -40,12 +42,18 @@ npm install
 ### 2. Start PostgreSQL
 
 ```bash
-docker run -d --name osof-postgres \
+docker compose up -d
+```
+
+This uses the bundled `docker-compose.yml` (container `scrapeverse-db`, database `osof`). Alternatively, run a standalone instance:
+
+```bash
+docker run -d --name scrapeverse-db \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=osof \
   -p 5432:5432 \
-  postgres:18
+  postgres:17-alpine
 ```
 
 Or use an existing PostgreSQL instance and update `.env`.
@@ -84,8 +92,13 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Project Structure
 
 ```
+├── .github/
+│   └── workflows/
+│       └── scrape.yml     # Scheduled scraper (every 6 hours)
 ├── app/
 │   ├── api/
+│   │   ├── admin/
+│   │   │   └── status/route.ts
 │   │   ├── auth/
 │   │   │   ├── change-password/route.ts
 │   │   │   ├── reset-password/route.ts
@@ -99,30 +112,38 @@ Open [http://localhost:3000](http://localhost:3000).
 │   │       └── preferences/route.ts
 │   ├── globals.css
 │   ├── layout.tsx
+│   ├── onboarding/page.tsx
 │   └── page.tsx
 ├── components/
 │   ├── account/
-│   │   ├── preferences-editor.tsx
 │   │   └── user-menu.tsx
 │   ├── auth/
 │   │   └── auth-modal.tsx
 │   ├── landing/
-│   │   └── hero.tsx
+│   │   ├── cta.tsx
+│   │   ├── faq.tsx
+│   │   ├── features.tsx
+│   │   ├── footer.tsx
+│   │   ├── hero.tsx
+│   │   ├── how-it-works.tsx
+│   │   ├── landing-page.tsx
+│   │   ├── logo.tsx
+│   │   ├── navbar.tsx
+│   │   └── testimonials.tsx
 │   ├── onboarding/
 │   │   ├── onboarding-flow.tsx
 │   │   ├── progress-bar.tsx
 │   │   ├── step-experience.tsx
 │   │   ├── step-goals.tsx
 │   │   ├── step-interests.tsx
-│   │   ├── step-languages.tsx
-│   │   └── step-time.tsx
+│   │   └── step-languages.tsx
 │   ├── recommendations/
 │   │   ├── empty-state.tsx
 │   │   ├── filter-sidebar.tsx
 │   │   ├── recommendation-card.tsx
 │   │   ├── recommendation-grid.tsx
 │   │   └── results-page.tsx
-│   └── ui/              # ShadCN components
+│   └── ui/              # ShadCN components + reveal/select primitives
 ├── lib/
 │   ├── auth-context.tsx
 │   ├── brightdata.ts
@@ -137,6 +158,8 @@ Open [http://localhost:3000](http://localhost:3000).
 ├── prisma/
 │   ├── schema.prisma
 │   └── migrations/
+├── scripts/
+│   └── scrape.ts        # Manual pipeline runner
 ├── proxy.ts             # Next.js 16 middleware (auth protection)
 ├── docker-compose.yml
 └── .env.example
@@ -150,6 +173,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | POST | `/api/auth/signin` | No | Sign in |
 | POST | `/api/auth/signout` | No | Sign out |
 | GET | `/api/auth/session` | No | Get current session |
+| GET | `/api/admin/status` | No | Scrape stats (repos, open issues, readmes, last scrape time) |
 | POST | `/api/auth/change-password` | Yes | Change password |
 | POST | `/api/auth/reset-password` | Yes | Reset password (requires session) |
 | GET | `/api/recommendations` | Yes | Get issue recommendations with README intelligence |
@@ -178,7 +202,6 @@ model UserPreferences {
   goals           String   @default("[]")   // JSON array
   languages       String   @default("[]")   // JSON array
   customLanguages String   @default("[]")   // JSON array
-  timeCommitment  String?
   updatedAt       DateTime @updatedAt
 }
 
@@ -209,6 +232,7 @@ model ScrapedIssue {
   title     String
   url       String
   labels    String   @default("[]")   // JSON array
+  state     String   @default("open")
   comments  Int      @default(0)
   author    String?
   createdAt DateTime?
@@ -229,10 +253,23 @@ model ScrapedReadme {
 }
 ```
 
+## Scraping
+
+The pipeline (Bright Data discovery → GitHub repo/issue/README scraping → analysis) can be run three ways:
+
+```bash
+npm run scrape    # runs npx tsx --env-file=.env scripts/scrape.ts
+```
+
+- `GET /api/scrape` triggers the full pipeline; `POST /api/scrape` scrapes a single repository.
+- `.github/workflows/scrape.yml` runs the pipeline automatically every 6 hours.
+
 ## Docker Management
 
 ```bash
-docker start osof-postgres   # start the database
-docker stop osof-postgres    # stop the database
-docker rm osof-postgres      # remove the container
+docker compose up -d     # start the database
+docker compose stop      # stop the database
+docker compose down -v   # remove container and volume
 ```
+
+If you used the standalone `docker run` command instead, manage it with `docker start/stop/rm scrapeverse-db`.
