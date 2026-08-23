@@ -25,7 +25,7 @@ const faqs = [
   {
     question: "Can I change my preferences later?",
     answer:
-      "Yes — open the user menu on your results page and choose Edit Preferences. Update any dimension and your matches re-rank instantly.",
+      "Yes — choose Start over from the results page and run through the quick setup again. Your matches re-rank instantly.",
   },
   {
     question: "How fresh is the issue data?",

@@ -14,7 +14,7 @@ export function StepGoals({ selected, onToggle }: StepGoalsProps) {
     <div className="mx-auto w-full">
       <div className="mb-8 text-center">
         <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
-          Step 3 of 5
+          Step 3 of 4
         </p>
         <h2 className="font-heading mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
           What are your goals?
