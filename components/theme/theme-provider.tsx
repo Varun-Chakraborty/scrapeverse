@@ -4,7 +4,8 @@ import {
   createContext,
   useCallback,
   useContext,
-  useSyncExternalStore,
+  useEffect,
+  useState,
   type ReactNode,
 } from "react";
 
@@ -15,12 +16,9 @@ interface ThemeContextValue {
   toggleTheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextValue>({
-  theme: "light",
-  toggleTheme: () => {},
-});
+const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export const THEME_STORAGE_KEY = "scrapeverse-theme";
+const THEME_STORAGE_KEY = "scrapeverse-theme";
 
 /**
  * Inline script injected in <head> before paint so the correct theme class
@@ -28,43 +26,22 @@ export const THEME_STORAGE_KEY = "scrapeverse-theme";
  */
 export const ThemeInitScript = `(function(){try{var t=localStorage.getItem("${THEME_STORAGE_KEY}");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark")}catch(e){}})();`;
 
-/* Minimal external store over the `.dark` class on <html>. */
-
-const listeners = new Set<() => void>();
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-function getSnapshot(): Theme {
-  return document.documentElement.classList.contains("dark")
-    ? "dark"
-    : "light";
-}
-
-function getServerSnapshot(): Theme {
-  return "light";
-}
-
-export function applyTheme(theme: Theme) {
-  document.documentElement.classList.toggle("dark", theme === "dark");
-  try {
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
-  } catch {}
-  for (const listener of listeners) listener();
-}
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const theme = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot
+  const [theme, setTheme] = useState<Theme>(() =>
+    typeof document !== "undefined" &&
+    document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light",
   );
 
-  const toggleTheme = useCallback(() => {
-    applyTheme(getSnapshot() === "dark" ? "light" : "dark");
-  }, []);
+  function toggleTheme() {
+    setTheme((prev) => {
+      let next: Theme = prev === "dark" ? "light" : "dark";
+      localStorage.setItem(THEME_STORAGE_KEY, next);
+      document.documentElement.classList.toggle("dark", next == "dark");
+      return next;
+    });
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
@@ -74,5 +51,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 }
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
+  return ctx;
 }

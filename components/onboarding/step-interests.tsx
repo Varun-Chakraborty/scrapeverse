@@ -24,7 +24,11 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
         </p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2.5" role="group" aria-label="Your interests">
+      <div
+        className="flex flex-wrap justify-center gap-2.5"
+        role="group"
+        aria-label="Your interests"
+      >
         {interestOptions.map((interest, i) => {
           const isSelected = selected.includes(interest.value);
           return (
@@ -39,14 +43,14 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
                 "hover:-translate-y-0.5 hover:shadow-soft active:scale-[0.97]",
                 isSelected
                   ? "border-primary bg-primary text-white shadow-[0_6px_16px_-6px_rgb(201_54_99/0.55)]"
-                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-secondary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-secondary-foreground",
               )}
             >
               <span
                 aria-hidden="true"
                 className={cn(
                   "text-base transition-transform duration-200",
-                  isSelected && "scale-110"
+                  isSelected && "scale-110",
                 )}
               >
                 {interest.icon}
@@ -56,7 +60,7 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
                 aria-hidden="true"
                 className={cn(
                   "flex size-4 items-center justify-center rounded-full transition-all duration-200",
-                  isSelected ? "scale-100 bg-white/25" : "scale-0"
+                  isSelected ? "scale-100 bg-white/25" : "scale-0",
                 )}
               >
                 <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
@@ -76,8 +80,8 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
 
       {selected.length > 0 && (
         <p className="animate-fade-in mt-6 text-center text-xs font-medium text-muted-foreground">
-          {selected.length}{" "}
-          {selected.length === 1 ? "interest" : "interests"} selected
+          {selected.length} {selected.length === 1 ? "interest" : "interests"}{" "}
+          selected
         </p>
       )}
     </div>

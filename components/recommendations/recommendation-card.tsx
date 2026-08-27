@@ -53,7 +53,7 @@ function useInView<T extends HTMLElement>() {
           observer.disconnect();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -127,8 +127,13 @@ function ScoreBreakdownGroup({
       </span>
       <div className="flex flex-wrap gap-x-2 gap-y-0.5">
         {items.map((item) => (
-          <span key={item.label} className="flex items-center gap-0.5 text-[10px]">
-            <span className={`font-semibold ${categoryColorMap[item.category]}`}>
+          <span
+            key={item.label}
+            className="flex items-center gap-0.5 text-[10px]"
+          >
+            <span
+              className={`font-semibold ${categoryColorMap[item.category]}`}
+            >
               {item.points > 0 ? "+" : ""}
               {item.points}
             </span>
@@ -176,14 +181,14 @@ export function RecommendationCard({
   const barDelay = Math.min(index, 8) * 90;
 
   const languageItems = matchScore.breakdown.filter(
-    (b) => b.category === "language"
+    (b) => b.category === "language",
   );
   const interestItems = matchScore.breakdown.filter(
-    (b) => b.category === "interest"
+    (b) => b.category === "interest",
   );
   const issueItems = matchScore.breakdown.filter((b) => b.category === "issue");
   const projectItems = matchScore.breakdown.filter(
-    (b) => b.category === "project"
+    (b) => b.category === "project",
   );
   const goalItems = matchScore.breakdown.filter((b) => b.category === "goal");
 
@@ -195,7 +200,7 @@ export function RecommendationCard({
         "card-shine gloss-border animate-fade-up group relative flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5",
         featured
           ? "border-primary/35 bg-gradient-to-b from-primary-softer to-card shadow-glow hover:border-primary/45"
-          : "border-border/80 bg-card shadow-soft hover:border-primary/25 hover:shadow-glow"
+          : "border-border/80 bg-card shadow-soft hover:border-primary/25 hover:shadow-glow",
       )}
     >
       <div className="glass-edge flex flex-1 flex-col p-5">
@@ -215,7 +220,9 @@ export function RecommendationCard({
               className="group/repo mb-1 block w-fit max-w-full truncate text-[11px] font-medium text-muted-foreground transition-colors hover:text-primary"
             >
               {recommendation.organization}
-              <span aria-hidden="true" className="mx-1 text-border">/</span>
+              <span aria-hidden="true" className="mx-1 text-border">
+                /
+              </span>
               <span className="text-secondary-foreground group-hover/repo:underline">
                 {recommendation.repository}
               </span>
@@ -248,7 +255,7 @@ export function RecommendationCard({
             <span
               className={cn(
                 "rounded-full px-2.5 py-1 text-[10px] font-semibold capitalize",
-                difficultyStyleMap[recommendation.difficulty]
+                difficultyStyleMap[recommendation.difficulty],
               )}
             >
               {recommendation.difficulty}
@@ -282,7 +289,7 @@ export function RecommendationCard({
                     ? "text-amber-foreground"
                     : readinessScore >= 40
                       ? "text-peach-foreground"
-                      : "text-destructive"
+                      : "text-destructive",
               )}
             >
               {readinessScore}/100
@@ -299,7 +306,7 @@ export function RecommendationCard({
                     ? "bg-amber-foreground"
                     : readinessScore >= 40
                       ? "bg-peach-foreground"
-                      : "bg-destructive"
+                      : "bg-destructive",
               )}
               style={{
                 width: `${readinessScore}%`,
@@ -321,12 +328,16 @@ export function RecommendationCard({
             />
             {recommendation.repoLanguage}
           </span>
-          <span aria-hidden="true" className="text-border">·</span>
+          <span aria-hidden="true" className="text-border">
+            ·
+          </span>
           <span className="flex items-center gap-1">
             <HugeiconsIcon icon={StarIcon} size={12} />
             {recommendation.repoStars.toLocaleString()}
           </span>
-          <span aria-hidden="true" className="text-border">·</span>
+          <span aria-hidden="true" className="text-border">
+            ·
+          </span>
           <span className="flex items-center gap-1">
             <HugeiconsIcon icon={Comment01Icon} size={12} />
             {recommendation.comments}

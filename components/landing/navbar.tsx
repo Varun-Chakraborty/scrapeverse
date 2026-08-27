@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Menu03Icon, Cancel01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import {
+  Menu03Icon,
+  Cancel01Icon,
+  ArrowRight01Icon,
+} from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -51,14 +55,18 @@ export function Navbar({ onGetStarted }: NavbarProps) {
         "fixed inset-x-0 top-0 z-40 transition-all duration-500",
         scrolled
           ? "border-b border-border/70 bg-background/80 shadow-soft backdrop-blur-xl"
-          : "border-b border-transparent bg-transparent"
+          : "border-b border-transparent bg-transparent",
       )}
     >
       <nav
         aria-label="Main navigation"
         className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6"
       >
-        <a href="#" aria-label="Scrapeverse home" className="transition-opacity hover:opacity-80">
+        <a
+          href="#"
+          aria-label="Scrapeverse home"
+          className="transition-opacity hover:opacity-80"
+        >
           <Logo />
         </a>
 
@@ -110,7 +118,10 @@ export function Navbar({ onGetStarted }: NavbarProps) {
             onClick={() => setMenuOpen((v) => !v)}
             className="flex size-10 items-center justify-center rounded-full border border-border bg-card/80 text-foreground backdrop-blur transition-colors hover:border-primary/30"
           >
-            <HugeiconsIcon icon={menuOpen ? Cancel01Icon : Menu03Icon} size={18} />
+            <HugeiconsIcon
+              icon={menuOpen ? Cancel01Icon : Menu03Icon}
+              size={18}
+            />
           </button>
         </div>
       </nav>
@@ -133,20 +144,46 @@ export function Navbar({ onGetStarted }: NavbarProps) {
             <div className="mt-4 flex flex-col gap-2.5 border-t border-border pt-5">
               {user ? (
                 <>
-                  <Button onClick={() => { setMenuOpen(false); onGetStarted(); }} size="lg">
+                  <Button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onGetStarted();
+                    }}
+                    size="lg"
+                  >
                     My recommendations
                   </Button>
-                  <Button variant="outline" size="lg" onClick={() => { setMenuOpen(false); signOut(); }}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      signOut();
+                    }}
+                  >
                     Sign out
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button onClick={() => { setMenuOpen(false); onGetStarted(); }} size="lg">
+                  <Button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onGetStarted();
+                    }}
+                    size="lg"
+                  >
                     Get started free
                     <HugeiconsIcon icon={ArrowRight01Icon} />
                   </Button>
-                  <Button variant="outline" size="lg" onClick={() => { setMenuOpen(false); onGetStarted(); }}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onGetStarted();
+                    }}
+                  >
                     Sign in
                   </Button>
                 </>

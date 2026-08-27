@@ -8,12 +8,7 @@ interface ProgressBarProps {
   totalSteps: number;
 }
 
-const stepLabels = [
-  "Interests",
-  "Experience",
-  "Goals",
-  "Languages",
-];
+const stepLabels = ["Interests", "Experience", "Goals", "Languages"];
 
 export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
   const progress = (currentStep / totalSteps) * 100;
@@ -33,7 +28,7 @@ export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
                 "flex flex-col items-center gap-1.5 transition-colors duration-300",
                 isActive && "text-primary",
                 isComplete && "text-secondary-foreground",
-                !isActive && !isComplete && "text-muted-foreground/50"
+                !isActive && !isComplete && "text-muted-foreground/50",
               )}
             >
               <div
@@ -45,7 +40,7 @@ export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
                     "border-primary/30 bg-primary-soft text-primary",
                   !isActive &&
                     !isComplete &&
-                    "border-border bg-card text-muted-foreground/50"
+                    "border-border bg-card text-muted-foreground/50",
                 )}
               >
                 {isComplete ? (
@@ -68,7 +63,9 @@ export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
                   step
                 )}
               </div>
-              <span className="hidden text-[10px] font-medium sm:block">{label}</span>
+              <span className="hidden text-[10px] font-medium sm:block">
+                {label}
+              </span>
             </div>
           );
         })}

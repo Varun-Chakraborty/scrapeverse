@@ -173,7 +173,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | POST | `/api/auth/signin` | No | Sign in |
 | POST | `/api/auth/signout` | No | Sign out |
 | GET | `/api/auth/session` | No | Get current session |
-| GET | `/api/admin/status` | No | Scrape stats (repos, open issues, readmes, last scrape time) |
+| GET | `/api/scrape/status` | No | Scrape stats (repos, open issues, readmes, last scrape time) |
 | POST | `/api/auth/change-password` | Yes | Change password |
 | POST | `/api/auth/reset-password` | Yes | Reset password (requires session) |
 | GET | `/api/recommendations` | Yes | Get issue recommendations with README intelligence |

@@ -2,10 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  FilterHorizontalIcon,
-  RefreshIcon,
-} from "@hugeicons/core-free-icons";
+import { FilterHorizontalIcon, RefreshIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/landing/logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -56,7 +53,7 @@ export function ResultsPage({
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    fetch("/api/admin/status")
+    fetch("/api/scrape/status")
       .then((r) => (r.ok ? r.json() : null))
       .then(setScrapeStatus)
       .catch(() => {});
@@ -64,10 +61,7 @@ export function ResultsPage({
 
   const filtered = useMemo(() => {
     return recommendations.filter((rec) => {
-      if (
-        filters.language !== "any" &&
-        rec.repoLanguage !== filters.language
-      )
+      if (filters.language !== "any" && rec.repoLanguage !== filters.language)
         return false;
       if (
         filters.maxDifficulty !== "any" &&
@@ -115,14 +109,20 @@ export function ResultsPage({
             >
               <Logo />
             </button>
-            <span aria-hidden="true" className="hidden h-6 w-px bg-border sm:block" />
+            <span
+              aria-hidden="true"
+              className="hidden h-6 w-px bg-border sm:block"
+            />
             <div>
               <h1 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
                 Your recommendations
               </h1>
               <p className="text-xs text-muted-foreground">
-                <span className="font-semibold text-primary">{filtered.length}</span>{" "}
-                {filtered.length === 1 ? "issue" : "issues"} matched to your profile
+                <span className="font-semibold text-primary">
+                  {filtered.length}
+                </span>{" "}
+                {filtered.length === 1 ? "issue" : "issues"} matched to your
+                profile
                 <span className="mx-1.5">·</span>
                 <span
                   className={
@@ -191,7 +191,7 @@ export function ResultsPage({
           <aside
             className={cn(
               "hidden w-full shrink-0 lg:block lg:w-64",
-              "sticky top-24 self-start"
+              "sticky top-24 self-start",
             )}
           >
             <div className="card-shine animate-slide-up-sm relative overflow-hidden rounded-2xl border border-border/80 bg-card p-5 shadow-soft [animation-delay:200ms]">

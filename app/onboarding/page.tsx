@@ -28,31 +28,31 @@ export default function Onboarding() {
   const toggleItem = useCallback(
     <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, item: T) => {
       setter((prev) =>
-        prev.includes(item)
-          ? prev.filter((i) => i !== item)
-          : [...prev, item]
+        prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item],
       );
     },
-    []
+    [],
   );
 
   const handleToggleInterest = useCallback(
     (interest: Interest) => toggleItem(setInterests, interest),
-    [toggleItem]
+    [toggleItem],
   );
 
   const handleToggleGoal = useCallback(
     (goal: Goal) => toggleItem(setGoals, goal),
-    [toggleItem]
+    [toggleItem],
   );
 
   const handleToggleLanguage = useCallback(
     (lang: ProgrammingLanguage) => toggleItem(setLanguages, lang),
-    [toggleItem]
+    [toggleItem],
   );
 
   const handleAddCustomLanguage = useCallback((lang: string) => {
-    setCustomLanguages((prev) => (prev.includes(lang) ? prev : [...prev, lang]));
+    setCustomLanguages((prev) =>
+      prev.includes(lang) ? prev : [...prev, lang],
+    );
   }, []);
 
   const handleRemoveCustomLanguage = useCallback((lang: string) => {
@@ -67,7 +67,7 @@ export default function Onboarding() {
       languages,
       customLanguages,
     }),
-    [interests, experienceLevel, goals, languages, customLanguages]
+    [interests, experienceLevel, goals, languages, customLanguages],
   );
 
   const handleNext = () => {

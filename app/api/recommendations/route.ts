@@ -1,13 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getIssuesWithRepo } from "@/lib/scraper-pipeline";
-import type { Recommendation, MatchScore, MatchScoreBreakdown } from "@/lib/types";
+import type {
+  Recommendation,
+  MatchScore,
+  MatchScoreBreakdown,
+} from "@/lib/types";
 
-function classifyDifficulty(labels: string[]): "beginner" | "intermediate" | "advanced" {
+function classifyDifficulty(
+  labels: string[],
+): "beginner" | "intermediate" | "advanced" {
   const lower = labels.map((l) => l.toLowerCase());
-  if (lower.some((l) => l.includes("good first issue") || l.includes("easy") || l.includes("beginner"))) {
+  if (
+    lower.some(
+      (l) =>
+        l.includes("good first issue") ||
+        l.includes("easy") ||
+        l.includes("beginner"),
+    )
+  ) {
     return "beginner";
   }
-  if (lower.some((l) => l.includes("help wanted") || l.includes("medium") || l.includes("enhancement"))) {
+  if (
+    lower.some(
+      (l) =>
+        l.includes("help wanted") ||
+        l.includes("medium") ||
+        l.includes("enhancement"),
+    )
+  ) {
     return "intermediate";
   }
   return "advanced";
@@ -33,7 +53,9 @@ function matchLabels(labels: string[], interests: string[]): string[] {
   if (lowerLabels.some((l) => l.includes("bug"))) {
     matched.push("Bug Fix");
   }
-  if (lowerLabels.some((l) => l.includes("documentation") || l.includes("docs"))) {
+  if (
+    lowerLabels.some((l) => l.includes("documentation") || l.includes("docs"))
+  ) {
     matched.push("Documentation");
   }
 
@@ -52,37 +74,48 @@ function generateWhyRecommended(
   repo: { language: string | null; topics: string; stars: number },
   labels: string[],
   difficulty: string,
-  readme: { hasContributionGuide: boolean; setupComplexity: string; techStack: string[] } | null,
+  readme: {
+    hasContributionGuide: boolean;
+    setupComplexity: string;
+    techStack: string[];
+  } | null,
   issueAge: number,
   comments: number,
   isTrending: boolean,
-  goals: string[]
+  goals: string[],
 ): string[] {
   const reasons: string[] = [];
   const topics: string[] = JSON.parse(repo.topics || "[]");
   const lowerTopics = topics.map((t) => t.toLowerCase());
 
-  if (repo.language && languages.some((l) => l.toLowerCase() === repo.language!.toLowerCase())) {
+  if (
+    repo.language &&
+    languages.some((l) => l.toLowerCase() === repo.language!.toLowerCase())
+  ) {
     reasons.push(`Primary language is ${repo.language} — matches your stack.`);
   } else {
-    const topicLangMatch = languages.find((l) => lowerTopics.some((t) => t.includes(l.toLowerCase())));
+    const topicLangMatch = languages.find((l) =>
+      lowerTopics.some((t) => t.includes(l.toLowerCase())),
+    );
     if (topicLangMatch) {
       reasons.push(`Uses ${topicLangMatch} (via project topics).`);
     }
   }
 
   const matchedInterests = interests.filter((i) =>
-    lowerTopics.some((t) => t.includes(i.toLowerCase()))
+    lowerTopics.some((t) => t.includes(i.toLowerCase())),
   );
   if (matchedInterests.length > 1) {
-    reasons.push(`Matches ${matchedInterests.length} of your interests: ${matchedInterests.join(", ")}.`);
+    reasons.push(
+      `Matches ${matchedInterests.length} of your interests: ${matchedInterests.join(", ")}.`,
+    );
   } else if (matchedInterests.length === 1) {
     reasons.push(`Aligns with your interest in ${matchedInterests[0]}.`);
   }
 
   if (readme?.techStack && readme.techStack.length > 0) {
     const stackMatch = readme.techStack.filter((s) =>
-      languages.some((l) => l.toLowerCase() === s.toLowerCase())
+      languages.some((l) => l.toLowerCase() === s.toLowerCase()),
     );
     if (stackMatch.length > 0) {
       reasons.push(`Tech stack includes ${stackMatch.join(", ")}.`);
@@ -96,16 +129,22 @@ function generateWhyRecommended(
   }
 
   if (labels.includes("documentation") || labels.includes("docs")) {
-    reasons.push("Documentation contribution — great way to learn the codebase.");
+    reasons.push(
+      "Documentation contribution — great way to learn the codebase.",
+    );
   }
   if (labels.includes("help wanted")) {
     reasons.push("Maintainers are actively seeking help on this.");
   }
 
   if (issueAge <= 7) {
-    reasons.push(`Created ${issueAge === 0 ? "today" : `${issueAge}d ago`} — still fresh and actionable.`);
+    reasons.push(
+      `Created ${issueAge === 0 ? "today" : `${issueAge}d ago`} — still fresh and actionable.`,
+    );
   } else if (issueAge > 90) {
-    reasons.push(`Open for ${Math.floor(issueAge / 30)} months — may need a fresh take.`);
+    reasons.push(
+      `Open for ${Math.floor(issueAge / 30)} months — may need a fresh take.`,
+    );
   }
 
   if (comments > 5) {
@@ -123,7 +162,9 @@ function generateWhyRecommended(
   }
 
   if (repo.stars > 10000) {
-    reasons.push(`Established project with ${repo.stars.toLocaleString()} stars.`);
+    reasons.push(
+      `Established project with ${repo.stars.toLocaleString()} stars.`,
+    );
   } else if (repo.stars > 1000) {
     reasons.push(`Growing project with ${repo.stars.toLocaleString()} stars.`);
   }
@@ -132,25 +173,39 @@ function generateWhyRecommended(
     reasons.push("Currently trending on GitHub.");
   }
 
-  if (goals.includes("First Open Source Contribution") && difficulty === "beginner") {
+  if (
+    goals.includes("First Open Source Contribution") &&
+    difficulty === "beginner"
+  ) {
     reasons.push("Great fit for your first open source contribution.");
   }
   if (goals.includes("Build Portfolio") && repo.stars > 1000) {
     reasons.push("Visible project that strengthens your portfolio.");
   }
   if (goals.includes("Find Mentors") && comments > 5) {
-    reasons.push("Active discussion — good opportunity to connect with maintainers.");
+    reasons.push(
+      "Active discussion — good opportunity to connect with maintainers.",
+    );
   }
-  if (goals.includes("Contribute to Production Systems") && repo.stars > 10000) {
+  if (
+    goals.includes("Contribute to Production Systems") &&
+    repo.stars > 10000
+  ) {
     reasons.push("Production-grade project used by many teams.");
   }
   if (goals.includes("Prepare for Jobs") && repo.stars > 10000) {
     reasons.push("Resume-worthy project with wide industry recognition.");
   }
-  if (goals.includes("Deep Technical Learning") && readme?.setupComplexity === "complex") {
+  if (
+    goals.includes("Deep Technical Learning") &&
+    readme?.setupComplexity === "complex"
+  ) {
     reasons.push("Deep technical challenge — great for skill growth.");
   }
-  if (goals.includes("Learn New Technologies") && labels.includes("documentation")) {
+  if (
+    goals.includes("Learn New Technologies") &&
+    labels.includes("documentation")
+  ) {
     reasons.push("Documentation task — perfect for learning a new codebase.");
   }
 
@@ -166,12 +221,16 @@ function calculateMatchScore(
   interests: string[],
   repo: { language: string | null; topics: string; stars: number },
   labels: string[],
-  readme: { hasContributionGuide: boolean; setupComplexity: string; techStack: string[] } | null,
+  readme: {
+    hasContributionGuide: boolean;
+    setupComplexity: string;
+    techStack: string[];
+  } | null,
   isTrending: boolean,
   issueAge: number,
   comments: number,
   experienceLevel: string | null,
-  goalSignals: { points: number; label: string }[]
+  goalSignals: { points: number; label: string }[],
 ): MatchScore {
   const breakdown: MatchScoreBreakdown[] = [];
   const topics: string[] = JSON.parse(repo.topics || "[]");
@@ -180,40 +239,75 @@ function calculateMatchScore(
   const isBeginner = experienceLevel === "Beginner";
 
   // --- Language match (max 35) ---
-  if (repo.language && languages.some((l) => l.toLowerCase() === repo.language!.toLowerCase())) {
-    breakdown.push({ label: `${repo.language} primary`, points: 30, category: "language" });
+  if (
+    repo.language &&
+    languages.some((l) => l.toLowerCase() === repo.language!.toLowerCase())
+  ) {
+    breakdown.push({
+      label: `${repo.language} primary`,
+      points: 30,
+      category: "language",
+    });
   } else {
-    const topicLangMatch = languages.find((l) => lowerTopics.some((t) => t.includes(l.toLowerCase())));
+    const topicLangMatch = languages.find((l) =>
+      lowerTopics.some((t) => t.includes(l.toLowerCase())),
+    );
     if (topicLangMatch) {
-      breakdown.push({ label: `${topicLangMatch} in topics`, points: 15, category: "language" });
+      breakdown.push({
+        label: `${topicLangMatch} in topics`,
+        points: 15,
+        category: "language",
+      });
     }
   }
 
   if (readme?.techStack) {
     const stackMatch = readme.techStack.filter((s) =>
-      languages.some((l) => l.toLowerCase() === s.toLowerCase())
+      languages.some((l) => l.toLowerCase() === s.toLowerCase()),
     );
     if (stackMatch.length > 0) {
-      breakdown.push({ label: `Tech: ${stackMatch[0]}`, points: 5, category: "language" });
+      breakdown.push({
+        label: `Tech: ${stackMatch[0]}`,
+        points: 5,
+        category: "language",
+      });
     }
   }
 
   // --- Interest alignment (max 20) ---
   const matchedInterests = interests.filter((i) =>
-    lowerTopics.some((t) => t.includes(i.toLowerCase()))
+    lowerTopics.some((t) => t.includes(i.toLowerCase())),
   );
   if (matchedInterests.length > 1) {
-    breakdown.push({ label: `${matchedInterests.length} interests matched`, points: 20, category: "interest" });
+    breakdown.push({
+      label: `${matchedInterests.length} interests matched`,
+      points: 20,
+      category: "interest",
+    });
   } else if (matchedInterests.length === 1) {
-    breakdown.push({ label: `${matchedInterests[0]} interest`, points: 12, category: "interest" });
+    breakdown.push({
+      label: `${matchedInterests[0]} interest`,
+      points: 12,
+      category: "interest",
+    });
   }
 
   // --- Issue quality (max ~20) ---
   if (lowerLabels.some((l) => l.includes("good first issue"))) {
-    breakdown.push({ label: "Good First Issue", points: isBeginner ? 15 : 10, category: "issue" });
+    breakdown.push({
+      label: "Good First Issue",
+      points: isBeginner ? 15 : 10,
+      category: "issue",
+    });
   }
-  if (lowerLabels.some((l) => l.includes("documentation") || l.includes("docs"))) {
-    breakdown.push({ label: "Documentation", points: isBeginner ? 8 : 5, category: "issue" });
+  if (
+    lowerLabels.some((l) => l.includes("documentation") || l.includes("docs"))
+  ) {
+    breakdown.push({
+      label: "Documentation",
+      points: isBeginner ? 8 : 5,
+      category: "issue",
+    });
   }
   if (lowerLabels.some((l) => l.includes("help wanted"))) {
     breakdown.push({ label: "Help Wanted", points: 5, category: "issue" });
@@ -233,28 +327,56 @@ function calculateMatchScore(
 
   // Issue engagement
   if (comments >= 2 && comments <= 15) {
-    breakdown.push({ label: "Active discussion", points: 3, category: "issue" });
+    breakdown.push({
+      label: "Active discussion",
+      points: 3,
+      category: "issue",
+    });
   } else if (comments > 15) {
     breakdown.push({ label: "High engagement", points: 1, category: "issue" });
   }
 
   // --- Project health (max ~25) ---
   if (repo.stars > 10000) {
-    breakdown.push({ label: "Established project", points: 12, category: "project" });
+    breakdown.push({
+      label: "Established project",
+      points: 12,
+      category: "project",
+    });
   } else if (repo.stars > 1000) {
-    breakdown.push({ label: "Growing project", points: 8, category: "project" });
+    breakdown.push({
+      label: "Growing project",
+      points: 8,
+      category: "project",
+    });
   } else if (repo.stars > 100) {
-    breakdown.push({ label: "Emerging project", points: 4, category: "project" });
+    breakdown.push({
+      label: "Emerging project",
+      points: 4,
+      category: "project",
+    });
   }
 
   if (readme?.hasContributionGuide) {
-    breakdown.push({ label: "Contribution guide", points: isBeginner ? 8 : 5, category: "project" });
+    breakdown.push({
+      label: "Contribution guide",
+      points: isBeginner ? 8 : 5,
+      category: "project",
+    });
   }
 
   if (readme?.setupComplexity === "simple") {
-    breakdown.push({ label: "Simple setup", points: isBeginner ? 5 : 3, category: "project" });
+    breakdown.push({
+      label: "Simple setup",
+      points: isBeginner ? 5 : 3,
+      category: "project",
+    });
   } else if (readme?.setupComplexity === "complex") {
-    breakdown.push({ label: "Complex setup", points: isBeginner ? -3 : -1, category: "project" });
+    breakdown.push({
+      label: "Complex setup",
+      points: isBeginner ? -3 : -1,
+      category: "project",
+    });
   }
 
   if (isTrending) {
@@ -274,10 +396,15 @@ function calculateGoalScore(
   goals: string[],
   labels: string[],
   repo: { stars: number },
-  readme: { hasContributionGuide: boolean; setupComplexity: string; techStack: string[]; architectureKeywords: string[] } | null,
+  readme: {
+    hasContributionGuide: boolean;
+    setupComplexity: string;
+    techStack: string[];
+    architectureKeywords: string[];
+  } | null,
   issueAge: number,
   comments: number,
-  difficulty: string
+  difficulty: string,
 ): { points: number; label: string }[] {
   const signals: { points: number; label: string }[] = [];
   const lower = labels.map((l) => l.toLowerCase());
@@ -329,30 +456,46 @@ function calculateGoalScore(
       }
       case "Learn New Technologies": {
         if (techCount > 3) {
-          signals.push({ points: 4, label: `Diverse tech stack (${techCount} tools)` });
+          signals.push({
+            points: 4,
+            label: `Diverse tech stack (${techCount} tools)`,
+          });
         } else if (techCount > 0) {
           signals.push({ points: 2, label: "Identifiable tech stack" });
         }
-        if (lower.some((l) => l.includes("documentation") || l.includes("docs"))) {
+        if (
+          lower.some((l) => l.includes("documentation") || l.includes("docs"))
+        ) {
           signals.push({ points: 3, label: "Documentation task" });
         }
         if (repo.stars > 1000) {
           signals.push({ points: 2, label: "Established codebase to study" });
         }
-        if (lower.some((l) => l.includes("enhancement") || l.includes("feature"))) {
+        if (
+          lower.some((l) => l.includes("enhancement") || l.includes("feature"))
+        ) {
           signals.push({ points: 2, label: "Feature work — learn by doing" });
         }
         break;
       }
       case "Find Mentors": {
         if (lower.some((l) => l.includes("help wanted"))) {
-          signals.push({ points: 4, label: "Maintainers actively seeking help" });
+          signals.push({
+            points: 4,
+            label: "Maintainers actively seeking help",
+          });
         }
         if (hasGuide) {
-          signals.push({ points: 3, label: "Contributor onboarding documented" });
+          signals.push({
+            points: 3,
+            label: "Contributor onboarding documented",
+          });
         }
         if (comments >= 3) {
-          signals.push({ points: 3, label: `${comments} comments — active thread` });
+          signals.push({
+            points: 3,
+            label: `${comments} comments — active thread`,
+          });
         }
         if (repo.stars > 1000) {
           signals.push({ points: 2, label: "Established community" });
@@ -371,7 +514,9 @@ function calculateGoalScore(
         if (readme?.architectureKeywords?.length) {
           signals.push({ points: 2, label: "Architecture documented" });
         }
-        if (lower.some((l) => l.includes("enhancement") || l.includes("feature"))) {
+        if (
+          lower.some((l) => l.includes("enhancement") || l.includes("feature"))
+        ) {
           signals.push({ points: 2, label: "Feature work in production code" });
         }
         break;
@@ -389,7 +534,10 @@ function calculateGoalScore(
           signals.push({ points: 2, label: "Concrete deliverable" });
         }
         if (hasGuide) {
-          signals.push({ points: 2, label: "Professional contribution process" });
+          signals.push({
+            points: 2,
+            label: "Professional contribution process",
+          });
         }
         break;
       }
@@ -403,8 +551,13 @@ function calculateGoalScore(
         if (readme?.architectureKeywords?.length) {
           signals.push({ points: 2, label: "Architecture keywords present" });
         }
-        if (lower.some((l) => l.includes("enhancement") || l.includes("feature"))) {
-          signals.push({ points: 2, label: "Feature work — deep codebase understanding" });
+        if (
+          lower.some((l) => l.includes("enhancement") || l.includes("feature"))
+        ) {
+          signals.push({
+            points: 2,
+            label: "Feature work — deep codebase understanding",
+          });
         }
         if (repo.stars > 1000) {
           signals.push({ points: 1, label: "Mature codebase" });
@@ -423,7 +576,7 @@ function calculateReadinessScore(
   issueAge: number,
   readme: { hasContributionGuide: boolean; setupComplexity: string } | null,
   repoStars: number,
-  experienceLevel: string | null
+  experienceLevel: string | null,
 ): number {
   let score = 0;
   const lower = labels.map((l) => l.toLowerCase());
@@ -486,7 +639,7 @@ export async function GET(request: NextRequest) {
   if (languages.length === 0) {
     return NextResponse.json(
       { error: "At least one language is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -509,9 +662,12 @@ export async function GET(request: NextRequest) {
     const readmeData = issue.repo.readme
       ? {
           hasContributionGuide: issue.repo.readme.hasContributionGuide,
-          setupComplexity: issue.repo.readme.setupComplexity as "simple" | "moderate" | "complex" | "unknown",
+          setupComplexity: issue.repo.readme.setupComplexity as
+            "simple" | "moderate" | "complex" | "unknown",
           techStack: JSON.parse(issue.repo.readme.techStack || "[]"),
-          architectureKeywords: JSON.parse(issue.repo.readme.architectureKeywords || "[]"),
+          architectureKeywords: JSON.parse(
+            issue.repo.readme.architectureKeywords || "[]",
+          ),
         }
       : null;
 
@@ -522,33 +678,41 @@ export async function GET(request: NextRequest) {
       readmeData,
       issueAge,
       issue.comments,
-      difficulty
+      difficulty,
     );
 
     const matchScore = calculateMatchScore(
       languages,
       interests,
-      { language: issue.repo.language, topics: issue.repo.topics, stars: issue.repo.stars },
+      {
+        language: issue.repo.language,
+        topics: issue.repo.topics,
+        stars: issue.repo.stars,
+      },
       labels,
       readmeData,
       isTrending,
       issueAge,
       issue.comments,
       experience,
-      goalSignals
+      goalSignals,
     );
 
     const whyRecommended = generateWhyRecommended(
       languages,
       interests,
-      { language: issue.repo.language, topics: issue.repo.topics, stars: issue.repo.stars },
+      {
+        language: issue.repo.language,
+        topics: issue.repo.topics,
+        stars: issue.repo.stars,
+      },
       labels,
       difficulty,
       readmeData,
       issueAge,
       issue.comments,
       isTrending,
-      goals
+      goals,
     );
 
     const readinessScore = calculateReadinessScore(
@@ -557,7 +721,7 @@ export async function GET(request: NextRequest) {
       issueAge,
       readmeData,
       issue.repo.stars,
-      experience
+      experience,
     );
 
     return {
@@ -614,5 +778,9 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ recommendations: diversified, count: diversified.length, dataSource });
+  return NextResponse.json({
+    recommendations: diversified,
+    count: diversified.length,
+    dataSource,
+  });
 }

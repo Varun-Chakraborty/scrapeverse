@@ -14,7 +14,10 @@ const columns = [
     title: "Resources",
     links: [
       { label: "GitHub", href: "https://github.com" },
-      { label: "Good first issues", href: "https://github.com/topics/good-first-issue" },
+      {
+        label: "Good first issues",
+        href: "https://github.com/topics/good-first-issue",
+      },
       { label: "Open source guides", href: "https://opensource.guide" },
     ],
   },
@@ -58,10 +61,12 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/70 pt-7 sm:flex-row">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Scrapeverse. Built for the open-source community.
+            © {new Date().getFullYear()} Scrapeverse. Built for the open-source
+            community.
           </p>
           <p className="text-xs text-muted-foreground">
-            Made with <span className="text-primary">♥</span> for first-time contributors
+            Made with <span className="text-primary">♥</span> for first-time
+            contributors
           </p>
         </div>
       </div>

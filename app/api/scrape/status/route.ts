@@ -6,7 +6,10 @@ export async function GET() {
     db.scrapedRepo.count(),
     db.scrapedIssue.count({ where: { state: "open" } }),
     db.scrapedReadme.count(),
-    db.scrapedRepo.findFirst({ orderBy: { scrapedAt: "desc" }, select: { scrapedAt: true } }),
+    db.scrapedRepo.findFirst({
+      orderBy: { scrapedAt: "desc" },
+      select: { scrapedAt: true },
+    }),
   ]);
 
   return NextResponse.json({

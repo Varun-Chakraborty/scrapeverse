@@ -44,7 +44,7 @@ export function StepLanguages({
         handleAddCustom();
       }
     },
-    [handleAddCustom]
+    [handleAddCustom],
   );
 
   const allCustom = customLanguages;
@@ -63,7 +63,11 @@ export function StepLanguages({
         </p>
       </div>
 
-      <div className="mb-6 flex flex-wrap justify-center gap-2.5" role="group" aria-label="Your languages">
+      <div
+        className="mb-6 flex flex-wrap justify-center gap-2.5"
+        role="group"
+        aria-label="Your languages"
+      >
         {languageOptions.map((lang, i) => {
           const isSelected = selected.includes(lang.value);
           return (
@@ -78,7 +82,7 @@ export function StepLanguages({
                 "hover:-translate-y-0.5 hover:shadow-soft active:scale-[0.97]",
                 isSelected
                   ? "border-primary bg-primary text-white shadow-[0_6px_16px_-6px_rgb(201_54_99/0.55)]"
-                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-secondary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-secondary-foreground",
               )}
             >
               {lang.label}

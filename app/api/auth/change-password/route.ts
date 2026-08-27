@@ -11,14 +11,14 @@ export async function POST(request: Request) {
     if (!currentPassword || !newPassword) {
       return NextResponse.json(
         { error: "Current and new passwords are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (typeof newPassword !== "string" || newPassword.length < 4) {
       return NextResponse.json(
         { error: "New password must be at least 4 characters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     if (!valid) {
       return NextResponse.json(
         { error: "Current password is incorrect" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     console.error("Change password error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

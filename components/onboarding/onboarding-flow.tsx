@@ -1,7 +1,11 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowLeft01Icon, ArrowRight01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  SparklesIcon,
+} from "@hugeicons/core-free-icons";
 import { ProgressBar } from "./progress-bar";
 import { StepInterests } from "./step-interests";
 import { StepExperience } from "./step-experience";
@@ -42,7 +46,7 @@ function canProceed(
   experienceLevel: ExperienceLevel | null,
   goals: Goal[],
   languages: ProgrammingLanguage[],
-  customLanguages: string[]
+  customLanguages: string[],
 ): boolean {
   switch (step) {
     case 1:
@@ -82,7 +86,7 @@ export function OnboardingFlow({
     experienceLevel,
     goals,
     languages,
-    customLanguages
+    customLanguages,
   );
 
   return (

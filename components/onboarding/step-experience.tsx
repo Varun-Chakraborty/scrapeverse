@@ -41,7 +41,7 @@ export function StepExperience({ selected, onSelect }: StepExperienceProps) {
                 "hover:-translate-y-0.5 hover:shadow-soft",
                 isSelected
                   ? "border-primary/50 bg-primary-softer shadow-[0_0_0_1px_rgb(201_54_99/0.25),0_8px_24px_-12px_rgb(201_54_99/0.2)]"
-                  : "border-border bg-card hover:border-primary/30"
+                  : "border-border bg-card hover:border-primary/30",
               )}
             >
               <RadioGroupItem value={option.value} className="mt-0.5" />
@@ -50,7 +50,7 @@ export function StepExperience({ selected, onSelect }: StepExperienceProps) {
                   aria-hidden="true"
                   className={cn(
                     "flex size-10 shrink-0 items-center justify-center rounded-xl text-lg transition-colors duration-200",
-                    isSelected ? "bg-primary-soft" : "bg-muted"
+                    isSelected ? "bg-primary-soft" : "bg-muted",
                   )}
                 >
                   {option.icon}

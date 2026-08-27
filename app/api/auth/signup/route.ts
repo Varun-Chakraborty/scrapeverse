@@ -11,28 +11,25 @@ export async function POST(request: Request) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email, and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (typeof name !== "string" || name.trim().length === 0) {
-      return NextResponse.json(
-        { error: "Name is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
     if (typeof email !== "string" || !email.includes("@")) {
       return NextResponse.json(
         { error: "Valid email is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (typeof password !== "string" || password.length < 4) {
       return NextResponse.json(
         { error: "Password must be at least 4 characters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -43,7 +40,7 @@ export async function POST(request: Request) {
     if (existing) {
       return NextResponse.json(
         { error: "An account with this email already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -81,7 +78,7 @@ export async function POST(request: Request) {
     console.error("Signup error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

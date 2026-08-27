@@ -17,7 +17,7 @@ function getClient() {
   return client;
 }
 
-export interface TrendingEntry {
+interface TrendingEntry {
   product_page_url: string;
 }
 
@@ -68,7 +68,10 @@ export async function discoverTrendingRepos(): Promise<string[]> {
   }
 }
 
-export async function fetchRepoDetails(owner: string, repo: string): Promise<RepoData | null> {
+export async function fetchRepoDetails(
+  owner: string,
+  repo: string,
+): Promise<RepoData | null> {
   const res = await githubFetch(`/repos/${owner}/${repo}`);
   if (!res || !res.ok) return null;
 
@@ -89,7 +92,9 @@ export async function fetchRepoDetails(owner: string, repo: string): Promise<Rep
   };
 }
 
-export async function fetchRepoDetailsBatch(urls: string[]): Promise<RepoData[]> {
+export async function fetchRepoDetailsBatch(
+  urls: string[],
+): Promise<RepoData[]> {
   const results: RepoData[] = [];
 
   for (const url of urls) {
@@ -109,7 +114,7 @@ export async function fetchRepoDetailsBatch(urls: string[]): Promise<RepoData[]>
 export async function fetchIssues(
   owner: string,
   repo: string,
-  labels: string[] = ["good first issue", "help wanted"]
+  labels: string[] = ["good first issue", "help wanted"],
 ): Promise<IssueData[]> {
   const allIssues: IssueData[] = [];
   const seen = new Set<number>();
@@ -132,7 +137,7 @@ export async function fetchIssues(
 
   for (const label of labels) {
     const res = await githubFetch(
-      `/repos/${owner}/${repo}/issues?labels=${encodeURIComponent(label)}&state=open&per_page=10`
+      `/repos/${owner}/${repo}/issues?labels=${encodeURIComponent(label)}&state=open&per_page=10`,
     );
     if (!res || !res.ok) continue;
     const issues = await res.json();
@@ -141,7 +146,7 @@ export async function fetchIssues(
 
   if (allIssues.length < 5) {
     const res = await githubFetch(
-      `/repos/${owner}/${repo}/issues?state=open&sort=updated&per_page=15`
+      `/repos/${owner}/${repo}/issues?state=open&sort=updated&per_page=15`,
     );
     if (res && res.ok) {
       const issues = await res.json();

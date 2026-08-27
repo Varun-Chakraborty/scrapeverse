@@ -18,7 +18,10 @@ const adjacentTechnologies = [
   "Security",
 ];
 
-export function EmptyState({ onBroadenSearch, onSelectTechnology }: EmptyStateProps) {
+export function EmptyState({
+  onBroadenSearch,
+  onSelectTechnology,
+}: EmptyStateProps) {
   return (
     <div className="animate-fade-up flex flex-col items-center justify-center rounded-3xl border border-dashed border-primary/25 bg-card/60 px-4 py-20 text-center backdrop-blur-sm">
       <div className="relative">

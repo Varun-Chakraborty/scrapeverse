@@ -45,7 +45,9 @@ export function Faq() {
       />
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <Reveal className="text-center">
-          <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">FAQ</p>
+          <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
+            FAQ
+          </p>
           <h2 className="font-heading mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
             Frequently asked questions
           </h2>
@@ -61,7 +63,7 @@ export function Faq() {
                     "overflow-hidden rounded-2xl border bg-card transition-all duration-300",
                     isOpen
                       ? "border-primary/25 shadow-lift"
-                      : "border-border/80 shadow-soft hover:border-primary/15"
+                      : "border-border/80 shadow-soft hover:border-primary/15",
                   )}
                 >
                   <button
@@ -79,17 +81,22 @@ export function Faq() {
                         "flex size-7 shrink-0 items-center justify-center rounded-full transition-all duration-300",
                         isOpen
                           ? "rotate-180 bg-primary text-white"
-                          : "bg-primary-soft text-primary"
+                          : "bg-primary-soft text-primary",
                       )}
                     >
-                      <HugeiconsIcon icon={isOpen ? MinusSignIcon : Add01Icon} size={14} />
+                      <HugeiconsIcon
+                        icon={isOpen ? MinusSignIcon : Add01Icon}
+                        size={14}
+                      />
                     </span>
                   </button>
                   <div
                     id={`faq-panel-${i}`}
                     className={cn(
                       "grid transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0",
                     )}
                   >
                     <div className="overflow-hidden">

@@ -1,7 +1,11 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import { UserEdit01Icon, SearchFocusIcon, Rocket02Icon } from "@hugeicons/core-free-icons";
+import {
+  UserEdit01Icon,
+  SearchFocusIcon,
+  Rocket02Icon,
+} from "@hugeicons/core-free-icons";
 import { Reveal } from "@/components/ui/reveal";
 import { Button } from "@/components/ui/button";
 
@@ -31,7 +35,10 @@ const steps = [
 
 export function HowItWorks({ onGetStarted }: { onGetStarted: () => void }) {
   return (
-    <section id="how-it-works" className="relative overflow-hidden py-20 sm:py-28">
+    <section
+      id="how-it-works"
+      className="relative overflow-hidden py-20 sm:py-28"
+    >
       {/* Soft band background */}
       <div
         aria-hidden="true"

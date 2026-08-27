@@ -27,7 +27,10 @@ export function Cta({ onGetStarted }: CtaProps) {
             <div
               aria-hidden="true"
               className="absolute inset-0 bg-grid-rose opacity-30"
-              style={{ backgroundImage: "linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px)" }}
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px)",
+              }}
             />
 
             <div className="relative">
@@ -39,8 +42,8 @@ export function Cta({ onGetStarted }: CtaProps) {
                 Ready to find your perfect open-source match?
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
-                Join contributors who stopped guessing and started shipping.
-                Set up your profile in under 30 seconds.
+                Join contributors who stopped guessing and started shipping. Set
+                up your profile in under 30 seconds.
               </p>
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Button

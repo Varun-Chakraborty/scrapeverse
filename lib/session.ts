@@ -6,7 +6,7 @@ if (!secretKey) {
 }
 const encodedKey = new TextEncoder().encode(secretKey);
 
-export interface SessionPayload {
+interface SessionPayload {
   userId: string;
   email: string;
   [key: string]: unknown;
@@ -21,7 +21,7 @@ export async function encrypt(payload: SessionPayload) {
 }
 
 export async function decrypt(
-  token: string | undefined
+  token: string | undefined,
 ): Promise<SessionPayload | null> {
   if (!token) return null;
   try {

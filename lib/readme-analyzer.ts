@@ -1,7 +1,7 @@
 import { githubFetch } from "./github-api";
 import type { ReadmeIntelligence } from "./types";
 
-export type ReadmeIntelligenceWithRaw = ReadmeIntelligence & { rawContent: string };
+type ReadmeIntelligenceWithRaw = ReadmeIntelligence & { rawContent: string };
 
 const CONTRIBUTION_PATTERNS = [
   /contributing/i,
@@ -37,54 +37,136 @@ const SETUP_COMPLEX = [
 ];
 
 const TECH_STACK_KEYWORDS = [
-  "rust", "go", "python", "javascript", "typescript", "java", "c", "c++", "zig",
-  "react", "vue", "svelte", "angular", "nextjs", "nuxt", "astro",
-  "postgres", "mysql", "sqlite", "redis", "mongodb", "neo4j",
-  "docker", "kubernetes", "terraform", "ansible",
-  "grpc", "rest", "graphql", "websocket",
-  "tokio", "async-std", "hyper", "axum", "actix",
-  "webpack", "vite", "esbuild", "rollup",
-  "linux", "windows", "macos", "wasm",
-  "machine-learning", "deep-learning", "neural-network",
-  "compiler", "interpreter", "vm", "jit",
-  "database", "sql", "nosql",
-  "crypto", "encryption", "tls", "ssl",
+  "rust",
+  "go",
+  "python",
+  "javascript",
+  "typescript",
+  "java",
+  "c",
+  "c++",
+  "zig",
+  "react",
+  "vue",
+  "svelte",
+  "angular",
+  "nextjs",
+  "nuxt",
+  "astro",
+  "postgres",
+  "mysql",
+  "sqlite",
+  "redis",
+  "mongodb",
+  "neo4j",
+  "docker",
+  "kubernetes",
+  "terraform",
+  "ansible",
+  "grpc",
+  "rest",
+  "graphql",
+  "websocket",
+  "tokio",
+  "async-std",
+  "hyper",
+  "axum",
+  "actix",
+  "webpack",
+  "vite",
+  "esbuild",
+  "rollup",
+  "linux",
+  "windows",
+  "macos",
+  "wasm",
+  "machine-learning",
+  "deep-learning",
+  "neural-network",
+  "compiler",
+  "interpreter",
+  "vm",
+  "jit",
+  "database",
+  "sql",
+  "nosql",
+  "crypto",
+  "encryption",
+  "tls",
+  "ssl",
 ];
 
 const ARCHITECTURE_KEYWORDS = [
-  "microservice", "monolith", "event-driven", "cqrs", "ddd",
-  "actor-model", "message-queue", "pub-sub", "pipeline",
-  "plugin-system", "middleware", "layered-architecture",
-  "hexagonal", "clean-architecture", "mvc", "mvvm",
-  "concurrent", "parallel", "async", "non-blocking",
-  "client-server", "peer-to-peer", "distributed",
-  "serverless", "lambda", "edge",
-  "workspace", "monorepo", "multi-crate",
+  "microservice",
+  "monolith",
+  "event-driven",
+  "cqrs",
+  "ddd",
+  "actor-model",
+  "message-queue",
+  "pub-sub",
+  "pipeline",
+  "plugin-system",
+  "middleware",
+  "layered-architecture",
+  "hexagonal",
+  "clean-architecture",
+  "mvc",
+  "mvvm",
+  "concurrent",
+  "parallel",
+  "async",
+  "non-blocking",
+  "client-server",
+  "peer-to-peer",
+  "distributed",
+  "serverless",
+  "lambda",
+  "edge",
+  "workspace",
+  "monorepo",
+  "multi-crate",
 ];
 
-export async function fetchReadme(owner: string, repo: string): Promise<string | null> {
-  const res = await githubFetch(`/repos/${owner}/${repo}/readme`, { raw: true });
+async function fetchReadme(
+  owner: string,
+  repo: string,
+): Promise<string | null> {
+  const res = await githubFetch(`/repos/${owner}/${repo}/readme`, {
+    raw: true,
+  });
   if (!res || !res.ok) return null;
   return await res.text();
 }
 
-export function analyzeReadme(content: string): Omit<ReadmeIntelligence, "rawContent"> {
+function analyzeReadme(
+  content: string,
+): Omit<ReadmeIntelligence, "rawContent"> {
   const lower = content.toLowerCase();
 
-  const hasContributionGuide = CONTRIBUTION_PATTERNS.some((p) => p.test(content));
+  const hasContributionGuide = CONTRIBUTION_PATTERNS.some((p) =>
+    p.test(content),
+  );
 
-  let setupComplexity: "simple" | "moderate" | "complex" | "unknown" = "unknown";
+  let setupComplexity: "simple" | "moderate" | "complex" | "unknown" =
+    "unknown";
   if (SETUP_SIMPLE.some((p) => p.test(content))) {
     setupComplexity = "simple";
   } else if (SETUP_COMPLEX.some((p) => p.test(content))) {
     setupComplexity = "complex";
-  } else if (lower.includes("install") || lower.includes("setup") || lower.includes("getting started")) {
+  } else if (
+    lower.includes("install") ||
+    lower.includes("setup") ||
+    lower.includes("getting started")
+  ) {
     setupComplexity = "moderate";
   }
 
   const techStack = TECH_STACK_KEYWORDS.filter((kw) => lower.includes(kw));
 
-  const architectureKeywords = ARCHITECTURE_KEYWORDS.filter((kw) => lower.includes(kw));
+  const architectureKeywords = ARCHITECTURE_KEYWORDS.filter((kw) =>
+    lower.includes(kw),
+  );
 
   return {
     hasContributionGuide,
@@ -96,7 +178,7 @@ export function analyzeReadme(content: string): Omit<ReadmeIntelligence, "rawCon
 
 export async function fetchAndAnalyzeReadme(
   owner: string,
-  repo: string
+  repo: string,
 ): Promise<ReadmeIntelligenceWithRaw | null> {
   const rawContent = await fetchReadme(owner, repo);
   if (!rawContent) return null;

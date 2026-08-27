@@ -13,7 +13,11 @@ import type { User, OnboardingPreferences } from "./types";
 interface AuthContextValue {
   user: User | null;
   isLoading: boolean;
-  signUp: (name: string, email: string, password: string) => Promise<User | null>;
+  signUp: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<User | null>;
   signIn: (email: string, password: string) => Promise<User | null>;
   signOut: () => Promise<void>;
   updatePreferences: (prefs: OnboardingPreferences) => Promise<void>;
@@ -70,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(data.user);
       return data.user as User;
     },
-    []
+    [],
   );
 
   const signIn = useCallback(async (email: string, password: string) => {
@@ -111,10 +115,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const data = await res.json();
       setUser((prev) =>
-        prev ? { ...prev, preferences: data.preferences } : null
+        prev ? { ...prev, preferences: data.preferences } : null,
       );
     },
-    []
+    [],
   );
 
   return (

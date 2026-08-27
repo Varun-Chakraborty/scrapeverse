@@ -39,7 +39,7 @@ export function StepGoals({ selected, onToggle }: StepGoalsProps) {
                 "hover:-translate-y-0.5 hover:shadow-soft",
                 isSelected
                   ? "border-primary/50 bg-primary-softer shadow-[0_0_0_1px_rgb(201_54_99/0.25)]"
-                  : "border-border bg-card hover:border-primary/30"
+                  : "border-border bg-card hover:border-primary/30",
               )}
             >
               <span
@@ -48,7 +48,7 @@ export function StepGoals({ selected, onToggle }: StepGoalsProps) {
                   "flex size-5 shrink-0 items-center justify-center rounded-md border transition-all duration-200",
                   isSelected
                     ? "scale-100 border-primary bg-primary text-white"
-                    : "border-input bg-card group-hover:border-primary/40"
+                    : "border-input bg-card group-hover:border-primary/40",
                 )}
               >
                 <svg
@@ -58,7 +58,7 @@ export function StepGoals({ selected, onToggle }: StepGoalsProps) {
                   fill="none"
                   className={cn(
                     "transition-all duration-200",
-                    isSelected ? "scale-100 opacity-100" : "scale-50 opacity-0"
+                    isSelected ? "scale-100 opacity-100" : "scale-50 opacity-0",
                   )}
                 >
                   <path

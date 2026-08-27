@@ -50,14 +50,14 @@ async function sleepUntilReset(): Promise<void> {
   if (waitMs <= 0) return;
 
   console.log(
-    `GitHub API rate limit exhausted. Sleeping ${Math.ceil(waitMs / 1000)}s until reset...`
+    `GitHub API rate limit exhausted. Sleeping ${Math.ceil(waitMs / 1000)}s until reset...`,
   );
   await new Promise((resolve) => setTimeout(resolve, waitMs));
 }
 
 export async function githubFetch(
   path: string,
-  options: { raw?: boolean } = {}
+  options: { raw?: boolean } = {},
 ): Promise<Response | null> {
   const headers = options.raw ? getRawHeaders() : getHeaders();
   const url = path.startsWith("http") ? path : `${GITHUB_API}${path}`;
@@ -79,7 +79,9 @@ export async function githubFetch(
     if (res.status === 403 || res.status === 429) {
       const retryAfter = res.headers.get("retry-after");
       const waitSec = retryAfter ? parseInt(retryAfter, 10) : 60;
-      console.log(`GitHub API ${res.status} on ${path}, retrying in ${waitSec}s...`);
+      console.log(
+        `GitHub API ${res.status} on ${path}, retrying in ${waitSec}s...`,
+      );
       await new Promise((resolve) => setTimeout(resolve, waitSec * 1000));
       continue;
     }
@@ -89,9 +91,4 @@ export async function githubFetch(
 
   console.error(`Failed after 3 attempts: ${path}`);
   return null;
-}
-
-export function resetRateLimitState() {
-  rateLimitRemaining = -1;
-  rateLimitReset = 0;
 }

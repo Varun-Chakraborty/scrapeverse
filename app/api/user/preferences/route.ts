@@ -39,7 +39,7 @@ export async function GET() {
     console.error("Get preferences error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -52,7 +52,8 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { interests, experienceLevel, goals, languages, customLanguages } = body;
+    const { interests, experienceLevel, goals, languages, customLanguages } =
+      body;
 
     const data = {
       interests: JSON.stringify(interests ?? []),
@@ -81,7 +82,7 @@ export async function PUT(request: Request) {
     console.error("Update preferences error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

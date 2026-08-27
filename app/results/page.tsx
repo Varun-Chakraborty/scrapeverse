@@ -10,7 +10,8 @@ import type { Recommendation } from "@/lib/types";
 export default function Results() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  const [recommendations, setRecommendations] = useState<Recommendation[]>(mockRecommendations);
+  const [recommendations, setRecommendations] =
+    useState<Recommendation[]>(mockRecommendations);
   const [dataSource, setDataSource] = useState<"live" | "mock">("mock");
 
   useEffect(() => {

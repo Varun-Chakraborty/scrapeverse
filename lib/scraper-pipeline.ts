@@ -49,13 +49,24 @@ export async function runScrapePipeline(): Promise<{
         pushed_at: r.pushedAt?.toISOString() || null,
       }));
       if (repoDataList.length > 0) {
-        errors.push("BrightData returned 0 repos — falling back to DB (" + repoDataList.length + " repos)");
+        errors.push(
+          "BrightData returned 0 repos — falling back to DB (" +
+            repoDataList.length +
+            " repos)",
+        );
       }
     }
 
     if (repoDataList.length === 0) {
       errors.push("No trending repos discovered and no repos in DB");
-      return { discovered: 0, scraped: 0, issuesScraped: 0, readmesScraped: 0, trendingRepos: [], errors };
+      return {
+        discovered: 0,
+        scraped: 0,
+        issuesScraped: 0,
+        readmesScraped: 0,
+        trendingRepos: [],
+        errors,
+      };
     }
 
     for (const repoData of repoDataList) {
@@ -64,19 +75,27 @@ export async function runScrapePipeline(): Promise<{
         scraped++;
         trendingRepos.push(`${repoData.owner}/${repoData.repository_name}`);
 
-        const issues = await fetchIssues(repoData.owner, repoData.repository_name);
+        const issues = await fetchIssues(
+          repoData.owner,
+          repoData.repository_name,
+        );
         for (const issue of issues) {
           await upsertIssue(repoId, issue);
           issuesScraped++;
         }
 
-        const readme = await fetchAndAnalyzeReadme(repoData.owner, repoData.repository_name);
+        const readme = await fetchAndAnalyzeReadme(
+          repoData.owner,
+          repoData.repository_name,
+        );
         if (readme) {
           await upsertReadme(repoId, readme);
           readmesScraped++;
         }
       } catch (err) {
-        errors.push(`Failed to store ${repoData.owner}/${repoData.repository_name}: ${err}`);
+        errors.push(
+          `Failed to store ${repoData.owner}/${repoData.repository_name}: ${err}`,
+        );
       }
     }
   } catch (err) {
@@ -85,7 +104,14 @@ export async function runScrapePipeline(): Promise<{
     await closeClient();
   }
 
-  return { discovered, scraped, issuesScraped, readmesScraped, trendingRepos, errors };
+  return {
+    discovered,
+    scraped,
+    issuesScraped,
+    readmesScraped,
+    trendingRepos,
+    errors,
+  };
 }
 
 export async function runScrapeForRepo(fullName: string): Promise<boolean> {
@@ -103,7 +129,10 @@ export async function runScrapeForRepo(fullName: string): Promise<boolean> {
       await upsertIssue(repoId, issue);
     }
 
-    const readme = await fetchAndAnalyzeReadme(repoData.owner, repoData.repository_name);
+    const readme = await fetchAndAnalyzeReadme(
+      repoData.owner,
+      repoData.repository_name,
+    );
     if (readme) {
       await upsertReadme(repoId, readme);
     }
@@ -175,17 +204,32 @@ async function upsertIssue(repoId: number, data: IssueData): Promise<void> {
   });
 }
 
-const VALID_SETUP_COMPLEXITIES = ["simple", "moderate", "complex", "unknown"] as const;
+const VALID_SETUP_COMPLEXITIES = [
+  "simple",
+  "moderate",
+  "complex",
+  "unknown",
+] as const;
 
-function validateSetupComplexity(value: string): "simple" | "moderate" | "complex" | "unknown" {
-  return VALID_SETUP_COMPLEXITIES.includes(value as (typeof VALID_SETUP_COMPLEXITIES)[number])
+function validateSetupComplexity(
+  value: string,
+): "simple" | "moderate" | "complex" | "unknown" {
+  return VALID_SETUP_COMPLEXITIES.includes(
+    value as (typeof VALID_SETUP_COMPLEXITIES)[number],
+  )
     ? (value as (typeof VALID_SETUP_COMPLEXITIES)[number])
     : "unknown";
 }
 
 async function upsertReadme(
   repoId: number,
-  data: { rawContent: string; hasContributionGuide: boolean; setupComplexity: string; techStack: string[]; architectureKeywords: string[] }
+  data: {
+    rawContent: string;
+    hasContributionGuide: boolean;
+    setupComplexity: string;
+    techStack: string[];
+    architectureKeywords: string[];
+  },
 ): Promise<void> {
   const setupComplexity = validateSetupComplexity(data.setupComplexity);
   await db.scrapedReadme.upsert({

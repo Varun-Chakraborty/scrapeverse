@@ -86,10 +86,15 @@ export function Testimonials() {
                     {t.initials}
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {t.name}
+                    </p>
                     <p className="text-xs text-muted-foreground">{t.role}</p>
                   </div>
-                  <span className="ml-auto flex gap-0.5" aria-label="5 out of 5 stars">
+                  <span
+                    className="ml-auto flex gap-0.5"
+                    aria-label="5 out of 5 stars"
+                  >
                     {Array.from({ length: 5 }).map((_, s) => (
                       <HugeiconsIcon
                         key={s}

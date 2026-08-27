@@ -2,10 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Logout03Icon,
-  ArrowUpRight01Icon,
-} from "@hugeicons/core-free-icons";
+import { Logout03Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +49,7 @@ export function UserMenu() {
           "flex h-11 cursor-pointer items-center gap-2 rounded-full border border-border bg-card pr-1 pl-1 transition-all duration-200",
           open
             ? "border-primary/40 shadow-soft"
-            : "hover:border-primary/30 hover:shadow-soft"
+            : "hover:border-primary/30 hover:shadow-soft",
         )}
       >
         <span className="flex size-7 items-center justify-center rounded-full bg-linear-to-br from-primary to-brand-end text-[10px] font-bold text-white">
@@ -66,7 +63,7 @@ export function UserMenu() {
           size={12}
           className={cn(
             "mr-1.5 rotate-45 text-muted-foreground transition-transform duration-200",
-            open && "rotate-[225deg]"
+            open && "rotate-[225deg]",
           )}
         />
       </button>

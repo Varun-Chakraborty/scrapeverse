@@ -29,16 +29,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-      <html
-        lang="en"
-        data-scroll-behavior="smooth"
-        suppressHydrationWarning
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
       className={cn(
         "h-full",
         "antialiased",
         inter.variable,
         jakarta.variable,
-        "font-sans"
+        "font-sans",
       )}
     >
       <head>

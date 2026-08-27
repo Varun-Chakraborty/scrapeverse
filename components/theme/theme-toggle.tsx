@@ -21,7 +21,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
         "group relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-card/80 text-foreground backdrop-blur transition-all duration-300 hover:border-primary/40 hover:bg-primary-soft hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none",
-        className
+        className,
       )}
     >
       <HugeiconsIcon

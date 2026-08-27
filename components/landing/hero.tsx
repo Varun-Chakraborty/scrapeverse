@@ -70,8 +70,12 @@ function PreviewWindow() {
                 {issue.difficulty}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[11px] text-muted-foreground">{issue.repo}</p>
-                <p className="truncate text-sm font-medium text-foreground">{issue.title}</p>
+                <p className="truncate text-[11px] text-muted-foreground">
+                  {issue.repo}
+                </p>
+                <p className="truncate text-sm font-medium text-foreground">
+                  {issue.title}
+                </p>
               </div>
               <div className="hidden items-center gap-3 text-[11px] text-muted-foreground md:flex">
                 <span className="flex items-center gap-1.5">
@@ -98,7 +102,9 @@ function PreviewWindow() {
         </span>
         <div>
           <p className="text-xs font-semibold text-foreground">98% match</p>
-          <p className="text-[10px] text-muted-foreground">based on your stack</p>
+          <p className="text-[10px] text-muted-foreground">
+            based on your stack
+          </p>
         </div>
       </div>
 
@@ -111,7 +117,9 @@ function PreviewWindow() {
         </span>
         <div>
           <p className="text-xs font-semibold text-foreground">100+ issues</p>
-          <p className="text-[10px] text-muted-foreground">scanned every 6 hours</p>
+          <p className="text-[10px] text-muted-foreground">
+            scanned every 6 hours
+          </p>
         </div>
       </div>
     </div>
@@ -136,36 +144,47 @@ export function Hero({ onGetStarted }: HeroProps) {
             className="animate-fade-up font-heading text-4xl font-extrabold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
             Find open-source projects{" "}
-            <span className="text-gloss">
-              worth contributing to
-            </span>
+            <span className="text-gloss">worth contributing to</span>
           </h1>
 
           <p
             style={{ animationDelay: "180ms" }}
             className="animate-fade-up mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
           >
-            Tell us your interests and stack — we scan thousands of
-            live issues and surface the ones where you can actually land your
-            first (or next) pull request.
+            Tell us your interests and stack — we scan thousands of live issues
+            and surface the ones where you can actually land your first (or
+            next) pull request.
           </p>
 
           <div
             style={{ animationDelay: "270ms" }}
             className="animate-fade-up mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
-            <Button variant="gradient" size="xl" onClick={onGetStarted} className="w-full sm:w-auto">
+            <Button
+              variant="gradient"
+              size="xl"
+              onClick={onGetStarted}
+              className="w-full sm:w-auto"
+            >
               Find my projects
               <HugeiconsIcon icon={ArrowRight01Icon} />
             </Button>
-            <Button variant="outline" size="xl" render={<a href="#how-it-works" />} className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              size="xl"
+              render={<a href="#how-it-works" />}
+              className="w-full sm:w-auto"
+            >
               <HugeiconsIcon icon={PlayCircleIcon} />
               See how it works
             </Button>
           </div>
         </div>
 
-        <div style={{ animationDelay: "420ms" }} className="animate-fade-up mt-16 sm:mt-20">
+        <div
+          style={{ animationDelay: "420ms" }}
+          className="animate-fade-up mt-16 sm:mt-20"
+        >
           <PreviewWindow />
         </div>
       </div>

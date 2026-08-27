@@ -87,14 +87,11 @@
 
   /* Soft rose-tinted shadows */
   --shadow-soft:
-    0 1px 2px rgb(201 54 99 / 0.04),
-    0 8px 24px -12px rgb(201 54 99 / 0.1);
+    0 1px 2px rgb(201 54 99 / 0.04), 0 8px 24px -12px rgb(201 54 99 / 0.1);
   --shadow-lift:
-    0 2px 4px rgb(201 54 99 / 0.05),
-    0 20px 40px -16px rgb(201 54 99 / 0.18);
+    0 2px 4px rgb(201 54 99 / 0.05), 0 20px 40px -16px rgb(201 54 99 / 0.18);
   --shadow-glow:
-    0 0 0 1px rgb(201 54 99 / 0.08),
-    0 12px 40px -8px rgb(229 107 149 / 0.35);
+    0 0 0 1px rgb(201 54 99 / 0.08), 0 12px 40px -8px rgb(229 107 149 / 0.35);
 }
 
 /* ------------------------------------------------------------------ */
@@ -171,15 +168,11 @@
   --sidebar-ring: #d4b483;
 
   /* Deep shadows with a faint gold bloom */
-  --shadow-soft:
-    0 1px 2px rgb(0 0 0 / 0.5),
-    0 8px 24px -12px rgb(0 0 0 / 0.65);
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px -12px rgb(0 0 0 / 0.65);
   --shadow-lift:
-    0 2px 4px rgb(0 0 0 / 0.5),
-    0 20px 40px -16px rgb(0 0 0 / 0.75);
+    0 2px 4px rgb(0 0 0 / 0.5), 0 20px 40px -16px rgb(0 0 0 / 0.75);
   --shadow-glow:
-    0 0 0 1px rgb(212 180 131 / 0.14),
-    0 12px 40px -8px rgb(212 180 131 / 0.22);
+    0 0 0 1px rgb(212 180 131 / 0.14), 0 12px 40px -8px rgb(212 180 131 / 0.22);
 
   /* Brand gradient stops follow the gold lead */
   --brand-mid: #e8cfa0;
@@ -589,9 +582,21 @@
   /* Aurora wash for page backgrounds */
   .bg-aurora {
     background-image:
-      radial-gradient(42rem 26rem at 10% -6%, rgb(229 107 149 / 0.13), transparent 60%),
-      radial-gradient(36rem 24rem at 92% 2%, rgb(155 140 240 / 0.11), transparent 62%),
-      radial-gradient(34rem 28rem at 50% 112%, rgb(87 196 157 / 0.09), transparent 64%);
+      radial-gradient(
+        42rem 26rem at 10% -6%,
+        rgb(229 107 149 / 0.13),
+        transparent 60%
+      ),
+      radial-gradient(
+        36rem 24rem at 92% 2%,
+        rgb(155 140 240 / 0.11),
+        transparent 62%
+      ),
+      radial-gradient(
+        34rem 28rem at 50% 112%,
+        rgb(87 196 157 / 0.09),
+        transparent 64%
+      );
   }
 
   /* Small dot-matrix texture */
@@ -710,9 +715,21 @@
 
 .dark .bg-aurora {
   background-image:
-    radial-gradient(42rem 26rem at 10% -6%, rgb(212 180 131 / 0.09), transparent 60%),
-    radial-gradient(36rem 24rem at 92% 2%, rgb(169 155 242 / 0.07), transparent 62%),
-    radial-gradient(34rem 28rem at 50% 112%, rgb(87 196 157 / 0.06), transparent 64%);
+    radial-gradient(
+      42rem 26rem at 10% -6%,
+      rgb(212 180 131 / 0.09),
+      transparent 60%
+    ),
+    radial-gradient(
+      36rem 24rem at 92% 2%,
+      rgb(169 155 242 / 0.07),
+      transparent 62%
+    ),
+    radial-gradient(
+      34rem 28rem at 50% 112%,
+      rgb(87 196 157 / 0.06),
+      transparent 64%
+    );
 }
 
 .dark .gloss-border::before {

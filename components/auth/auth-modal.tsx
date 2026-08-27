@@ -19,7 +19,11 @@ import { cn } from "@/lib/utils";
 interface AuthModalProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: (user: { name: string; email: string; preferences: OnboardingPreferences | null }) => void;
+  onSuccess: (user: {
+    name: string;
+    email: string;
+    preferences: OnboardingPreferences | null;
+  }) => void;
 }
 
 type Tab = "sign-in" | "sign-up" | "forgot-password";
@@ -83,7 +87,11 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           setError("Password must be at least 4 characters");
           return;
         }
-        const newUser = await signUp(name.trim(), email.trim().toLowerCase(), password);
+        const newUser = await signUp(
+          name.trim(),
+          email.trim().toLowerCase(),
+          password,
+        );
         if (newUser) {
           onSuccess(newUser);
         }
@@ -213,7 +221,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                     "flex-1 cursor-pointer rounded-full py-2.5 text-xs font-semibold transition-all duration-300",
                     tab === t
                       ? "bg-background text-primary shadow-soft"
-                      : "text-muted-foreground hover:text-secondary-foreground"
+                      : "text-muted-foreground hover:text-secondary-foreground",
                   )}
                 >
                   {t === "sign-in" ? "Sign in" : "Sign up"}
@@ -224,7 +232,10 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
 
           {tab === "forgot-password" && !resetSuccess && (
             <form onSubmit={handleResetPassword} className="space-y-4">
-              <Field label="Email" icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}>
+              <Field
+                label="Email"
+                icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}
+              >
                 <Input
                   type="email"
                   value={email}
@@ -234,7 +245,10 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 />
               </Field>
 
-              <Field label="New password" icon={<HugeiconsIcon icon={LockIcon} size={15} />}>
+              <Field
+                label="New password"
+                icon={<HugeiconsIcon icon={LockIcon} size={15} />}
+              >
                 <Input
                   type="password"
                   value={password}
@@ -294,7 +308,10 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                   </Field>
                 )}
 
-                <Field label="Email" icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}>
+                <Field
+                  label="Email"
+                  icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}
+                >
                   <Input
                     type="email"
                     value={email}
@@ -304,13 +321,18 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                   />
                 </Field>
 
-                <Field label="Password" icon={<HugeiconsIcon icon={LockIcon} size={15} />}>
+                <Field
+                  label="Password"
+                  icon={<HugeiconsIcon icon={LockIcon} size={15} />}
+                >
                   <Input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    autoComplete={tab === "sign-up" ? "new-password" : "current-password"}
+                    autoComplete={
+                      tab === "sign-up" ? "new-password" : "current-password"
+                    }
                   />
                 </Field>
 
@@ -371,7 +393,10 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
               </p>
 
               <div className="relative my-5">
-                <div aria-hidden="true" className="absolute inset-0 flex items-center">
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 flex items-center"
+                >
                   <div className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center">
@@ -418,8 +443,14 @@ function ErrorAlert({ message }: { message: string }) {
       role="alert"
       className="animate-slide-up-sm flex items-start gap-2.5 rounded-xl border border-destructive/20 bg-destructive-soft px-3.5 py-2.5"
     >
-      <HugeiconsIcon icon={Alert02Icon} size={15} className="mt-px shrink-0 text-destructive" />
-      <p className="text-xs font-medium leading-relaxed text-destructive">{message}</p>
+      <HugeiconsIcon
+        icon={Alert02Icon}
+        size={15}
+        className="mt-px shrink-0 text-destructive"
+      />
+      <p className="text-xs font-medium leading-relaxed text-destructive">
+        {message}
+      </p>
     </div>
   );
 }

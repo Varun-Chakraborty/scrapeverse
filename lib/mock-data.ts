@@ -8,7 +8,11 @@ import type {
 
 export const interestOptions: InterestOption[] = [
   { value: "Compilers", label: "Compilers", icon: "⚙️" },
-  { value: "Programming Languages", label: "Programming Languages", icon: "🔤" },
+  {
+    value: "Programming Languages",
+    label: "Programming Languages",
+    icon: "🔤",
+  },
   { value: "Rust", label: "Rust", icon: "🦀" },
   { value: "Operating Systems", label: "Operating Systems", icon: "💻" },
   { value: "Databases", label: "Databases", icon: "🗄️" },
@@ -101,7 +105,8 @@ export const mockRecommendations: Recommendation[] = [
   {
     id: "1-23178",
     issueNumber: 23178,
-    issueTitle: "FP Syntax Error in Expansion: expected integer, identifier, `self`, `super`, `crate`, or `Self`",
+    issueTitle:
+      "FP Syntax Error in Expansion: expected integer, identifier, `self`, `super`, `crate`, or `Self`",
     issueUrl: "https://github.com/rust-lang/rust-analyzer/issues/23178",
     labels: ["good first issue", "E-easy", "A-parser", "C-bug"],
     comments: 1,
@@ -129,10 +134,22 @@ export const mockRecommendations: Recommendation[] = [
       total: 92,
       breakdown: [
         { label: "Rust primary", points: 30, category: "language" as const },
-        { label: "Compilers interest", points: 20, category: "interest" as const },
+        {
+          label: "Compilers interest",
+          points: 20,
+          category: "interest" as const,
+        },
         { label: "Good First Issue", points: 15, category: "issue" as const },
-        { label: "Established project", points: 12, category: "project" as const },
-        { label: "Contribution guide", points: 8, category: "project" as const },
+        {
+          label: "Established project",
+          points: 12,
+          category: "project" as const,
+        },
+        {
+          label: "Contribution guide",
+          points: 8,
+          category: "project" as const,
+        },
         { label: "Trending now", points: 7, category: "project" as const },
       ],
     },
@@ -148,7 +165,8 @@ export const mockRecommendations: Recommendation[] = [
     author: "alice",
     repository: "tokio",
     organization: "tokio-rs",
-    repoDescription: "An asynchronous runtime for the Rust programming language.",
+    repoDescription:
+      "An asynchronous runtime for the Rust programming language.",
     repoLanguage: "Rust",
     repoStars: 28400,
     repoTopics: ["rust", "async", "networking"],
@@ -170,8 +188,16 @@ export const mockRecommendations: Recommendation[] = [
       total: 57,
       breakdown: [
         { label: "Rust primary", points: 30, category: "language" as const },
-        { label: "Established project", points: 12, category: "project" as const },
-        { label: "Contribution guide", points: 5, category: "project" as const },
+        {
+          label: "Established project",
+          points: 12,
+          category: "project" as const,
+        },
+        {
+          label: "Contribution guide",
+          points: 5,
+          category: "project" as const,
+        },
         { label: "Active discussion", points: 3, category: "issue" as const },
         { label: "Help Wanted", points: 5, category: "issue" as const },
         { label: "Trending now", points: 7, category: "project" as const },
@@ -212,8 +238,16 @@ export const mockRecommendations: Recommendation[] = [
       breakdown: [
         { label: "Good First Issue", points: 15, category: "issue" as const },
         { label: "Documentation", points: 8, category: "issue" as const },
-        { label: "Established project", points: 12, category: "project" as const },
-        { label: "Contribution guide", points: 8, category: "project" as const },
+        {
+          label: "Established project",
+          points: 12,
+          category: "project" as const,
+        },
+        {
+          label: "Contribution guide",
+          points: 8,
+          category: "project" as const,
+        },
         { label: "Complex setup", points: -3, category: "project" as const },
         { label: "Trending now", points: 7, category: "project" as const },
       ],
@@ -250,8 +284,16 @@ export const mockRecommendations: Recommendation[] = [
     matchScore: {
       total: 27,
       breakdown: [
-        { label: "Established project", points: 12, category: "project" as const },
-        { label: "Contribution guide", points: 5, category: "project" as const },
+        {
+          label: "Established project",
+          points: 12,
+          category: "project" as const,
+        },
+        {
+          label: "Contribution guide",
+          points: 5,
+          category: "project" as const,
+        },
         { label: "High engagement", points: 1, category: "issue" as const },
         { label: "Trending now", points: 7, category: "project" as const },
       ],
@@ -292,8 +334,16 @@ export const mockRecommendations: Recommendation[] = [
         { label: "Rust primary", points: 30, category: "language" as const },
         { label: "Good First Issue", points: 10, category: "issue" as const },
         { label: "Help Wanted", points: 5, category: "issue" as const },
-        { label: "Established project", points: 12, category: "project" as const },
-        { label: "Contribution guide", points: 8, category: "project" as const },
+        {
+          label: "Established project",
+          points: 12,
+          category: "project" as const,
+        },
+        {
+          label: "Contribution guide",
+          points: 8,
+          category: "project" as const,
+        },
         { label: "Active discussion", points: 3, category: "issue" as const },
         { label: "Trending now", points: 7, category: "project" as const },
       ],
