@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 interface EmptyStateProps {
   onBroadenSearch: () => void;
-  onSelectTechnology?: (tech: string) => void;
+  onSelectTechnology: (tech: string) => void;
 }
 
 const adjacentTechnologies = [

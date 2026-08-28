@@ -97,8 +97,6 @@ Open [http://localhost:3000](http://localhost:3000).
 │       └── scrape.yml     # Scheduled scraper (every 6 hours)
 ├── app/
 │   ├── api/
-│   │   ├── admin/
-│   │   │   └── status/route.ts
 │   │   ├── auth/
 │   │   │   ├── change-password/route.ts
 │   │   │   ├── reset-password/route.ts
@@ -107,7 +105,9 @@ Open [http://localhost:3000](http://localhost:3000).
 │   │   │   ├── signout/route.ts
 │   │   │   └── signup/route.ts
 │   │   ├── recommendations/route.ts
-│   │   ├── scrape/route.ts
+│   │   ├── scrape/
+│   │   │   ├── route.ts
+│   │   │   └── status/route.ts
 │   │   └── user/
 │   │       └── preferences/route.ts
 │   ├── globals.css

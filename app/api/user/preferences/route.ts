@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { decrypt } from "@/lib/session";
 import { db } from "@/lib/db";
+import { parsePreferences, serializePreferences } from "@/lib/preferences";
 
 async function getUserId(): Promise<string | null> {
   const cookieStore = await cookies();
@@ -27,13 +28,7 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      preferences: {
-        interests: JSON.parse(prefs.interests),
-        experienceLevel: prefs.experienceLevel,
-        goals: JSON.parse(prefs.goals),
-        languages: JSON.parse(prefs.languages),
-        customLanguages: JSON.parse(prefs.customLanguages),
-      },
+      preferences: parsePreferences(prefs),
     });
   } catch (error) {
     console.error("Get preferences error:", error);
@@ -55,13 +50,13 @@ export async function PUT(request: Request) {
     const { interests, experienceLevel, goals, languages, customLanguages } =
       body;
 
-    const data = {
-      interests: JSON.stringify(interests ?? []),
-      experienceLevel: experienceLevel ?? null,
-      goals: JSON.stringify(goals ?? []),
-      languages: JSON.stringify(languages ?? []),
-      customLanguages: JSON.stringify(customLanguages ?? []),
-    };
+    const data = serializePreferences({
+      interests,
+      experienceLevel,
+      goals,
+      languages,
+      customLanguages,
+    });
 
     const prefs = await db.userPreferences.upsert({
       where: { userId },
@@ -70,13 +65,7 @@ export async function PUT(request: Request) {
     });
 
     return NextResponse.json({
-      preferences: {
-        interests: JSON.parse(prefs.interests),
-        experienceLevel: prefs.experienceLevel,
-        goals: JSON.parse(prefs.goals),
-        languages: JSON.parse(prefs.languages),
-        customLanguages: JSON.parse(prefs.customLanguages),
-      },
+      preferences: parsePreferences(prefs),
     });
   } catch (error) {
     console.error("Update preferences error:", error);

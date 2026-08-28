@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { decrypt } from "@/lib/session";
 import { db } from "@/lib/db";
+import { parsePreferences } from "@/lib/preferences";
 
 export async function GET() {
   try {
@@ -28,13 +29,7 @@ export async function GET() {
     }
 
     const preferences = user.preferences
-      ? {
-          interests: JSON.parse(user.preferences.interests),
-          experienceLevel: user.preferences.experienceLevel,
-          goals: JSON.parse(user.preferences.goals),
-          languages: JSON.parse(user.preferences.languages),
-          customLanguages: JSON.parse(user.preferences.customLanguages),
-        }
+      ? parsePreferences(user.preferences)
       : null;
 
     return NextResponse.json({

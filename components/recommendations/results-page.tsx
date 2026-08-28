@@ -10,7 +10,7 @@ import { UserMenu } from "@/components/account/user-menu";
 import { RecommendationGrid } from "./recommendation-grid";
 import { FilterSidebar } from "./filter-sidebar";
 import { EmptyState } from "./empty-state";
-import { defaultFilters } from "@/lib/mock-data";
+import { defaultFilters, languageOptions } from "@/lib/mock-data";
 import type { Filters, Recommendation } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -74,6 +74,13 @@ export function ResultsPage({
 
   const handleBroadenSearch = () => {
     setFilters(defaultFilters);
+  };
+
+  const handleSelectTechnology = (tech: string) => {
+    const isLanguage = languageOptions.some((l) => l.value === tech);
+    setFilters(
+      isLanguage ? { ...defaultFilters, language: tech } : defaultFilters,
+    );
   };
 
   return (
@@ -201,7 +208,10 @@ export function ResultsPage({
 
           <div className="min-w-0 flex-1">
             {filtered.length === 0 ? (
-              <EmptyState onBroadenSearch={handleBroadenSearch} />
+              <EmptyState
+                onBroadenSearch={handleBroadenSearch}
+                onSelectTechnology={handleSelectTechnology}
+              />
             ) : (
               <RecommendationGrid recommendations={filtered} />
             )}
