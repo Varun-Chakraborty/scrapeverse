@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import {
-  apiError,
-  validateEmail,
-  validatePassword,
-  withApiHandler,
-} from "@/lib/api";
-import { encrypt, setSessionCookie } from "@/lib/session";
+import { apiError, withApiHandler } from "@/lib/api";
+import { validateEmail, validatePassword } from "@/lib/validate";
+import { createSession } from "@/lib/session";
 import { getUserByEmail, hashPassword, serializeUser } from "@/lib/user";
 
 export const POST = withApiHandler(async (request: Request) => {
@@ -38,8 +34,7 @@ export const POST = withApiHandler(async (request: Request) => {
     },
   });
 
-  const token = await encrypt({ userId: user.id, email: user.email });
-  await setSessionCookie(token);
+  await createSession({ userId: user.id, email: user.email });
 
   return NextResponse.json({
     user: serializeUser({ ...user, preferences: null }),

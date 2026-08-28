@@ -12,13 +12,14 @@ import { StepExperience } from "./step-experience";
 import { StepGoals } from "./step-goals";
 import { StepLanguages } from "./step-languages";
 import { Button } from "@/components/ui/button";
+import { GlowOrbs } from "@/components/ui/glow-orbs";
 import type {
   OnboardingStep,
   Interest,
   ExperienceLevel,
   Goal,
-  ProgrammingLanguage,
 } from "@/lib/types";
+import type { ProgrammingLanguage } from "@/lib/languages";
 
 interface OnboardingFlowProps {
   currentStep: OnboardingStep;
@@ -92,12 +93,7 @@ export function OnboardingFlow({
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-12">
       {/* Soft background */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10">
-        <div className="bg-grid-rose mask-fade-b absolute inset-0" />
-        <div className="absolute -top-24 left-1/2 h-96 w-[680px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(229_107_149/0.13),transparent)] blur-2xl" />
-        <div className="animate-float absolute top-1/3 -left-24 size-64 rounded-full bg-[radial-gradient(closest-side,rgb(155_140_240/0.12),transparent)] blur-2xl" />
-        <div className="animate-float-delayed absolute right-[-6rem] bottom-10 size-72 rounded-full bg-[radial-gradient(closest-side,rgb(244_162_107/0.11),transparent)] blur-2xl" />
-      </div>
+      <GlowOrbs variant="compact" />
 
       <ProgressBar currentStep={currentStep} totalSteps={TOTAL_STEPS} />
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { CheckIcon } from "@/components/ui/check-icon";
 import type { OnboardingStep } from "@/lib/types";
 
 interface ProgressBarProps {
@@ -43,25 +44,7 @@ export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
                     "border-border bg-card text-muted-foreground/50",
                 )}
               >
-                {isComplete ? (
-                  <svg
-                    width="11"
-                    height="11"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M2.5 6L5 8.5L9.5 3.5"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  step
-                )}
+                {isComplete ? <CheckIcon size={11} strokeWidth={1.8} /> : step}
               </div>
               <span className="hidden text-[10px] font-medium sm:block">
                 {label}

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/landing/logo";
 import { useAuth } from "@/lib/auth-context";
+import { validateEmail, validatePassword } from "@/lib/validate";
 import { useBodyScrollLock, useEscapeKey } from "@/lib/use-dismissible";
 import type { OnboardingPreferences } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -70,12 +71,13 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           setError("Name is required");
           return;
         }
-        if (!email.trim()) {
-          setError("Email is required");
+        if (validateEmail(email.trim())) {
+          setError("Valid email is required");
           return;
         }
-        if (password.length < 4) {
-          setError("Password must be at least 4 characters");
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+          setError(passwordError);
           return;
         }
         const newUser = await signUp(
@@ -87,8 +89,8 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           onSuccess(newUser);
         }
       } else {
-        if (!email.trim()) {
-          setError("Email is required");
+        if (validateEmail(email.trim())) {
+          setError("Valid email is required");
           return;
         }
         const user = await signIn(email.trim().toLowerCase(), password);
@@ -109,12 +111,13 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
     setIsSubmitting(true);
 
     try {
-      if (!email.trim()) {
-        setError("Email is required");
+      if (validateEmail(email.trim())) {
+        setError("Valid email is required");
         return;
       }
-      if (password.length < 4) {
-        setError("New password must be at least 4 characters");
+      const passwordError = validatePassword(password, "New password");
+      if (passwordError) {
+        setError(passwordError);
         return;
       }
 

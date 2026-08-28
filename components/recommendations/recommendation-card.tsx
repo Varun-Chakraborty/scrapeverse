@@ -9,6 +9,7 @@ import {
   Comment01Icon,
 } from "@hugeicons/core-free-icons";
 import { Badge } from "@/components/ui/badge";
+import { CheckIcon } from "@/components/ui/check-icon";
 import { MATCHED_LABELS } from "@/lib/labels";
 import { languageColorMap } from "@/lib/languages";
 import type { Recommendation, MatchScoreBreakdown } from "@/lib/types";
@@ -115,22 +116,11 @@ function ScoreBreakdownGroup({
 function CheckItem({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
-      <svg
-        width="10"
-        height="10"
-        viewBox="0 0 12 12"
-        fill="none"
-        aria-hidden="true"
+      <CheckIcon
+        size={10}
+        strokeWidth={2}
         className="mt-1 shrink-0 text-primary"
-      >
-        <path
-          d="M2.5 6L5 8.5L9.5 3.5"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      />
       {children}
     </li>
   );

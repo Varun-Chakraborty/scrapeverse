@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
 
+export class HttpError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 export function withApiHandler(
   fn: (request: Request) => Promise<NextResponse>,
   context: string,
@@ -8,6 +16,9 @@ export function withApiHandler(
     try {
       return await fn(request);
     } catch (error) {
+      if (error instanceof HttpError) {
+        return apiError(error.message, error.status);
+      }
       console.error(`${context} error:`, error);
       return NextResponse.json(
         { error: "Internal server error" },
@@ -19,21 +30,4 @@ export function withApiHandler(
 
 export function apiError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status });
-}
-
-export function validateEmail(email: unknown): string | null {
-  if (typeof email !== "string" || !email.includes("@")) {
-    return "Valid email is required";
-  }
-  return null;
-}
-
-export function validatePassword(
-  password: unknown,
-  label = "Password",
-): string | null {
-  if (typeof password !== "string" || password.length < 4) {
-    return `${label} must be at least 4 characters`;
-  }
-  return null;
 }

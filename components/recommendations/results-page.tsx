@@ -10,7 +10,7 @@ import { UserMenu } from "@/components/account/user-menu";
 import { RecommendationGrid } from "./recommendation-grid";
 import { FilterSidebar } from "./filter-sidebar";
 import { EmptyState } from "./empty-state";
-import { defaultFilters } from "@/lib/mock-data";
+import { defaultFilters } from "@/lib/constants";
 import { languageOptions } from "@/lib/languages";
 import type { Filters, Recommendation } from "@/lib/types";
 import { cn } from "@/lib/utils";

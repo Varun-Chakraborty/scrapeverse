@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Filters } from "@/lib/types";
-import { defaultFilters } from "@/lib/mock-data";
+import { defaultFilters } from "@/lib/constants";
 import { languageOptions } from "@/lib/languages";
 
 interface FilterSidebarProps {

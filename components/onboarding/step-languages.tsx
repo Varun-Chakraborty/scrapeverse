@@ -3,10 +3,10 @@
 import { useState, useCallback } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
-import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { SelectionPill } from "@/components/ui/selection-pill";
 import { StepHeader } from "./step-header";
-import type { ProgrammingLanguage } from "@/lib/types";
+import type { ProgrammingLanguage } from "@/lib/languages";
 import { languageOptions } from "@/lib/languages";
 
 interface StepLanguagesProps {
@@ -64,22 +64,14 @@ export function StepLanguages({
         {languageOptions.map((lang, i) => {
           const isSelected = selected.includes(lang.value);
           return (
-            <button
+            <SelectionPill
               key={lang.value}
-              type="button"
-              aria-pressed={isSelected}
+              selected={isSelected}
               onClick={() => onToggle(lang.value)}
               style={{ animationDelay: `${i * 35}ms` }}
-              className={cn(
-                "animate-fade-up cursor-pointer rounded-full border px-4 py-2.5 text-sm font-medium transition-all duration-200 ease-out",
-                "hover:-translate-y-0.5 hover:shadow-soft active:scale-[0.97]",
-                isSelected
-                  ? "border-primary bg-primary text-white shadow-[0_6px_16px_-6px_rgb(201_54_99/0.55)]"
-                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-secondary-foreground",
-              )}
             >
               {lang.label}
-            </button>
+            </SelectionPill>
           );
         })}
 

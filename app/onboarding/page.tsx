@@ -10,9 +10,9 @@ import type {
   Interest,
   ExperienceLevel,
   Goal,
-  ProgrammingLanguage,
   OnboardingPreferences,
 } from "@/lib/types";
+import type { ProgrammingLanguage } from "@/lib/languages";
 
 export default function Onboarding() {
   const router = useRouter();

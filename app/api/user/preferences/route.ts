@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import { apiError, withApiHandler } from "@/lib/api";
-import { getSessionUserId } from "@/lib/session";
+import { withApiHandler } from "@/lib/api";
+import { requireSession } from "@/lib/session";
 import { db } from "@/lib/db";
 import { parsePreferences, serializePreferences } from "@/lib/preferences";
 
 export const GET = withApiHandler(async () => {
-  const userId = await getSessionUserId();
-  if (!userId) {
-    return apiError("Unauthorized", 401);
-  }
+  const userId = await requireSession();
 
   const prefs = await db.userPreferences.findUnique({
     where: { userId },
@@ -24,10 +21,7 @@ export const GET = withApiHandler(async () => {
 }, "Get preferences");
 
 export const PUT = withApiHandler(async (request: Request) => {
-  const userId = await getSessionUserId();
-  if (!userId) {
-    return apiError("Unauthorized", 401);
-  }
+  const userId = await requireSession();
 
   const body = await request.json();
   const data = serializePreferences(body);

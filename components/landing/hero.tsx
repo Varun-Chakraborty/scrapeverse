@@ -8,14 +8,13 @@ import {
   PlayCircleIcon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import { LANGUAGES, type ProgrammingLanguage } from "@/lib/languages";
+import { GlowOrbs } from "@/components/ui/glow-orbs";
+import { languageColorMap } from "@/lib/languages";
+import { SCRAPE_INTERVAL_LABEL } from "@/lib/constants";
 
 interface HeroProps {
   onGetStarted: () => void;
 }
-
-const languageColor = (name: ProgrammingLanguage) =>
-  LANGUAGES.find((l) => l.value === name)?.color ?? "#857079";
 
 const previewIssues = [
   {
@@ -25,7 +24,7 @@ const previewIssues = [
     stars: "9.8k",
     difficulty: "Beginner",
     difficultyClass: "bg-mint text-mint-foreground",
-    dot: languageColor("Rust"),
+    dot: languageColorMap.Rust,
   },
   {
     repo: "denoland / deno",
@@ -34,7 +33,7 @@ const previewIssues = [
     stars: "100k",
     difficulty: "Good first issue",
     difficultyClass: "bg-sky text-sky-foreground",
-    dot: languageColor("TypeScript"),
+    dot: languageColorMap.TypeScript,
   },
   {
     repo: "neovim / neovim",
@@ -43,7 +42,7 @@ const previewIssues = [
     stars: "86.2k",
     difficulty: "Documentation",
     difficultyClass: "bg-lavender text-lavender-foreground",
-    dot: languageColor("C"),
+    dot: languageColorMap.C,
   },
 ];
 
@@ -125,7 +124,7 @@ function PreviewWindow() {
         <div>
           <p className="text-xs font-semibold text-foreground">100+ issues</p>
           <p className="text-[10px] text-muted-foreground">
-            scanned every 6 hours
+            scanned {SCRAPE_INTERVAL_LABEL}
           </p>
         </div>
       </div>
@@ -137,12 +136,7 @@ export function Hero({ onGetStarted }: HeroProps) {
   return (
     <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-24">
       {/* Background */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10">
-        <div className="bg-grid-rose mask-fade-b absolute inset-0" />
-        <div className="absolute -top-32 left-1/2 h-[480px] w-[820px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(229_107_149/0.16),transparent)] blur-2xl dark:bg-[radial-gradient(closest-side,rgb(212_180_131/0.13),transparent)]" />
-        <div className="animate-float absolute top-24 -left-24 size-72 rounded-full bg-[radial-gradient(closest-side,rgb(155_140_240/0.14),transparent)] blur-2xl dark:bg-[radial-gradient(closest-side,rgb(169_155_242/0.1),transparent)]" />
-        <div className="animate-float-delayed absolute top-48 -right-24 size-80 rounded-full bg-[radial-gradient(closest-side,rgb(244_162_107/0.13),transparent)] blur-2xl dark:bg-[radial-gradient(closest-side,rgb(169_138_95/0.12),transparent)]" />
-      </div>
+      <GlowOrbs />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">

@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { SelectionPill } from "@/components/ui/selection-pill";
 import { StepHeader } from "./step-header";
 import type { Interest } from "@/lib/types";
 import { interestOptions } from "@/lib/mock-data";
@@ -27,19 +28,12 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
         {interestOptions.map((interest, i) => {
           const isSelected = selected.includes(interest.value);
           return (
-            <button
+            <SelectionPill
               key={interest.value}
-              type="button"
-              aria-pressed={isSelected}
+              selected={isSelected}
+              showCheck
               onClick={() => onToggle(interest.value)}
               style={{ animationDelay: `${i * 35}ms` }}
-              className={cn(
-                "animate-fade-up flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition-all duration-200 ease-out",
-                "hover:-translate-y-0.5 hover:shadow-soft active:scale-[0.97]",
-                isSelected
-                  ? "border-primary bg-primary text-white shadow-[0_6px_16px_-6px_rgb(201_54_99/0.55)]"
-                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-secondary-foreground",
-              )}
             >
               <span
                 aria-hidden="true"
@@ -51,24 +45,7 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
                 {interest.icon}
               </span>
               {interest.label}
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "flex size-4 items-center justify-center rounded-full transition-all duration-200",
-                  isSelected ? "scale-100 bg-white/25" : "scale-0",
-                )}
-              >
-                <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M2.5 6L5 8.5L9.5 3.5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </button>
+            </SelectionPill>
           );
         })}
       </div>

@@ -337,8 +337,3 @@ export const mockRecommendations: Recommendation[] = [
     readinessScore: 80,
   },
 ];
-
-export const defaultFilters = {
-  maxDifficulty: "any" as const,
-  language: "any",
-};

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { apiError, validatePassword, withApiHandler } from "@/lib/api";
-import { getSessionUserId } from "@/lib/session";
-import { hashPassword, verifyPassword } from "@/lib/user";
+import { apiError, withApiHandler } from "@/lib/api";
+import { validatePassword } from "@/lib/validate";
+import { requireSession } from "@/lib/session";
+import { resetPassword, verifyPassword } from "@/lib/user";
 
 export const POST = withApiHandler(async (request: Request) => {
   const { currentPassword, newPassword } = await request.json();
@@ -14,10 +15,7 @@ export const POST = withApiHandler(async (request: Request) => {
   const passwordError = validatePassword(newPassword, "New password");
   if (passwordError) return apiError(passwordError, 400);
 
-  const userId = await getSessionUserId();
-  if (!userId) {
-    return apiError("Not authenticated", 401);
-  }
+  const userId = await requireSession();
 
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) {
@@ -29,10 +27,7 @@ export const POST = withApiHandler(async (request: Request) => {
     return apiError("Current password is incorrect", 401);
   }
 
-  await db.user.update({
-    where: { id: user.id },
-    data: { password: await hashPassword(newPassword) },
-  });
+  await resetPassword(userId, newPassword);
 
   return NextResponse.json({ success: true });
 }, "Change password");

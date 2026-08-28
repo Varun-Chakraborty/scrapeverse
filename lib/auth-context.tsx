@@ -25,6 +25,24 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+async function apiFetch<T>(
+  path: string,
+  init?: RequestInit,
+  fallback = "Request failed",
+): Promise<T> {
+  const res = await fetch(path, {
+    ...init,
+    headers: { "Content-Type": "application/json", ...init?.headers },
+  });
+  if (!res.ok) {
+    const data = (await res.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    throw new Error(data?.error || fallback);
+  }
+  return res.json() as Promise<T>;
+}
+
 async function fetchSession(): Promise<User | null> {
   try {
     const res = await fetch("/api/auth/session");
@@ -58,41 +76,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = useCallback(
     async (name: string, email: string, password: string) => {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Sign up failed");
-      }
-
-      const data = await res.json();
+      const data = await apiFetch<{ user: User }>(
+        "/api/auth/signup",
+        {
+          method: "POST",
+          body: JSON.stringify({ name, email, password }),
+        },
+        "Sign up failed",
+      );
       sessionHydrated.current = true;
       setUser(data.user);
-      return data.user as User;
+      return data.user;
     },
     [],
   );
 
   const signIn = useCallback(async (email: string, password: string) => {
-    const res = await fetch("/api/auth/signin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      throw new Error(data.error || "Sign in failed");
-    }
-
-    const data = await res.json();
+    const data = await apiFetch<{ user: User }>(
+      "/api/auth/signin",
+      {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      },
+      "Sign in failed",
+    );
     sessionHydrated.current = true;
     setUser(data.user);
-    return data.user as User;
+    return data.user;
   }, []);
 
   const signOut = useCallback(async () => {
@@ -102,18 +112,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updatePreferences = useCallback(
     async (prefs: OnboardingPreferences) => {
-      const res = await fetch("/api/user/preferences", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(prefs),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to update preferences");
-      }
-
-      const data = await res.json();
+      const data = await apiFetch<{ preferences: OnboardingPreferences }>(
+        "/api/user/preferences",
+        {
+          method: "PUT",
+          body: JSON.stringify(prefs),
+        },
+        "Failed to update preferences",
+      );
       setUser((prev) =>
         prev ? { ...prev, preferences: data.preferences } : null,
       );

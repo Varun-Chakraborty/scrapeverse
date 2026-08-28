@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { HttpError } from "@/lib/api";
 
 const secretKey = process.env.SESSION_SECRET;
 if (!secretKey) {
@@ -40,6 +41,17 @@ export async function getSessionUserId(): Promise<string | null> {
   if (!token) return null;
   const payload = await decrypt(token);
   return payload?.userId ?? null;
+}
+
+export async function requireSession(): Promise<string> {
+  const userId = await getSessionUserId();
+  if (!userId) throw new HttpError("Unauthorized", 401);
+  return userId;
+}
+
+export async function createSession(payload: SessionPayload) {
+  const token = await encrypt(payload);
+  await setSessionCookie(token);
 }
 
 export async function encrypt(payload: SessionPayload) {

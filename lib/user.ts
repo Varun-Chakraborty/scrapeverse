@@ -45,3 +45,10 @@ export async function getUserByIdWithPrefs(id: string) {
     include: { preferences: true },
   });
 }
+
+export async function resetPassword(userId: string, newPassword: string) {
+  await db.user.update({
+    where: { id: userId },
+    data: { password: await hashPassword(newPassword) },
+  });
+}

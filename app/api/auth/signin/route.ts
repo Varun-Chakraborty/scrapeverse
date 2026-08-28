@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { apiError, withApiHandler } from "@/lib/api";
-import { encrypt, setSessionCookie } from "@/lib/session";
+import { createSession } from "@/lib/session";
 import {
   getUserByEmailWithPrefs,
   serializeUser,
@@ -24,8 +24,7 @@ export const POST = withApiHandler(async (request: Request) => {
     return apiError("Invalid email or password", 401);
   }
 
-  const token = await encrypt({ userId: user.id, email: user.email });
-  await setSessionCookie(token);
+  await createSession({ userId: user.id, email: user.email });
 
   return NextResponse.json({
     user: serializeUser(user),

@@ -9,7 +9,8 @@ import {
   type IssueData,
 } from "./brightdata";
 import { fetchAndAnalyzeReadme } from "./readme-analyzer";
-import { parseStoredList } from "./utils";
+import { parseStoredList, serializeList } from "./utils";
+import type { ReadmeIntelligence } from "./types";
 
 export async function runScrapePipeline(): Promise<{
   discovered: number;
@@ -145,6 +146,17 @@ async function scrapeRepoResources(
 }
 
 async function upsertRepo(data: RepoData): Promise<number> {
+  const values = {
+    description: data.description,
+    language: data.language,
+    stars: data.star_count,
+    forks: data.fork_count,
+    topics: serializeList(data.topics || []),
+    license: data.license,
+    defaultBranch: data.default_branch,
+    pushedAt: data.pushed_at ? new Date(data.pushed_at) : null,
+  };
+
   await db.scrapedRepo.upsert({
     where: { fullName: `${data.owner}/${data.repository_name}` },
     create: {
@@ -152,24 +164,10 @@ async function upsertRepo(data: RepoData): Promise<number> {
       fullName: `${data.owner}/${data.repository_name}`,
       owner: data.owner,
       name: data.repository_name,
-      description: data.description,
-      language: data.language,
-      stars: data.star_count,
-      forks: data.fork_count,
-      topics: JSON.stringify(data.topics || []),
-      license: data.license,
-      defaultBranch: data.default_branch,
-      pushedAt: data.pushed_at ? new Date(data.pushed_at) : null,
+      ...values,
     },
     update: {
-      description: data.description,
-      language: data.language,
-      stars: data.star_count,
-      forks: data.fork_count,
-      topics: JSON.stringify(data.topics || []),
-      license: data.license,
-      defaultBranch: data.default_branch,
-      pushedAt: data.pushed_at ? new Date(data.pushed_at) : null,
+      ...values,
       scrapedAt: new Date(),
       updatedAt: new Date(),
     },
@@ -179,24 +177,25 @@ async function upsertRepo(data: RepoData): Promise<number> {
 }
 
 async function upsertIssue(repoId: number, data: IssueData): Promise<void> {
+  const values = {
+    title: data.title,
+    labels: serializeList(data.labels),
+    state: "open",
+    comments: data.comments,
+  };
+
   await db.scrapedIssue.upsert({
     where: { repoId_number: { repoId, number: data.number } },
     create: {
       repoId,
       number: data.number,
-      title: data.title,
       url: data.url,
-      labels: JSON.stringify(data.labels),
-      state: "open",
-      comments: data.comments,
       author: data.author,
       createdAt: new Date(data.createdAt),
+      ...values,
     },
     update: {
-      title: data.title,
-      labels: JSON.stringify(data.labels),
-      state: "open",
-      comments: data.comments,
+      ...values,
       scrapedAt: new Date(),
     },
   });
@@ -221,33 +220,21 @@ function validateSetupComplexity(
 
 async function upsertReadme(
   repoId: number,
-  data: {
-    rawContent: string;
-    hasContributionGuide: boolean;
-    setupComplexity: string;
-    techStack: string[];
-    architectureKeywords: string[];
-  },
+  data: ReadmeIntelligence & { rawContent: string },
 ): Promise<void> {
   const setupComplexity = validateSetupComplexity(data.setupComplexity);
+  const values = {
+    rawContent: data.rawContent.slice(0, 50000),
+    hasContributionGuide: data.hasContributionGuide,
+    setupComplexity,
+    techStack: serializeList(data.techStack),
+    architectureKeywords: serializeList(data.architectureKeywords),
+  };
+
   await db.scrapedReadme.upsert({
     where: { repoId },
-    create: {
-      repoId,
-      rawContent: data.rawContent.slice(0, 50000),
-      hasContributionGuide: data.hasContributionGuide,
-      setupComplexity,
-      techStack: JSON.stringify(data.techStack),
-      architectureKeywords: JSON.stringify(data.architectureKeywords),
-    },
-    update: {
-      rawContent: data.rawContent.slice(0, 50000),
-      hasContributionGuide: data.hasContributionGuide,
-      setupComplexity,
-      techStack: JSON.stringify(data.techStack),
-      architectureKeywords: JSON.stringify(data.architectureKeywords),
-      scrapedAt: new Date(),
-    },
+    create: { repoId, ...values },
+    update: { ...values, scrapedAt: new Date() },
   });
 }
 

@@ -36,8 +36,6 @@ export type Goal =
 
 import type { ProgrammingLanguage } from "@/lib/languages";
 
-export type { ProgrammingLanguage } from "@/lib/languages";
-
 export interface ReadmeIntelligence {
   hasContributionGuide: boolean;
   setupComplexity: "simple" | "moderate" | "complex" | "unknown";
@@ -108,9 +106,4 @@ export interface GoalOption {
   value: Goal;
   label: string;
   description: string;
-}
-
-export interface LanguageOption {
-  value: ProgrammingLanguage;
-  label: string;
 }

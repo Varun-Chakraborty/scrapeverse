@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { CheckIcon } from "@/components/ui/check-icon";
 import { StepHeader } from "./step-header";
 import type { Goal } from "@/lib/types";
 import { goalOptions } from "@/lib/mock-data";
@@ -46,24 +47,14 @@ export function StepGoals({ selected, onToggle }: StepGoalsProps) {
                     : "border-input bg-card group-hover:border-primary/40",
                 )}
               >
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 12 12"
-                  fill="none"
+                <CheckIcon
+                  size={11}
+                  strokeWidth={1.8}
                   className={cn(
                     "transition-all duration-200",
                     isSelected ? "scale-100 opacity-100" : "scale-50 opacity-0",
                   )}
-                >
-                  <path
-                    d="M2.5 6L5 8.5L9.5 3.5"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                />
               </span>
               <span>
                 <span className="text-sm font-semibold text-foreground">

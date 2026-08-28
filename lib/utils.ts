@@ -16,3 +16,7 @@ export function parseStoredList<T = string>(
     return [];
   }
 }
+
+export function serializeList(value: unknown[]) {
+  return JSON.stringify(value ?? []);
+}

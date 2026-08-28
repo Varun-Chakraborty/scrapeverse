@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { apiError, validatePassword, withApiHandler } from "@/lib/api";
-import { getUserByEmail, hashPassword } from "@/lib/user";
+import { apiError, withApiHandler } from "@/lib/api";
+import { validatePassword } from "@/lib/validate";
+import { getUserByEmail, resetPassword } from "@/lib/user";
 
 export const POST = withApiHandler(async (request: Request) => {
   const { email, newPassword } = await request.json();
@@ -18,10 +18,7 @@ export const POST = withApiHandler(async (request: Request) => {
     return apiError("No account found with this email", 404);
   }
 
-  await db.user.update({
-    where: { id: user.id },
-    data: { password: await hashPassword(newPassword) },
-  });
+  await resetPassword(user.id, newPassword);
 
   return NextResponse.json({ success: true });
 }, "Reset password");

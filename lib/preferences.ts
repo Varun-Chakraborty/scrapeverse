@@ -1,5 +1,5 @@
 import type { OnboardingPreferences } from "@/lib/types";
-import { parseStoredList } from "@/lib/utils";
+import { parseStoredList, serializeList } from "@/lib/utils";
 
 export type PersistedPreferences = {
   interests: string;
@@ -30,10 +30,10 @@ export function serializePreferences(
   prefs: Partial<OnboardingPreferences>,
 ): PersistedPreferences {
   return {
-    interests: JSON.stringify(prefs.interests ?? []),
+    interests: serializeList(prefs.interests ?? []),
     experienceLevel: prefs.experienceLevel ?? null,
-    goals: JSON.stringify(prefs.goals ?? []),
-    languages: JSON.stringify(prefs.languages ?? []),
-    customLanguages: JSON.stringify(prefs.customLanguages ?? []),
+    goals: serializeList(prefs.goals ?? []),
+    languages: serializeList(prefs.languages ?? []),
+    customLanguages: serializeList(prefs.customLanguages ?? []),
   };
 }
