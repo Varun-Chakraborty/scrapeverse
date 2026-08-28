@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { encrypt, setSessionCookie } from "@/lib/session";
-import { parsePreferences } from "@/lib/preferences";
+import { serializeUser } from "@/lib/user";
 
 export async function POST(request: Request) {
   try {
@@ -39,18 +39,8 @@ export async function POST(request: Request) {
     const token = await encrypt({ userId: user.id, email: user.email });
     await setSessionCookie(token);
 
-    const preferences = user.preferences
-      ? parsePreferences(user.preferences)
-      : null;
-
     return NextResponse.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdAt: user.createdAt.toISOString(),
-        preferences,
-      },
+      user: serializeUser(user),
     });
   } catch (error) {
     console.error("Signin error:", error);

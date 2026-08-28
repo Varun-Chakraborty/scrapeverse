@@ -35,29 +35,20 @@ function classifyDifficulty(
 
 function matchLabels(labels: string[], interests: string[]): string[] {
   const matched: string[] = [];
-  const lowerLabels = labels.map((l) => l.toLowerCase());
+  const { lower, isGoodFirstIssue, isHelpWanted, isBug, isDocumentation } =
+    deriveLabelFlags(labels);
 
   for (const interest of interests) {
     const lowerInterest = interest.toLowerCase();
-    if (lowerLabels.some((l) => l.includes(lowerInterest))) {
+    if (lower.some((l) => l.includes(lowerInterest))) {
       matched.push(interest);
     }
   }
 
-  if (lowerLabels.some((l) => l.includes("good first issue"))) {
-    matched.push("Beginner Friendly");
-  }
-  if (lowerLabels.some((l) => l.includes("help wanted"))) {
-    matched.push("Help Wanted");
-  }
-  if (lowerLabels.some((l) => l.includes("bug"))) {
-    matched.push("Bug Fix");
-  }
-  if (
-    lowerLabels.some((l) => l.includes("documentation") || l.includes("docs"))
-  ) {
-    matched.push("Documentation");
-  }
+  if (isGoodFirstIssue) matched.push("Beginner Friendly");
+  if (isHelpWanted) matched.push("Help Wanted");
+  if (isBug) matched.push("Bug Fix");
+  if (isDocumentation) matched.push("Documentation");
 
   return [...new Set(matched)];
 }
@@ -66,6 +57,70 @@ function daysSince(dateStr: string | null): number {
   if (!dateStr) return 999;
   const created = new Date(dateStr);
   return Math.floor((Date.now() - created.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function deriveLabelFlags(labels: string[]) {
+  const lower = labels.map((l) => l.toLowerCase());
+  return {
+    lower,
+    isGoodFirstIssue: lower.some((l) => l.includes("good first issue")),
+    isHelpWanted: lower.some((l) => l.includes("help wanted")),
+    isDocumentation: lower.some(
+      (l) => l.includes("documentation") || l.includes("docs"),
+    ),
+    isBug: lower.some((l) => l.includes("bug")),
+    isEnhancement: lower.some(
+      (l) => l.includes("enhancement") || l.includes("feature"),
+    ),
+  };
+}
+
+function starBand(
+  stars: number,
+): "established" | "growing" | "emerging" | "small" {
+  if (stars > 10000) return "established";
+  if (stars > 1000) return "growing";
+  if (stars > 100) return "emerging";
+  return "small";
+}
+
+function matchPrimaryLanguage(
+  languages: string[],
+  repoLanguage: string | null,
+): string | null {
+  if (
+    repoLanguage &&
+    languages.some((l) => l.toLowerCase() === repoLanguage.toLowerCase())
+  ) {
+    return repoLanguage;
+  }
+  return null;
+}
+
+function matchTopicLanguage(
+  languages: string[],
+  lowerTopics: string[],
+): string | null {
+  return (
+    languages.find((l) =>
+      lowerTopics.some((t) => t.includes(l.toLowerCase())),
+    ) ?? null
+  );
+}
+
+function matchTechStack(languages: string[], techStack: string[]): string[] {
+  return (techStack ?? []).filter((s) =>
+    languages.some((l) => l.toLowerCase() === s.toLowerCase()),
+  );
+}
+
+function matchInterestsByTopics(
+  interests: string[],
+  lowerTopics: string[],
+): string[] {
+  return interests.filter((i) =>
+    lowerTopics.some((t) => t.includes(i.toLowerCase())),
+  );
 }
 
 function generateWhyRecommended(
@@ -81,30 +136,25 @@ function generateWhyRecommended(
   } | null,
   issueAge: number,
   comments: number,
-  isTrending: boolean,
   goals: string[],
 ): string[] {
   const reasons: string[] = [];
   const topics: string[] = JSON.parse(repo.topics || "[]");
   const lowerTopics = topics.map((t) => t.toLowerCase());
 
-  if (
-    repo.language &&
-    languages.some((l) => l.toLowerCase() === repo.language!.toLowerCase())
-  ) {
-    reasons.push(`Primary language is ${repo.language} — matches your stack.`);
-  } else {
-    const topicLangMatch = languages.find((l) =>
-      lowerTopics.some((t) => t.includes(l.toLowerCase())),
+  const primaryLanguage = matchPrimaryLanguage(languages, repo.language);
+  if (primaryLanguage) {
+    reasons.push(
+      `Primary language is ${primaryLanguage} — matches your stack.`,
     );
+  } else {
+    const topicLangMatch = matchTopicLanguage(languages, lowerTopics);
     if (topicLangMatch) {
       reasons.push(`Uses ${topicLangMatch} (via project topics).`);
     }
   }
 
-  const matchedInterests = interests.filter((i) =>
-    lowerTopics.some((t) => t.includes(i.toLowerCase())),
-  );
+  const matchedInterests = matchInterestsByTopics(interests, lowerTopics);
   if (matchedInterests.length > 1) {
     reasons.push(
       `Matches ${matchedInterests.length} of your interests: ${matchedInterests.join(", ")}.`,
@@ -114,9 +164,7 @@ function generateWhyRecommended(
   }
 
   if (readme?.techStack && readme.techStack.length > 0) {
-    const stackMatch = readme.techStack.filter((s) =>
-      languages.some((l) => l.toLowerCase() === s.toLowerCase()),
-    );
+    const stackMatch = matchTechStack(languages, readme.techStack);
     if (stackMatch.length > 0) {
       reasons.push(`Tech stack includes ${stackMatch.join(", ")}.`);
     }
@@ -161,16 +209,13 @@ function generateWhyRecommended(
     reasons.push("Complex setup — plan extra time for environment config.");
   }
 
-  if (repo.stars > 10000) {
+  const band = starBand(repo.stars);
+  if (band === "established") {
     reasons.push(
       `Established project with ${repo.stars.toLocaleString()} stars.`,
     );
-  } else if (repo.stars > 1000) {
+  } else if (band === "growing") {
     reasons.push(`Growing project with ${repo.stars.toLocaleString()} stars.`);
-  }
-
-  if (isTrending) {
-    reasons.push("Currently trending on GitHub.");
   }
 
   if (
@@ -179,7 +224,7 @@ function generateWhyRecommended(
   ) {
     reasons.push("Great fit for your first open source contribution.");
   }
-  if (goals.includes("Build Portfolio") && repo.stars > 1000) {
+  if (goals.includes("Build Portfolio") && band !== "small") {
     reasons.push("Visible project that strengthens your portfolio.");
   }
   if (goals.includes("Find Mentors") && comments > 5) {
@@ -189,11 +234,11 @@ function generateWhyRecommended(
   }
   if (
     goals.includes("Contribute to Production Systems") &&
-    repo.stars > 10000
+    band === "established"
   ) {
     reasons.push("Production-grade project used by many teams.");
   }
-  if (goals.includes("Prepare for Jobs") && repo.stars > 10000) {
+  if (goals.includes("Prepare for Jobs") && band === "established") {
     reasons.push("Resume-worthy project with wide industry recognition.");
   }
   if (
@@ -226,7 +271,6 @@ function calculateMatchScore(
     setupComplexity: string;
     techStack: string[];
   } | null,
-  isTrending: boolean,
   issueAge: number,
   comments: number,
   experienceLevel: string | null,
@@ -235,23 +279,20 @@ function calculateMatchScore(
   const breakdown: MatchScoreBreakdown[] = [];
   const topics: string[] = JSON.parse(repo.topics || "[]");
   const lowerTopics = topics.map((t) => t.toLowerCase());
-  const lowerLabels = labels.map((l) => l.toLowerCase());
+  const { isGoodFirstIssue, isHelpWanted, isDocumentation, isBug } =
+    deriveLabelFlags(labels);
   const isBeginner = experienceLevel === "Beginner";
 
   // --- Language match (max 35) ---
-  if (
-    repo.language &&
-    languages.some((l) => l.toLowerCase() === repo.language!.toLowerCase())
-  ) {
+  const primaryLanguage = matchPrimaryLanguage(languages, repo.language);
+  if (primaryLanguage) {
     breakdown.push({
-      label: `${repo.language} primary`,
+      label: `${primaryLanguage} primary`,
       points: 30,
       category: "language",
     });
   } else {
-    const topicLangMatch = languages.find((l) =>
-      lowerTopics.some((t) => t.includes(l.toLowerCase())),
-    );
+    const topicLangMatch = matchTopicLanguage(languages, lowerTopics);
     if (topicLangMatch) {
       breakdown.push({
         label: `${topicLangMatch} in topics`,
@@ -262,9 +303,7 @@ function calculateMatchScore(
   }
 
   if (readme?.techStack) {
-    const stackMatch = readme.techStack.filter((s) =>
-      languages.some((l) => l.toLowerCase() === s.toLowerCase()),
-    );
+    const stackMatch = matchTechStack(languages, readme.techStack);
     if (stackMatch.length > 0) {
       breakdown.push({
         label: `Tech: ${stackMatch[0]}`,
@@ -275,9 +314,7 @@ function calculateMatchScore(
   }
 
   // --- Interest alignment (max 20) ---
-  const matchedInterests = interests.filter((i) =>
-    lowerTopics.some((t) => t.includes(i.toLowerCase())),
-  );
+  const matchedInterests = matchInterestsByTopics(interests, lowerTopics);
   if (matchedInterests.length > 1) {
     breakdown.push({
       label: `${matchedInterests.length} interests matched`,
@@ -293,26 +330,24 @@ function calculateMatchScore(
   }
 
   // --- Issue quality (max ~20) ---
-  if (lowerLabels.some((l) => l.includes("good first issue"))) {
+  if (isGoodFirstIssue) {
     breakdown.push({
       label: "Good First Issue",
       points: isBeginner ? 15 : 10,
       category: "issue",
     });
   }
-  if (
-    lowerLabels.some((l) => l.includes("documentation") || l.includes("docs"))
-  ) {
+  if (isDocumentation) {
     breakdown.push({
       label: "Documentation",
       points: isBeginner ? 8 : 5,
       category: "issue",
     });
   }
-  if (lowerLabels.some((l) => l.includes("help wanted"))) {
+  if (isHelpWanted) {
     breakdown.push({ label: "Help Wanted", points: 5, category: "issue" });
   }
-  if (lowerLabels.some((l) => l.includes("bug"))) {
+  if (isBug) {
     breakdown.push({ label: "Bug Fix", points: 3, category: "issue" });
   }
 
@@ -337,24 +372,28 @@ function calculateMatchScore(
   }
 
   // --- Project health (max ~25) ---
-  if (repo.stars > 10000) {
-    breakdown.push({
-      label: "Established project",
-      points: 12,
-      category: "project",
-    });
-  } else if (repo.stars > 1000) {
-    breakdown.push({
-      label: "Growing project",
-      points: 8,
-      category: "project",
-    });
-  } else if (repo.stars > 100) {
-    breakdown.push({
-      label: "Emerging project",
-      points: 4,
-      category: "project",
-    });
+  switch (starBand(repo.stars)) {
+    case "established":
+      breakdown.push({
+        label: "Established project",
+        points: 12,
+        category: "project",
+      });
+      break;
+    case "growing":
+      breakdown.push({
+        label: "Growing project",
+        points: 8,
+        category: "project",
+      });
+      break;
+    case "emerging":
+      breakdown.push({
+        label: "Emerging project",
+        points: 4,
+        category: "project",
+      });
+      break;
   }
 
   if (readme?.hasContributionGuide) {
@@ -377,10 +416,6 @@ function calculateMatchScore(
       points: isBeginner ? -3 : -1,
       category: "project",
     });
-  }
-
-  if (isTrending) {
-    breakdown.push({ label: "Trending now", points: 7, category: "project" });
   }
 
   // --- Goal alignment (max ~15) ---
@@ -407,15 +442,23 @@ function calculateGoalScore(
   difficulty: string,
 ): { points: number; label: string }[] {
   const signals: { points: number; label: string }[] = [];
-  const lower = labels.map((l) => l.toLowerCase());
+  const {
+    isGoodFirstIssue,
+    isHelpWanted,
+    isDocumentation,
+    isBug,
+    isEnhancement,
+  } = deriveLabelFlags(labels);
   const hasGuide = readme?.hasContributionGuide ?? false;
   const setup = readme?.setupComplexity ?? "unknown";
   const techCount = readme?.techStack?.length ?? 0;
+  const band = starBand(repo.stars);
+  const notableStars = band === "growing" || band === "established";
 
   for (const goal of goals) {
     switch (goal) {
       case "First Open Source Contribution": {
-        if (lower.some((l) => l.includes("good first issue"))) {
+        if (isGoodFirstIssue) {
           signals.push({ points: 5, label: "Labeled good-first-issue" });
         }
         if (hasGuide) {
@@ -430,23 +473,23 @@ function calculateGoalScore(
         if (difficulty === "beginner") {
           signals.push({ points: 2, label: "Beginner-friendly issue" });
         }
-        if (lower.some((l) => l.includes("help wanted"))) {
+        if (isHelpWanted) {
           signals.push({ points: 2, label: "Maintainers requesting help" });
         }
         break;
       }
       case "Build Portfolio": {
-        if (repo.stars > 10000) {
+        if (band === "established") {
           signals.push({ points: 5, label: "10k+ star project" });
-        } else if (repo.stars > 1000) {
+        } else if (band === "growing") {
           signals.push({ points: 3, label: "1k+ star project" });
-        } else if (repo.stars > 100) {
+        } else if (band === "emerging") {
           signals.push({ points: 1, label: "Growing project" });
         }
-        if (lower.some((l) => l.includes("bug") || l.includes("enhancement"))) {
+        if (isBug || isEnhancement) {
           signals.push({ points: 3, label: "Bug fix or feature" });
         }
-        if (lower.some((l) => l.includes("help wanted"))) {
+        if (isHelpWanted) {
           signals.push({ points: 2, label: "Open for contribution" });
         }
         if (hasGuide) {
@@ -463,23 +506,19 @@ function calculateGoalScore(
         } else if (techCount > 0) {
           signals.push({ points: 2, label: "Identifiable tech stack" });
         }
-        if (
-          lower.some((l) => l.includes("documentation") || l.includes("docs"))
-        ) {
+        if (isDocumentation) {
           signals.push({ points: 3, label: "Documentation task" });
         }
-        if (repo.stars > 1000) {
+        if (notableStars) {
           signals.push({ points: 2, label: "Established codebase to study" });
         }
-        if (
-          lower.some((l) => l.includes("enhancement") || l.includes("feature"))
-        ) {
+        if (isEnhancement) {
           signals.push({ points: 2, label: "Feature work — learn by doing" });
         }
         break;
       }
       case "Find Mentors": {
-        if (lower.some((l) => l.includes("help wanted"))) {
+        if (isHelpWanted) {
           signals.push({
             points: 4,
             label: "Maintainers actively seeking help",
@@ -497,40 +536,38 @@ function calculateGoalScore(
             label: `${comments} comments — active thread`,
           });
         }
-        if (repo.stars > 1000) {
+        if (notableStars) {
           signals.push({ points: 2, label: "Established community" });
         }
         break;
       }
       case "Contribute to Production Systems": {
-        if (repo.stars > 10000) {
+        if (band === "established") {
           signals.push({ points: 6, label: "Production-grade project" });
-        } else if (repo.stars > 1000) {
+        } else if (band === "growing") {
           signals.push({ points: 4, label: "Production-use project" });
         }
-        if (lower.some((l) => l.includes("bug"))) {
+        if (isBug) {
           signals.push({ points: 3, label: "Bug fix — real-world impact" });
         }
         if (readme?.architectureKeywords?.length) {
           signals.push({ points: 2, label: "Architecture documented" });
         }
-        if (
-          lower.some((l) => l.includes("enhancement") || l.includes("feature"))
-        ) {
+        if (isEnhancement) {
           signals.push({ points: 2, label: "Feature work in production code" });
         }
         break;
       }
       case "Prepare for Jobs": {
-        if (repo.stars > 10000) {
+        if (band === "established") {
           signals.push({ points: 4, label: "Resume-worthy project" });
-        } else if (repo.stars > 1000) {
+        } else if (band === "growing") {
           signals.push({ points: 2, label: "Notable project" });
         }
-        if (lower.some((l) => l.includes("good first issue"))) {
+        if (isGoodFirstIssue) {
           signals.push({ points: 3, label: "Quick win for portfolio" });
         }
-        if (lower.some((l) => l.includes("bug") || l.includes("enhancement"))) {
+        if (isBug || isEnhancement) {
           signals.push({ points: 2, label: "Concrete deliverable" });
         }
         if (hasGuide) {
@@ -551,15 +588,13 @@ function calculateGoalScore(
         if (readme?.architectureKeywords?.length) {
           signals.push({ points: 2, label: "Architecture keywords present" });
         }
-        if (
-          lower.some((l) => l.includes("enhancement") || l.includes("feature"))
-        ) {
+        if (isEnhancement) {
           signals.push({
             points: 2,
             label: "Feature work — deep codebase understanding",
           });
         }
-        if (repo.stars > 1000) {
+        if (notableStars) {
           signals.push({ points: 1, label: "Mature codebase" });
         }
         break;
@@ -579,7 +614,8 @@ function calculateReadinessScore(
   experienceLevel: string | null,
 ): number {
   let score = 0;
-  const lower = labels.map((l) => l.toLowerCase());
+  const { isGoodFirstIssue, isHelpWanted, isDocumentation } =
+    deriveLabelFlags(labels);
   const isBeginner = experienceLevel === "Beginner";
   const isAdvanced = experienceLevel === "Advanced";
 
@@ -601,13 +637,13 @@ function calculateReadinessScore(
   }
 
   // Issue labels — beginners rely on explicit signals, advanced can handle anything
-  if (lower.some((l) => l.includes("good first issue"))) {
+  if (isGoodFirstIssue) {
     score += isBeginner ? 20 : isAdvanced ? 5 : 15;
   }
-  if (lower.some((l) => l.includes("help wanted"))) {
+  if (isHelpWanted) {
     score += isAdvanced ? 15 : 10;
   }
-  if (lower.some((l) => l.includes("documentation") || l.includes("docs"))) {
+  if (isDocumentation) {
     score += 5;
   }
 
@@ -656,7 +692,6 @@ export async function GET(request: NextRequest) {
     const repoTopics = JSON.parse(issue.repo.topics || "[]");
     const difficulty = classifyDifficulty(labels);
     const matchedLabels = matchLabels(labels, interests);
-    const isTrending = false;
     const issueAge = daysSince(issue.createdAt?.toISOString() ?? null);
 
     const readmeData = issue.repo.readme
@@ -691,7 +726,6 @@ export async function GET(request: NextRequest) {
       },
       labels,
       readmeData,
-      isTrending,
       issueAge,
       issue.comments,
       experience,
@@ -711,7 +745,6 @@ export async function GET(request: NextRequest) {
       readmeData,
       issueAge,
       issue.comments,
-      isTrending,
       goals,
     );
 

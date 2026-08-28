@@ -38,16 +38,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { interests, experienceLevel, goals, languages, customLanguages } =
-      body;
-
-    const data = serializePreferences({
-      interests,
-      experienceLevel,
-      goals,
-      languages,
-      customLanguages,
-    });
+    const data = serializePreferences(body);
 
     const prefs = await db.userPreferences.upsert({
       where: { userId },

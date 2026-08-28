@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { encrypt, setSessionCookie } from "@/lib/session";
+import { serializeUser } from "@/lib/user";
 
 export async function POST(request: Request) {
   try {
@@ -57,13 +58,7 @@ export async function POST(request: Request) {
     await setSessionCookie(token);
 
     return NextResponse.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdAt: user.createdAt.toISOString(),
-        preferences: null,
-      },
+      user: serializeUser({ ...user, preferences: null }),
     });
   } catch (error) {
     console.error("Signup error:", error);
