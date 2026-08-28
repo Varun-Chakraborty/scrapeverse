@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
-import { decrypt } from "@/lib/session";
+import { getSessionUserId } from "@/lib/session";
 
 export async function POST(request: Request) {
   try {
@@ -22,20 +21,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("session")?.value;
+    const userId = await getSessionUserId();
 
-    if (!token) {
+    if (!userId) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const payload = await decrypt(token);
-    if (!payload?.userId) {
-      return NextResponse.json({ error: "Invalid session" }, { status: 401 });
-    }
-
     const user = await db.user.findUnique({
-      where: { id: payload.userId },
+      where: { id: userId },
     });
 
     if (!user) {

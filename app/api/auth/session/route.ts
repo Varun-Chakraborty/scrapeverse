@@ -1,26 +1,18 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { decrypt } from "@/lib/session";
+import { getSessionUserId } from "@/lib/session";
 import { db } from "@/lib/db";
 import { parsePreferences } from "@/lib/preferences";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("session")?.value;
+    const userId = await getSessionUserId();
 
-    if (!token) {
-      return NextResponse.json({ user: null });
-    }
-
-    const payload = await decrypt(token);
-
-    if (!payload) {
+    if (!userId) {
       return NextResponse.json({ user: null });
     }
 
     const user = await db.user.findUnique({
-      where: { id: payload.userId },
+      where: { id: userId },
       include: { preferences: true },
     });
 

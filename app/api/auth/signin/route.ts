@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
-import { encrypt } from "@/lib/session";
+import { encrypt, setSessionCookie } from "@/lib/session";
 import { parsePreferences } from "@/lib/preferences";
 
 export async function POST(request: Request) {
@@ -38,15 +37,7 @@ export async function POST(request: Request) {
     }
 
     const token = await encrypt({ userId: user.id, email: user.email });
-
-    const cookieStore = await cookies();
-    cookieStore.set("session", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    });
+    await setSessionCookie(token);
 
     const preferences = user.preferences
       ? parsePreferences(user.preferences)
