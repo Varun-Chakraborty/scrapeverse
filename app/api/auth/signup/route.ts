@@ -1,70 +1,47 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
+import {
+  apiError,
+  validateEmail,
+  validatePassword,
+  withApiHandler,
+} from "@/lib/api";
 import { encrypt, setSessionCookie } from "@/lib/session";
-import { serializeUser } from "@/lib/user";
+import { getUserByEmail, hashPassword, serializeUser } from "@/lib/user";
 
-export async function POST(request: Request) {
-  try {
-    const { name, email, password } = await request.json();
+export const POST = withApiHandler(async (request: Request) => {
+  const { name, email, password } = await request.json();
 
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { error: "Name, email, and password are required" },
-        { status: 400 },
-      );
-    }
-
-    if (typeof name !== "string" || name.trim().length === 0) {
-      return NextResponse.json({ error: "Name is required" }, { status: 400 });
-    }
-
-    if (typeof email !== "string" || !email.includes("@")) {
-      return NextResponse.json(
-        { error: "Valid email is required" },
-        { status: 400 },
-      );
-    }
-
-    if (typeof password !== "string" || password.length < 4) {
-      return NextResponse.json(
-        { error: "Password must be at least 4 characters" },
-        { status: 400 },
-      );
-    }
-
-    const existing = await db.user.findUnique({
-      where: { email: email.toLowerCase() },
-    });
-
-    if (existing) {
-      return NextResponse.json(
-        { error: "An account with this email already exists" },
-        { status: 409 },
-      );
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    const user = await db.user.create({
-      data: {
-        name: name.trim(),
-        email: email.toLowerCase(),
-        password: hashedPassword,
-      },
-    });
-
-    const token = await encrypt({ userId: user.id, email: user.email });
-    await setSessionCookie(token);
-
-    return NextResponse.json({
-      user: serializeUser({ ...user, preferences: null }),
-    });
-  } catch (error) {
-    console.error("Signup error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+  if (!name || !email || !password) {
+    return apiError("Name, email, and password are required", 400);
   }
-}
+
+  if (typeof name !== "string" || name.trim().length === 0) {
+    return apiError("Name is required", 400);
+  }
+
+  const emailError = validateEmail(email);
+  if (emailError) return apiError(emailError, 400);
+
+  const passwordError = validatePassword(password);
+  if (passwordError) return apiError(passwordError, 400);
+
+  if (await getUserByEmail(email)) {
+    return apiError("An account with this email already exists", 409);
+  }
+
+  const user = await db.user.create({
+    data: {
+      name: name.trim(),
+      email: email.toLowerCase(),
+      password: await hashPassword(password),
+    },
+  });
+
+  const token = await encrypt({ userId: user.id, email: user.email });
+  await setSessionCookie(token);
+
+  return NextResponse.json({
+    user: serializeUser({ ...user, preferences: null }),
+  });
+}, "Signup");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Cancel01Icon,
@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/landing/logo";
 import { useAuth } from "@/lib/auth-context";
+import { useBodyScrollLock, useEscapeKey } from "@/lib/use-dismissible";
 import type { OnboardingPreferences } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -40,18 +41,8 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
   const { signUp, signIn } = useAuth();
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open, onClose]);
+  useEscapeKey(onClose, open);
+  useBodyScrollLock(open);
 
   if (!open) return null;
 

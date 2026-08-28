@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { StepHeader } from "./step-header";
 import type { Goal } from "@/lib/types";
 import { goalOptions } from "@/lib/mock-data";
 
@@ -12,17 +13,11 @@ interface StepGoalsProps {
 export function StepGoals({ selected, onToggle }: StepGoalsProps) {
   return (
     <div className="mx-auto w-full">
-      <div className="mb-8 text-center">
-        <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
-          Step 3 of 4
-        </p>
-        <h2 className="font-heading mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-          What are your goals?
-        </h2>
-        <p className="mt-2.5 text-sm text-muted-foreground">
-          Select what you want to achieve — pick as many as apply.
-        </p>
-      </div>
+      <StepHeader
+        step={3}
+        title="What are your goals?"
+        description="Select what you want to achieve — pick as many as apply."
+      />
 
       <div className="grid gap-3" role="group" aria-label="Your goals">
         {goalOptions.map((goal, i) => {

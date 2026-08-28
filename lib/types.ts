@@ -34,17 +34,9 @@ export type Goal =
   | "Prepare for Jobs"
   | "Deep Technical Learning";
 
-export type ProgrammingLanguage =
-  | "Rust"
-  | "C"
-  | "C++"
-  | "Go"
-  | "JavaScript"
-  | "TypeScript"
-  | "Python"
-  | "Java"
-  | "Kotlin"
-  | "Zig";
+import type { ProgrammingLanguage } from "@/lib/languages";
+
+export type { ProgrammingLanguage } from "@/lib/languages";
 
 export interface ReadmeIntelligence {
   hasContributionGuide: boolean;

@@ -1,17 +1,13 @@
-import { parsePreferences } from "@/lib/preferences";
+import bcrypt from "bcryptjs";
+import { db } from "@/lib/db";
+import { parsePreferences, type PersistedPreferences } from "@/lib/preferences";
 
 type PersistedUser = {
   id: string;
   name: string;
   email: string;
   createdAt: Date;
-  preferences: {
-    interests: string;
-    experienceLevel: string | null;
-    goals: string;
-    languages: string;
-    customLanguages: string;
-  } | null;
+  preferences: PersistedPreferences | null;
 };
 
 export function serializeUser(user: PersistedUser) {
@@ -22,4 +18,30 @@ export function serializeUser(user: PersistedUser) {
     createdAt: user.createdAt.toISOString(),
     preferences: user.preferences ? parsePreferences(user.preferences) : null,
   };
+}
+
+export function hashPassword(password: string) {
+  return bcrypt.hash(password, 12);
+}
+
+export function verifyPassword(password: string, hash: string) {
+  return bcrypt.compare(password, hash);
+}
+
+export async function getUserByEmail(email: string) {
+  return db.user.findUnique({ where: { email: email.toLowerCase() } });
+}
+
+export async function getUserByEmailWithPrefs(email: string) {
+  return db.user.findUnique({
+    where: { email: email.toLowerCase() },
+    include: { preferences: true },
+  });
+}
+
+export async function getUserByIdWithPrefs(id: string) {
+  return db.user.findUnique({
+    where: { id },
+    include: { preferences: true },
+  });
 }

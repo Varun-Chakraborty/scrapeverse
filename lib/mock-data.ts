@@ -2,7 +2,6 @@ import type {
   InterestOption,
   ExperienceOption,
   GoalOption,
-  LanguageOption,
   Recommendation,
 } from "./types";
 
@@ -86,19 +85,6 @@ export const goalOptions: GoalOption[] = [
     label: "Deep Learning",
     description: "Dive deep into complex systems",
   },
-];
-
-export const languageOptions: LanguageOption[] = [
-  { value: "Rust", label: "Rust" },
-  { value: "C", label: "C" },
-  { value: "C++", label: "C++" },
-  { value: "Go", label: "Go" },
-  { value: "JavaScript", label: "JavaScript" },
-  { value: "TypeScript", label: "TypeScript" },
-  { value: "Python", label: "Python" },
-  { value: "Java", label: "Java" },
-  { value: "Kotlin", label: "Kotlin" },
-  { value: "Zig", label: "Zig" },
 ];
 
 export const mockRecommendations: Recommendation[] = [

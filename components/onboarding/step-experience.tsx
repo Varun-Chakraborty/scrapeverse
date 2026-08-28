@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { StepHeader } from "./step-header";
 import type { ExperienceLevel } from "@/lib/types";
 import { experienceOptions } from "@/lib/mock-data";
 
@@ -13,17 +14,11 @@ interface StepExperienceProps {
 export function StepExperience({ selected, onSelect }: StepExperienceProps) {
   return (
     <div className="mx-auto w-full">
-      <div className="mb-8 text-center">
-        <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
-          Step 2 of 4
-        </p>
-        <h2 className="font-heading mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-          What&apos;s your experience level?
-        </h2>
-        <p className="mt-2.5 text-sm text-muted-foreground">
-          This helps us recommend the right difficulty of issues.
-        </p>
-      </div>
+      <StepHeader
+        step={2}
+        title="What's your experience level?"
+        description="This helps us recommend the right difficulty of issues."
+      />
 
       <RadioGroup
         value={selected ?? ""}

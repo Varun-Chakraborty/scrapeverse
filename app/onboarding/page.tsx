@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
+import { LoadingScreen } from "@/components/ui/loading-screen";
 import { useAuth } from "@/lib/auth-context";
 import type {
   OnboardingStep,
@@ -92,11 +93,7 @@ export default function Onboarding() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-muted-foreground border-t-foreground rounded-full animate-spin" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (

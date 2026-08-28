@@ -1,21 +1,15 @@
 import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/lib/session";
-import { db } from "@/lib/db";
-import { serializeUser } from "@/lib/user";
+import { getUserByIdWithPrefs, serializeUser } from "@/lib/user";
 
 export async function GET() {
   try {
     const userId = await getSessionUserId();
-
     if (!userId) {
       return NextResponse.json({ user: null });
     }
 
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      include: { preferences: true },
-    });
-
+    const user = await getUserByIdWithPrefs(userId);
     if (!user) {
       return NextResponse.json({ user: null });
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { StepHeader } from "./step-header";
 import type { Interest } from "@/lib/types";
 import { interestOptions } from "@/lib/mock-data";
 
@@ -12,17 +13,11 @@ interface StepInterestsProps {
 export function StepInterests({ selected, onToggle }: StepInterestsProps) {
   return (
     <div className="mx-auto w-full">
-      <div className="mb-8 text-center">
-        <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
-          Step 1 of 4
-        </p>
-        <h2 className="font-heading mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-          What interests you?
-        </h2>
-        <p className="mt-2.5 text-sm text-muted-foreground">
-          Select as many as you like — we&apos;ll find projects that match.
-        </p>
-      </div>
+      <StepHeader
+        step={1}
+        title="What interests you?"
+        description="Select as many as you like — we'll find projects that match."
+      />
 
       <div
         className="flex flex-wrap justify-center gap-2.5"

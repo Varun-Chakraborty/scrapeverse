@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LandingPage } from "@/components/landing/landing-page";
 import { AuthModal } from "@/components/auth/auth-modal";
+import { LoadingScreen } from "@/components/ui/loading-screen";
 import { useAuth } from "@/lib/auth-context";
 import type { OnboardingPreferences } from "@/lib/types";
 
@@ -34,16 +35,7 @@ export default function Home() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="size-8 animate-spin rounded-full border-[3px] border-primary-soft border-t-primary" />
-          <p className="text-xs font-medium tracking-wide text-muted-foreground">
-            Loading your workspace…
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen label="Loading your workspace…" />;
   }
 
   return (

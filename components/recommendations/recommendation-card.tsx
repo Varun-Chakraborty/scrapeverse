@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowUpRight01Icon,
@@ -9,7 +9,10 @@ import {
   Comment01Icon,
 } from "@hugeicons/core-free-icons";
 import { Badge } from "@/components/ui/badge";
+import { MATCHED_LABELS } from "@/lib/labels";
+import { languageColorMap } from "@/lib/languages";
 import type { Recommendation, MatchScoreBreakdown } from "@/lib/types";
+import { useInView } from "@/lib/use-in-view";
 import { cn } from "@/lib/utils";
 
 const prefersReducedMotion = () =>
@@ -39,29 +42,6 @@ function useCountUp(target: number, duration = 900): number {
   return value;
 }
 
-function useInView<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node || inView) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [inView]);
-
-  return { ref, inView };
-}
-
 interface RecommendationCardProps {
   recommendation: Recommendation;
   index?: number;
@@ -78,23 +58,10 @@ const labelVariantMap: Record<
   string,
   "secondary" | "info" | "destructive" | "lavender" | "outline"
 > = {
-  "Beginner Friendly": "secondary",
-  "Help Wanted": "info",
-  "Bug Fix": "destructive",
-  Documentation: "lavender",
-};
-
-const languageColorMap: Record<string, string> = {
-  Rust: "#dea584",
-  C: "#555555",
-  "C++": "#f34b7d",
-  Go: "#00ADD8",
-  JavaScript: "#f1e05a",
-  TypeScript: "#3178c6",
-  Python: "#3572A5",
-  Java: "#b07219",
-  Kotlin: "#A97BFF",
-  Zig: "#ec915c",
+  [MATCHED_LABELS.BeginnerFriendly]: "secondary",
+  [MATCHED_LABELS.HelpWanted]: "info",
+  [MATCHED_LABELS.BugFix]: "destructive",
+  [MATCHED_LABELS.Documentation]: "lavender",
 };
 
 const setupComplexityMap: Record<string, { label: string }> = {

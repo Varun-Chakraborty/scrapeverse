@@ -8,10 +8,14 @@ import {
   PlayCircleIcon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
+import { LANGUAGES, type ProgrammingLanguage } from "@/lib/languages";
 
 interface HeroProps {
   onGetStarted: () => void;
 }
+
+const languageColor = (name: ProgrammingLanguage) =>
+  LANGUAGES.find((l) => l.value === name)?.color ?? "#857079";
 
 const previewIssues = [
   {
@@ -21,7 +25,7 @@ const previewIssues = [
     stars: "9.8k",
     difficulty: "Beginner",
     difficultyClass: "bg-mint text-mint-foreground",
-    dot: "bg-[#dea584]",
+    dot: languageColor("Rust"),
   },
   {
     repo: "denoland / deno",
@@ -30,7 +34,7 @@ const previewIssues = [
     stars: "100k",
     difficulty: "Good first issue",
     difficultyClass: "bg-sky text-sky-foreground",
-    dot: "bg-[#3178c6]",
+    dot: languageColor("TypeScript"),
   },
   {
     repo: "neovim / neovim",
@@ -39,7 +43,7 @@ const previewIssues = [
     stars: "86.2k",
     difficulty: "Documentation",
     difficultyClass: "bg-lavender text-lavender-foreground",
-    dot: "bg-[#6688cc]",
+    dot: languageColor("C"),
   },
 ];
 
@@ -79,7 +83,10 @@ function PreviewWindow() {
               </div>
               <div className="hidden items-center gap-3 text-[11px] text-muted-foreground md:flex">
                 <span className="flex items-center gap-1.5">
-                  <span className={`size-2 rounded-full ${issue.dot}`} />
+                  <span
+                    className="size-2 rounded-full"
+                    style={{ backgroundColor: issue.dot }}
+                  />
                   {issue.language}
                 </span>
                 <span className="flex items-center gap-1">

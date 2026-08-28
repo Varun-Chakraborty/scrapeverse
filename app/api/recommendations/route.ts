@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getIssuesWithRepo } from "@/lib/scraper-pipeline";
+import { MATCHED_LABELS } from "@/lib/labels";
+import { parseStoredList } from "@/lib/utils";
 import type {
   Recommendation,
   MatchScore,
@@ -7,9 +9,8 @@ import type {
 } from "@/lib/types";
 
 function classifyDifficulty(
-  labels: string[],
+  lower: string[],
 ): "beginner" | "intermediate" | "advanced" {
-  const lower = labels.map((l) => l.toLowerCase());
   if (
     lower.some(
       (l) =>
@@ -33,10 +34,19 @@ function classifyDifficulty(
   return "advanced";
 }
 
-function matchLabels(labels: string[], interests: string[]): string[] {
+type LabelFlags = {
+  lower: string[];
+  isGoodFirstIssue: boolean;
+  isHelpWanted: boolean;
+  isDocumentation: boolean;
+  isBug: boolean;
+  isEnhancement: boolean;
+};
+
+function matchLabels(flags: LabelFlags, interests: string[]): string[] {
   const matched: string[] = [];
   const { lower, isGoodFirstIssue, isHelpWanted, isBug, isDocumentation } =
-    deriveLabelFlags(labels);
+    flags;
 
   for (const interest of interests) {
     const lowerInterest = interest.toLowerCase();
@@ -45,10 +55,10 @@ function matchLabels(labels: string[], interests: string[]): string[] {
     }
   }
 
-  if (isGoodFirstIssue) matched.push("Beginner Friendly");
-  if (isHelpWanted) matched.push("Help Wanted");
-  if (isBug) matched.push("Bug Fix");
-  if (isDocumentation) matched.push("Documentation");
+  if (isGoodFirstIssue) matched.push(MATCHED_LABELS.BeginnerFriendly);
+  if (isHelpWanted) matched.push(MATCHED_LABELS.HelpWanted);
+  if (isBug) matched.push(MATCHED_LABELS.BugFix);
+  if (isDocumentation) matched.push(MATCHED_LABELS.Documentation);
 
   return [...new Set(matched)];
 }
@@ -59,7 +69,7 @@ function daysSince(dateStr: string | null): number {
   return Math.floor((Date.now() - created.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-function deriveLabelFlags(labels: string[]) {
+function deriveLabelFlags(labels: string[]): LabelFlags {
   const lower = labels.map((l) => l.toLowerCase());
   return {
     lower,
@@ -127,7 +137,7 @@ function generateWhyRecommended(
   languages: string[],
   interests: string[],
   repo: { language: string | null; topics: string; stars: number },
-  labels: string[],
+  flags: LabelFlags,
   difficulty: string,
   readme: {
     hasContributionGuide: boolean;
@@ -139,7 +149,7 @@ function generateWhyRecommended(
   goals: string[],
 ): string[] {
   const reasons: string[] = [];
-  const topics: string[] = JSON.parse(repo.topics || "[]");
+  const topics = parseStoredList<string>(repo.topics);
   const lowerTopics = topics.map((t) => t.toLowerCase());
 
   const primaryLanguage = matchPrimaryLanguage(languages, repo.language);
@@ -176,12 +186,12 @@ function generateWhyRecommended(
     reasons.push("Open for community contributions.");
   }
 
-  if (labels.includes("documentation") || labels.includes("docs")) {
+  if (flags.isDocumentation) {
     reasons.push(
       "Documentation contribution — great way to learn the codebase.",
     );
   }
-  if (labels.includes("help wanted")) {
+  if (flags.isHelpWanted) {
     reasons.push("Maintainers are actively seeking help on this.");
   }
 
@@ -247,10 +257,7 @@ function generateWhyRecommended(
   ) {
     reasons.push("Deep technical challenge — great for skill growth.");
   }
-  if (
-    goals.includes("Learn New Technologies") &&
-    labels.includes("documentation")
-  ) {
+  if (goals.includes("Learn New Technologies") && flags.isDocumentation) {
     reasons.push("Documentation task — perfect for learning a new codebase.");
   }
 
@@ -265,7 +272,7 @@ function calculateMatchScore(
   languages: string[],
   interests: string[],
   repo: { language: string | null; topics: string; stars: number },
-  labels: string[],
+  flags: LabelFlags,
   readme: {
     hasContributionGuide: boolean;
     setupComplexity: string;
@@ -277,10 +284,9 @@ function calculateMatchScore(
   goalSignals: { points: number; label: string }[],
 ): MatchScore {
   const breakdown: MatchScoreBreakdown[] = [];
-  const topics: string[] = JSON.parse(repo.topics || "[]");
+  const topics = parseStoredList<string>(repo.topics);
   const lowerTopics = topics.map((t) => t.toLowerCase());
-  const { isGoodFirstIssue, isHelpWanted, isDocumentation, isBug } =
-    deriveLabelFlags(labels);
+  const { isGoodFirstIssue, isHelpWanted, isDocumentation, isBug } = flags;
   const isBeginner = experienceLevel === "Beginner";
 
   // --- Language match (max 35) ---
@@ -429,7 +435,7 @@ function calculateMatchScore(
 
 function calculateGoalScore(
   goals: string[],
-  labels: string[],
+  flags: LabelFlags,
   repo: { stars: number },
   readme: {
     hasContributionGuide: boolean;
@@ -448,7 +454,7 @@ function calculateGoalScore(
     isDocumentation,
     isBug,
     isEnhancement,
-  } = deriveLabelFlags(labels);
+  } = flags;
   const hasGuide = readme?.hasContributionGuide ?? false;
   const setup = readme?.setupComplexity ?? "unknown";
   const techCount = readme?.techStack?.length ?? 0;
@@ -606,7 +612,7 @@ function calculateGoalScore(
 }
 
 function calculateReadinessScore(
-  labels: string[],
+  flags: LabelFlags,
   comments: number,
   issueAge: number,
   readme: { hasContributionGuide: boolean; setupComplexity: string } | null,
@@ -614,8 +620,7 @@ function calculateReadinessScore(
   experienceLevel: string | null,
 ): number {
   let score = 0;
-  const { isGoodFirstIssue, isHelpWanted, isDocumentation } =
-    deriveLabelFlags(labels);
+  const { isGoodFirstIssue, isHelpWanted, isDocumentation } = flags;
   const isBeginner = experienceLevel === "Beginner";
   const isAdvanced = experienceLevel === "Advanced";
 
@@ -681,17 +686,18 @@ export async function GET(request: NextRequest) {
 
   let dataSource: "live" | "mock" = "mock";
 
-  const issues = await getIssuesWithRepo({ languages, interests });
+  const issues = await getIssuesWithRepo({ languages });
 
   if (issues.length > 0) {
     dataSource = "live";
   }
 
   const recommendations: Recommendation[] = issues.map((issue) => {
-    const labels = JSON.parse(issue.labels || "[]");
-    const repoTopics = JSON.parse(issue.repo.topics || "[]");
-    const difficulty = classifyDifficulty(labels);
-    const matchedLabels = matchLabels(labels, interests);
+    const labels = parseStoredList<string>(issue.labels);
+    const repoTopics = parseStoredList<string>(issue.repo.topics);
+    const flags = deriveLabelFlags(labels);
+    const difficulty = classifyDifficulty(flags.lower);
+    const matchedLabels = matchLabels(flags, interests);
     const issueAge = daysSince(issue.createdAt?.toISOString() ?? null);
 
     const readmeData = issue.repo.readme
@@ -699,16 +705,16 @@ export async function GET(request: NextRequest) {
           hasContributionGuide: issue.repo.readme.hasContributionGuide,
           setupComplexity: issue.repo.readme.setupComplexity as
             "simple" | "moderate" | "complex" | "unknown",
-          techStack: JSON.parse(issue.repo.readme.techStack || "[]"),
-          architectureKeywords: JSON.parse(
-            issue.repo.readme.architectureKeywords || "[]",
+          techStack: parseStoredList<string>(issue.repo.readme.techStack),
+          architectureKeywords: parseStoredList<string>(
+            issue.repo.readme.architectureKeywords,
           ),
         }
       : null;
 
     const goalSignals = calculateGoalScore(
       goals,
-      labels,
+      flags,
       { stars: issue.repo.stars },
       readmeData,
       issueAge,
@@ -724,7 +730,7 @@ export async function GET(request: NextRequest) {
         topics: issue.repo.topics,
         stars: issue.repo.stars,
       },
-      labels,
+      flags,
       readmeData,
       issueAge,
       issue.comments,
@@ -740,7 +746,7 @@ export async function GET(request: NextRequest) {
         topics: issue.repo.topics,
         stars: issue.repo.stars,
       },
-      labels,
+      flags,
       difficulty,
       readmeData,
       issueAge,
@@ -749,7 +755,7 @@ export async function GET(request: NextRequest) {
     );
 
     const readinessScore = calculateReadinessScore(
-      labels,
+      flags,
       issue.comments,
       issueAge,
       readmeData,

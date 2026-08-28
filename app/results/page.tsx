@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ResultsPage } from "@/components/recommendations/results-page";
+import { LoadingScreen } from "@/components/ui/loading-screen";
 import { useAuth } from "@/lib/auth-context";
 import { mockRecommendations } from "@/lib/mock-data";
 import type { Recommendation } from "@/lib/types";
@@ -64,11 +65,7 @@ export default function Results() {
   }, [user, isLoading, router]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-muted-foreground border-t-foreground rounded-full animate-spin" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (

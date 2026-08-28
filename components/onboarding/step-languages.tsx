@@ -5,8 +5,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { StepHeader } from "./step-header";
 import type { ProgrammingLanguage } from "@/lib/types";
-import { languageOptions } from "@/lib/mock-data";
+import { languageOptions } from "@/lib/languages";
 
 interface StepLanguagesProps {
   selected: ProgrammingLanguage[];
@@ -47,21 +48,13 @@ export function StepLanguages({
     [handleAddCustom],
   );
 
-  const allCustom = customLanguages;
-
   return (
     <div className="mx-auto w-full">
-      <div className="mb-8 text-center">
-        <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
-          Step 4 of 4
-        </p>
-        <h2 className="font-heading mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-          What languages do you use?
-        </h2>
-        <p className="mt-2.5 text-sm text-muted-foreground">
-          Select your preferred languages or add your own.
-        </p>
-      </div>
+      <StepHeader
+        step={4}
+        title="What languages do you use?"
+        description="Select your preferred languages or add your own."
+      />
 
       <div
         className="mb-6 flex flex-wrap justify-center gap-2.5"
@@ -90,7 +83,7 @@ export function StepLanguages({
           );
         })}
 
-        {allCustom.map((lang) => (
+        {customLanguages.map((lang) => (
           <button
             key={lang}
             type="button"
@@ -127,10 +120,12 @@ export function StepLanguages({
         </button>
       </div>
 
-      {(selected.length > 0 || allCustom.length > 0) && (
+      {(selected.length > 0 || customLanguages.length > 0) && (
         <p className="animate-fade-in mt-6 text-center text-xs font-medium text-muted-foreground">
-          {selected.length + allCustom.length}{" "}
-          {selected.length + allCustom.length === 1 ? "language" : "languages"}{" "}
+          {selected.length + customLanguages.length}{" "}
+          {selected.length + customLanguages.length === 1
+            ? "language"
+            : "languages"}{" "}
           selected
         </p>
       )}

@@ -1,26 +1,14 @@
 const GITHUB_API = "https://api.github.com";
 const USER_AGENT = "scrapeverse/0.1.0";
+const ACCEPT_JSON = "application/vnd.github.v3+json";
+const ACCEPT_RAW = "application/vnd.github.v3.raw";
 
 let rateLimitRemaining = -1;
 let rateLimitReset = 0;
 
-function getHeaders(): Record<string, string> {
+function getHeaders(accept: string): Record<string, string> {
   const headers: Record<string, string> = {
-    Accept: "application/vnd.github.v3+json",
-    "User-Agent": USER_AGENT,
-  };
-
-  const token = process.env.GITHUB_TOKEN;
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  return headers;
-}
-
-function getRawHeaders(): Record<string, string> {
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github.v3.raw",
+    Accept: accept,
     "User-Agent": USER_AGENT,
   };
 
@@ -59,7 +47,7 @@ export async function githubFetch(
   path: string,
   options: { raw?: boolean } = {},
 ): Promise<Response | null> {
-  const headers = options.raw ? getRawHeaders() : getHeaders();
+  const headers = getHeaders(options.raw ? ACCEPT_RAW : ACCEPT_JSON);
   const url = path.startsWith("http") ? path : `${GITHUB_API}${path}`;
 
   for (let attempt = 0; attempt < 3; attempt++) {

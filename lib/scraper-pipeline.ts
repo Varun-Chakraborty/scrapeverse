@@ -9,6 +9,7 @@ import {
   type IssueData,
 } from "./brightdata";
 import { fetchAndAnalyzeReadme } from "./readme-analyzer";
+import { parseStoredList } from "./utils";
 
 export async function runScrapePipeline(): Promise<{
   discovered: number;
@@ -43,7 +44,7 @@ export async function runScrapePipeline(): Promise<{
         language: r.language,
         star_count: r.stars,
         fork_count: r.forks,
-        topics: JSON.parse(r.topics || "[]"),
+        topics: parseStoredList<string>(r.topics),
         license: r.license || "",
         default_branch: r.defaultBranch || "main",
         pushed_at: r.pushedAt?.toISOString() || null,
@@ -75,23 +76,9 @@ export async function runScrapePipeline(): Promise<{
         scraped++;
         trendingRepos.push(`${repoData.owner}/${repoData.repository_name}`);
 
-        const issues = await fetchIssues(
-          repoData.owner,
-          repoData.repository_name,
-        );
-        for (const issue of issues) {
-          await upsertIssue(repoId, issue);
-          issuesScraped++;
-        }
-
-        const readme = await fetchAndAnalyzeReadme(
-          repoData.owner,
-          repoData.repository_name,
-        );
-        if (readme) {
-          await upsertReadme(repoId, readme);
-          readmesScraped++;
-        }
+        const { issues, readmes } = await scrapeRepoResources(repoId, repoData);
+        issuesScraped += issues;
+        readmesScraped += readmes;
       } catch (err) {
         errors.push(
           `Failed to store ${repoData.owner}/${repoData.repository_name}: ${err}`,
@@ -124,18 +111,7 @@ export async function runScrapeForRepo(fullName: string): Promise<boolean> {
     if (!repoData) return false;
 
     const repoId = await upsertRepo(repoData);
-    const issues = await fetchIssues(repoData.owner, repoData.repository_name);
-    for (const issue of issues) {
-      await upsertIssue(repoId, issue);
-    }
-
-    const readme = await fetchAndAnalyzeReadme(
-      repoData.owner,
-      repoData.repository_name,
-    );
-    if (readme) {
-      await upsertReadme(repoId, readme);
-    }
+    await scrapeRepoResources(repoId, repoData);
 
     return true;
   } catch (err) {
@@ -144,6 +120,28 @@ export async function runScrapeForRepo(fullName: string): Promise<boolean> {
   } finally {
     await closeClient();
   }
+}
+
+async function scrapeRepoResources(
+  repoId: number,
+  repoData: RepoData,
+): Promise<{ issues: number; readmes: number }> {
+  const issues = await fetchIssues(repoData.owner, repoData.repository_name);
+  for (const issue of issues) {
+    await upsertIssue(repoId, issue);
+  }
+
+  let readmes = 0;
+  const readme = await fetchAndAnalyzeReadme(
+    repoData.owner,
+    repoData.repository_name,
+  );
+  if (readme) {
+    await upsertReadme(repoId, readme);
+    readmes = 1;
+  }
+
+  return { issues: issues.length, readmes };
 }
 
 async function upsertRepo(data: RepoData): Promise<number> {
@@ -255,7 +253,6 @@ async function upsertReadme(
 
 export async function getIssuesWithRepo(filters: {
   languages: string[];
-  interests: string[];
 }): Promise<
   {
     id: number;

@@ -1,6 +1,7 @@
 import type { OnboardingPreferences } from "@/lib/types";
+import { parseStoredList } from "@/lib/utils";
 
-type PersistedPreferences = {
+export type PersistedPreferences = {
   interests: string;
   experienceLevel: string | null;
   goals: string;
@@ -12,12 +13,16 @@ export function parsePreferences(
   prefs: PersistedPreferences,
 ): OnboardingPreferences {
   return {
-    interests: JSON.parse(prefs.interests),
+    interests: parseStoredList<OnboardingPreferences["interests"][number]>(
+      prefs.interests,
+    ),
     experienceLevel:
       prefs.experienceLevel as OnboardingPreferences["experienceLevel"],
-    goals: JSON.parse(prefs.goals),
-    languages: JSON.parse(prefs.languages),
-    customLanguages: JSON.parse(prefs.customLanguages),
+    goals: parseStoredList<OnboardingPreferences["goals"][number]>(prefs.goals),
+    languages: parseStoredList<OnboardingPreferences["languages"][number]>(
+      prefs.languages,
+    ),
+    customLanguages: parseStoredList<string>(prefs.customLanguages),
   };
 }
 

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useAuth } from "@/lib/auth-context";
+import { useBodyScrollLock, useEscapeKey } from "@/lib/use-dismissible";
 import { cn } from "@/lib/utils";
 
 interface NavbarProps {
@@ -36,18 +37,8 @@ export function Navbar({ onGetStarted }: NavbarProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
+  useEscapeKey(() => setMenuOpen(false), menuOpen);
+  useBodyScrollLock(menuOpen);
 
   return (
     <header

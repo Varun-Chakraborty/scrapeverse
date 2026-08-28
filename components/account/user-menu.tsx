@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Logout03Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { useAuth } from "@/lib/auth-context";
+import { useEscapeKey } from "@/lib/use-dismissible";
 import { cn } from "@/lib/utils";
 
 export function UserMenu() {
@@ -17,16 +18,11 @@ export function UserMenu() {
         setOpen(false);
       }
     }
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
     document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleKey);
-    };
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  useEscapeKey(() => setOpen(false), open);
 
   if (!user) return null;
 
