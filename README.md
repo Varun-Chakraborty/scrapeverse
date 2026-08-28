@@ -173,12 +173,11 @@ Open [http://localhost:3000](http://localhost:3000).
 | POST | `/api/auth/signin` | No | Sign in |
 | POST | `/api/auth/signout` | No | Sign out |
 | GET | `/api/auth/session` | No | Get current session |
-| GET | `/api/scrape/status` | No | Scrape stats (repos, open issues, readmes, last scrape time) |
-| POST | `/api/auth/change-password` | Yes | Change password |
-| POST | `/api/auth/reset-password` | Yes | Reset password (requires session) |
+| POST | `/api/auth/change-password` | Yes | Change password (verifies current password) |
+| POST | `/api/auth/reset-password` | No | Reset password with email + new password (no verification) |
 | GET | `/api/recommendations` | Yes | Get issue recommendations with README intelligence |
-| GET | `/api/scrape` | Yes | Trigger full scraper pipeline |
-| POST | `/api/scrape` | Yes | Scrape a single repository |
+| GET | `/api/scrape/status` | Yes | Scrape stats (repos, open issues, readmes, last scrape time) |
+| GET | `/api/scrape` | Yes | Trigger full pipeline; `?repo=owner/name` scrapes a single repo |
 | GET | `/api/user/preferences` | Yes | Get user preferences |
 | PUT | `/api/user/preferences` | Yes | Update user preferences |
 
@@ -261,7 +260,7 @@ The pipeline (Bright Data discovery → GitHub repo/issue/README scraping → an
 npm run scrape    # runs npx tsx --env-file=.env scripts/scrape.ts
 ```
 
-- `GET /api/scrape` triggers the full pipeline; `POST /api/scrape` scrapes a single repository.
+- `GET /api/scrape` triggers the full pipeline; `GET /api/scrape?repo=owner/name` scrapes a single repository.
 - `.github/workflows/scrape.yml` runs the pipeline automatically every 6 hours.
 
 ## Docker Management
