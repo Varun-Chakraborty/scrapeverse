@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { runScrapePipeline, runScrapeForRepo } from "@/lib/scraper-pipeline";
 
 export async function GET(request: NextRequest) {
-  let { searchParams } = request.nextUrl;
-  let repo = searchParams.get("repo");
+  const { searchParams } = request.nextUrl;
+  const repo = searchParams.get("repo");
 
   if (repo) {
     const success = await runScrapeForRepo(repo);

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 type Theme = "light" | "dark";
 
@@ -36,7 +29,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   function toggleTheme() {
     setTheme((prev) => {
-      let next: Theme = prev === "dark" ? "light" : "dark";
+      const next: Theme = prev === "dark" ? "light" : "dark";
       localStorage.setItem(THEME_STORAGE_KEY, next);
       document.documentElement.classList.toggle("dark", next == "dark");
       return next;
