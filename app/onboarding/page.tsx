@@ -5,14 +5,10 @@ import { useRouter } from "next/navigation";
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
 import { LoadingScreen } from "@/components/ui/loading-screen";
 import { useAuth } from "@/lib/auth-context";
-import type {
-  OnboardingStep,
-  Interest,
-  ExperienceLevel,
-  Goal,
-  OnboardingPreferences,
-} from "@/lib/types";
+import type { OnboardingPreferences, OnboardingStep } from "@/lib/types";
 import type { ProgrammingLanguage } from "@/lib/languages";
+import { TOTAL_ONBOARDING_STEPS } from "@/lib/constants";
+import { Interest, ExperienceLevel, Goal } from "@/lib/user-profile";
 
 export default function Onboarding() {
   const router = useRouter();
@@ -72,7 +68,9 @@ export default function Onboarding() {
   );
 
   const handleNext = () => {
-    setStep((prev) => Math.min(prev + 1, 4) as OnboardingStep);
+    setStep(
+      (prev) => Math.min(prev + 1, TOTAL_ONBOARDING_STEPS) as OnboardingStep,
+    );
   };
 
   const handleBack = () => {

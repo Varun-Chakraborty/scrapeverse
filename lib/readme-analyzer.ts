@@ -1,3 +1,4 @@
+import { SetupComplexity } from "./constants";
 import { githubFetch } from "./github-api";
 import type { ReadmeIntelligence } from "./types";
 
@@ -148,8 +149,7 @@ function analyzeReadme(
     p.test(content),
   );
 
-  let setupComplexity: "simple" | "moderate" | "complex" | "unknown" =
-    "unknown";
+  let setupComplexity: SetupComplexity = "unknown";
   if (SETUP_SIMPLE.some((p) => p.test(content))) {
     setupComplexity = "simple";
   } else if (SETUP_COMPLEX.some((p) => p.test(content))) {

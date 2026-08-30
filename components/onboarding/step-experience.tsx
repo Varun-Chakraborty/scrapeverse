@@ -3,8 +3,7 @@
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { StepHeader } from "./step-header";
-import type { ExperienceLevel } from "@/lib/types";
-import { experienceOptions } from "@/lib/mock-data";
+import { type ExperienceLevel, EXPERIENCE_LEVELS } from "@/lib/user-profile";
 
 interface StepExperienceProps {
   selected: ExperienceLevel | null;
@@ -25,7 +24,7 @@ export function StepExperience({ selected, onSelect }: StepExperienceProps) {
         onValueChange={(value) => onSelect(value as ExperienceLevel)}
         className="grid gap-3.5"
       >
-        {experienceOptions.map((option, i) => {
+        {EXPERIENCE_LEVELS.map((option, i) => {
           const isSelected = selected === option.value;
           return (
             <label
@@ -52,7 +51,7 @@ export function StepExperience({ selected, onSelect }: StepExperienceProps) {
                 </span>
                 <div>
                   <span className="text-sm font-semibold text-foreground">
-                    {option.label}
+                    {option.value}
                   </span>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {option.description}

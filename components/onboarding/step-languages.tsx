@@ -6,8 +6,7 @@ import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Input } from "@/components/ui/input";
 import { SelectionPill } from "@/components/ui/selection-pill";
 import { StepHeader } from "./step-header";
-import type { ProgrammingLanguage } from "@/lib/languages";
-import { languageOptions } from "@/lib/languages";
+import { type ProgrammingLanguage, LANGUAGES } from "@/lib/languages";
 
 interface StepLanguagesProps {
   selected: ProgrammingLanguage[];
@@ -31,7 +30,7 @@ export function StepLanguages({
     if (
       trimmed &&
       !customLanguages.includes(trimmed) &&
-      !languageOptions.some((l) => l.value === trimmed)
+      !LANGUAGES.some((l) => l.value === trimmed)
     ) {
       onAddCustom(trimmed);
       setInputValue("");
@@ -61,7 +60,7 @@ export function StepLanguages({
         role="group"
         aria-label="Your languages"
       >
-        {languageOptions.map((lang, i) => {
+        {LANGUAGES.map((lang, i) => {
           const isSelected = selected.includes(lang.value);
           return (
             <SelectionPill
@@ -70,7 +69,7 @@ export function StepLanguages({
               onClick={() => onToggle(lang.value)}
               style={{ animationDelay: `${i * 35}ms` }}
             >
-              {lang.label}
+              {lang.value}
             </SelectionPill>
           );
         })}

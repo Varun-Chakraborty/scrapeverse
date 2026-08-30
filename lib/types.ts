@@ -1,3 +1,7 @@
+import { Difficulty, MatchCategory, SetupComplexity } from "./constants";
+import type { ProgrammingLanguage } from "@/lib/languages";
+import { ExperienceLevel, Goal, Interest } from "@/lib/user-profile";
+
 export interface User {
   id: string;
   email: string;
@@ -8,37 +12,9 @@ export interface User {
 
 export type OnboardingStep = 1 | 2 | 3 | 4;
 
-export type Interest =
-  | "Compilers"
-  | "Programming Languages"
-  | "Rust"
-  | "Operating Systems"
-  | "Databases"
-  | "Web Development"
-  | "AI / ML"
-  | "Developer Tools"
-  | "Game Development"
-  | "Security"
-  | "Embedded Systems"
-  | "DevOps"
-  | "Networking";
-
-export type ExperienceLevel = "Beginner" | "Intermediate" | "Advanced";
-
-export type Goal =
-  | "First Open Source Contribution"
-  | "Build Portfolio"
-  | "Learn New Technologies"
-  | "Find Mentors"
-  | "Contribute to Production Systems"
-  | "Prepare for Jobs"
-  | "Deep Technical Learning";
-
-import type { ProgrammingLanguage } from "@/lib/languages";
-
 export interface ReadmeIntelligence {
   hasContributionGuide: boolean;
-  setupComplexity: "simple" | "moderate" | "complex" | "unknown";
+  setupComplexity: SetupComplexity;
   techStack: string[];
   architectureKeywords: string[];
 }
@@ -46,7 +22,7 @@ export interface ReadmeIntelligence {
 export interface MatchScoreBreakdown {
   label: string;
   points: number;
-  category: "language" | "interest" | "issue" | "project" | "goal";
+  category: MatchCategory;
 }
 
 export interface MatchScore {
@@ -69,7 +45,7 @@ export interface Recommendation {
   repoStars: number;
   repoTopics: string[];
   whyRecommended: string[];
-  difficulty: "beginner" | "intermediate" | "advanced";
+  difficulty: Difficulty;
   matchedLabels: string[];
   readme: ReadmeIntelligence | null;
   matchScore: MatchScore;
@@ -85,25 +61,6 @@ export interface OnboardingPreferences {
 }
 
 export interface Filters {
-  maxDifficulty: "beginner" | "intermediate" | "advanced" | "any";
+  maxDifficulty: Difficulty | "any";
   language: string;
-}
-
-export interface InterestOption {
-  value: Interest;
-  label: string;
-  icon: string;
-}
-
-export interface ExperienceOption {
-  value: ExperienceLevel;
-  label: string;
-  description: string;
-  icon: string;
-}
-
-export interface GoalOption {
-  value: Goal;
-  label: string;
-  description: string;
 }

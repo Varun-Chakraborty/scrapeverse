@@ -71,8 +71,9 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           setError("Name is required");
           return;
         }
-        if (validateEmail(email.trim())) {
-          setError("Valid email is required");
+        const emailError = validateEmail(email.trim());
+        if (emailError) {
+          setError(emailError);
           return;
         }
         const passwordError = validatePassword(password);
@@ -89,8 +90,9 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           onSuccess(newUser);
         }
       } else {
-        if (validateEmail(email.trim())) {
-          setError("Valid email is required");
+        const emailError = validateEmail(email.trim());
+        if (emailError) {
+          setError(emailError);
           return;
         }
         const user = await signIn(email.trim().toLowerCase(), password);

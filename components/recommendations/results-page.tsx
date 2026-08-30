@@ -11,9 +11,10 @@ import { RecommendationGrid } from "./recommendation-grid";
 import { FilterSidebar } from "./filter-sidebar";
 import { EmptyState } from "./empty-state";
 import { defaultFilters } from "@/lib/constants";
-import { languageOptions } from "@/lib/languages";
+import { LANGUAGES } from "@/lib/languages";
 import type { Filters, Recommendation } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { timeToString } from "@/lib/time-to-string";
 
 interface ScrapeStatus {
   lastScrapedAt: string | null;
@@ -23,12 +24,9 @@ interface ScrapeStatus {
 }
 
 function timeSince(iso: string): string {
-  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
+  const secs = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (secs < 60) return "just now";
+  return `${timeToString(secs)} ago`;
 }
 
 interface ResultsPageProps {
@@ -78,7 +76,7 @@ export function ResultsPage({
   };
 
   const handleSelectTechnology = (tech: string) => {
-    const isLanguage = languageOptions.some((l) => l.value === tech);
+    const isLanguage = LANGUAGES.some((l) => l.value === tech);
     setFilters(
       isLanguage ? { ...defaultFilters, language: tech } : defaultFilters,
     );

@@ -3,8 +3,7 @@
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "@/components/ui/check-icon";
 import { StepHeader } from "./step-header";
-import type { Goal } from "@/lib/types";
-import { goalOptions } from "@/lib/mock-data";
+import { type Goal, GOALS } from "@/lib/user-profile";
 
 interface StepGoalsProps {
   selected: Goal[];
@@ -21,7 +20,7 @@ export function StepGoals({ selected, onToggle }: StepGoalsProps) {
       />
 
       <div className="grid gap-3" role="group" aria-label="Your goals">
-        {goalOptions.map((goal, i) => {
+        {GOALS.map((goal, i) => {
           const isSelected = selected.includes(goal.value);
           return (
             <button
@@ -58,7 +57,7 @@ export function StepGoals({ selected, onToggle }: StepGoalsProps) {
               </span>
               <span>
                 <span className="text-sm font-semibold text-foreground">
-                  {goal.label}
+                  {goal.value}
                 </span>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {goal.description}

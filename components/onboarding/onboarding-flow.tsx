@@ -13,13 +13,10 @@ import { StepGoals } from "./step-goals";
 import { StepLanguages } from "./step-languages";
 import { Button } from "@/components/ui/button";
 import { GlowOrbs } from "@/components/ui/glow-orbs";
-import type {
-  OnboardingStep,
-  Interest,
-  ExperienceLevel,
-  Goal,
-} from "@/lib/types";
+import type { OnboardingStep } from "@/lib/types";
 import type { ProgrammingLanguage } from "@/lib/languages";
+import { TOTAL_ONBOARDING_STEPS } from "@/lib/constants";
+import { Interest, ExperienceLevel, Goal } from "@/lib/user-profile";
 
 interface OnboardingFlowProps {
   currentStep: OnboardingStep;
@@ -38,8 +35,6 @@ interface OnboardingFlowProps {
   onBack: () => void;
   onComplete: () => void;
 }
-
-const TOTAL_STEPS = 4;
 
 function canProceed(
   step: OnboardingStep,
@@ -80,7 +75,7 @@ export function OnboardingFlow({
   onBack,
   onComplete,
 }: OnboardingFlowProps) {
-  const isLastStep = currentStep === 4;
+  const isLastStep = currentStep === TOTAL_ONBOARDING_STEPS;
   const canGo = canProceed(
     currentStep,
     interests,
@@ -95,7 +90,10 @@ export function OnboardingFlow({
       {/* Soft background */}
       <GlowOrbs variant="compact" />
 
-      <ProgressBar currentStep={currentStep} totalSteps={TOTAL_STEPS} />
+      <ProgressBar
+        currentStep={currentStep}
+        totalSteps={TOTAL_ONBOARDING_STEPS}
+      />
 
       <div className="flex w-full flex-1 items-center">
         <div

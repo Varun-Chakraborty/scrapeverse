@@ -1,6 +1,8 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { HttpError } from "@/lib/api";
+import { timeToString } from "./time-to-string";
+import { SESSION_COOKIE } from "./constants";
 
 const secretKey = process.env.SESSION_SECRET;
 if (!secretKey) {
@@ -14,7 +16,6 @@ interface SessionPayload {
   [key: string]: unknown;
 }
 
-const SESSION_COOKIE = "session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 
 export async function setSessionCookie(
@@ -54,11 +55,14 @@ export async function createSession(payload: SessionPayload) {
   await setSessionCookie(token);
 }
 
-export async function encrypt(payload: SessionPayload) {
+export async function encrypt(
+  payload: SessionPayload,
+  expirationTime = timeToString(SESSION_MAX_AGE),
+) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(expirationTime)
     .sign(encodedKey);
 }
 

@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { SESSION_COOKIE } from "./lib/constants";
 
 const publicApiRoutes = ["/api/auth"];
 
 const protectedPages = ["/results", "/onboarding"];
 
 export function proxy(request: NextRequest) {
-  const session = request.cookies.get("session")?.value;
+  const session = request.cookies.get(SESSION_COOKIE)?.value;
   const { pathname } = request.nextUrl;
 
   const isApiRoute = pathname.startsWith("/api/");

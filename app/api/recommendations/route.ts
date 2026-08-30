@@ -69,14 +69,16 @@ export async function GET(request: NextRequest) {
       difficulty,
     );
 
+    const repo = {
+      language: issue.repo.language,
+      topics: issue.repo.topics,
+      stars: issue.repo.stars,
+    };
+
     const matchScore = calculateMatchScore(
       languages,
       interests,
-      {
-        language: issue.repo.language,
-        topics: issue.repo.topics,
-        stars: issue.repo.stars,
-      },
+      repo,
       flags,
       readmeData,
       issueAge,
@@ -88,11 +90,7 @@ export async function GET(request: NextRequest) {
     const whyRecommended = generateWhyRecommended(
       languages,
       interests,
-      {
-        language: issue.repo.language,
-        topics: issue.repo.topics,
-        stars: issue.repo.stars,
-      },
+      repo,
       flags,
       difficulty,
       readmeData,

@@ -11,6 +11,7 @@ import {
 import { fetchAndAnalyzeReadme } from "./readme-analyzer";
 import { parseStoredList, serializeList } from "./utils";
 import type { ReadmeIntelligence } from "./types";
+import { PROJECT_SETUP_COMPLEXITY_LEVELS, SetupComplexity } from "./constants";
 
 export async function runScrapePipeline(): Promise<{
   discovered: number;
@@ -169,7 +170,6 @@ async function upsertRepo(data: RepoData): Promise<number> {
     update: {
       ...values,
       scrapedAt: new Date(),
-      updatedAt: new Date(),
     },
   });
 
@@ -201,20 +201,11 @@ async function upsertIssue(repoId: number, data: IssueData): Promise<void> {
   });
 }
 
-const VALID_SETUP_COMPLEXITIES = [
-  "simple",
-  "moderate",
-  "complex",
-  "unknown",
-] as const;
-
-function validateSetupComplexity(
-  value: string,
-): "simple" | "moderate" | "complex" | "unknown" {
-  return VALID_SETUP_COMPLEXITIES.includes(
-    value as (typeof VALID_SETUP_COMPLEXITIES)[number],
+function validateSetupComplexity(value: string): SetupComplexity {
+  return PROJECT_SETUP_COMPLEXITY_LEVELS.includes(
+    value as (typeof PROJECT_SETUP_COMPLEXITY_LEVELS)[number],
   )
-    ? (value as (typeof VALID_SETUP_COMPLEXITIES)[number])
+    ? (value as (typeof PROJECT_SETUP_COMPLEXITY_LEVELS)[number])
     : "unknown";
 }
 

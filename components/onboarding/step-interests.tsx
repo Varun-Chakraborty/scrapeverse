@@ -3,8 +3,7 @@
 import { cn } from "@/lib/utils";
 import { SelectionPill } from "@/components/ui/selection-pill";
 import { StepHeader } from "./step-header";
-import type { Interest } from "@/lib/types";
-import { interestOptions } from "@/lib/mock-data";
+import { type Interest, INTERESTS } from "@/lib/user-profile";
 
 interface StepInterestsProps {
   selected: Interest[];
@@ -25,7 +24,7 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
         role="group"
         aria-label="Your interests"
       >
-        {interestOptions.map((interest, i) => {
+        {INTERESTS.map((interest, i) => {
           const isSelected = selected.includes(interest.value);
           return (
             <SelectionPill
@@ -44,7 +43,7 @@ export function StepInterests({ selected, onToggle }: StepInterestsProps) {
               >
                 {interest.icon}
               </span>
-              {interest.label}
+              {interest.value}
             </SelectionPill>
           );
         })}

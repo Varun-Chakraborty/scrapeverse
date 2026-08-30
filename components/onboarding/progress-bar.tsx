@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "@/components/ui/check-icon";
-import type { OnboardingStep } from "@/lib/types";
+import type { OnboardingStep } from "@/lib/constants";
 
 interface ProgressBarProps {
   currentStep: OnboardingStep;

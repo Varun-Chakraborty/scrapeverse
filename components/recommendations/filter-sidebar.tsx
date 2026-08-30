@@ -11,22 +11,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Filters } from "@/lib/types";
-import { defaultFilters } from "@/lib/constants";
-import { languageOptions } from "@/lib/languages";
+import { defaultFilters, DIFFICULTY_LEVELS } from "@/lib/constants";
+import { LANGUAGES } from "@/lib/languages";
 
 interface FilterSidebarProps {
   filters: Filters;
   onChange: (filters: Filters) => void;
 }
 
-const difficultyLevels = [
-  { value: "any", label: "Any" },
-  { value: "beginner", label: "Beginner" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "advanced", label: "Advanced" },
-] as const;
+const difficultyLevels = ["any", ...DIFFICULTY_LEVELS] as const;
 
-const languages = ["any", ...languageOptions.map((l) => l.value)];
+const languages = ["any", ...LANGUAGES.map((l) => l.value)];
 
 export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
   const update = <K extends keyof Filters>(key: K, value: Filters[K]) => {
@@ -45,14 +40,14 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
           aria-label="Filter by difficulty"
         >
           {difficultyLevels.map((d) => {
-            const isActive = filters.maxDifficulty === d.value;
+            const isActive = filters.maxDifficulty === d;
             return (
               <button
-                key={d.value}
+                key={d}
                 type="button"
                 aria-pressed={isActive}
                 onClick={() =>
-                  update("maxDifficulty", d.value as Filters["maxDifficulty"])
+                  update("maxDifficulty", d as Filters["maxDifficulty"])
                 }
                 className={cn(
                   "cursor-pointer rounded-full border px-3.5 py-2 text-xs font-semibold transition-all duration-200",
@@ -61,7 +56,7 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
                     : "border-border bg-card text-muted-foreground hover:border-primary/35 hover:text-secondary-foreground",
                 )}
               >
-                {d.label}
+                {d}
               </button>
             );
           })}
