@@ -68,7 +68,7 @@ export async function discoverTrendingRepos(): Promise<string[]> {
   }
 }
 
-export async function fetchRepoDetails(
+async function fetchRepoDetails(
   owner: string,
   repo: string,
 ): Promise<RepoData | null> {
@@ -97,14 +97,19 @@ export async function fetchRepoDetailsBatch(
 ): Promise<RepoData[]> {
   const results: RepoData[] = [];
 
-  for (const url of urls) {
-    const match = url.match(/github\.com\/([^/]+)\/([^/]+)/);
-    if (!match) continue;
+  const promise = Promise.all(
+    urls.map((url) => {
+      const match = url.match(/github\.com\/([^/]+)\/([^/]+)/);
+      if (!match) return null;
 
-    const [, owner, repo] = match;
-    const details = await fetchRepoDetails(owner, repo);
-    if (details) {
-      results.push(details);
+      const [, owner, repo] = match;
+      return fetchRepoDetails(owner, repo);
+    }),
+  );
+  const details = await promise;
+  for (const detail of details) {
+    if (detail) {
+      results.push(detail);
     }
   }
 
@@ -114,7 +119,6 @@ export async function fetchRepoDetailsBatch(
 export async function fetchIssues(
   owner: string,
   repo: string,
-  labels: string[] = ["good first issue", "help wanted"],
 ): Promise<IssueData[]> {
   const allIssues: IssueData[] = [];
   const seen = new Set<number>();
@@ -135,23 +139,12 @@ export async function fetchIssues(
     });
   }
 
-  for (const label of labels) {
-    const res = await githubFetch(
-      `/repos/${owner}/${repo}/issues?labels=${encodeURIComponent(label)}&state=open&per_page=10`,
-    );
-    if (!res || !res.ok) continue;
+  const res = await githubFetch(
+    `/repos/${owner}/${repo}/issues?state=open&sort=updated&per_page=15`,
+  );
+  if (res && res.ok) {
     const issues = await res.json();
     for (const issue of issues) addIssue(issue);
-  }
-
-  if (allIssues.length < 5) {
-    const res = await githubFetch(
-      `/repos/${owner}/${repo}/issues?state=open&sort=updated&per_page=15`,
-    );
-    if (res && res.ok) {
-      const issues = await res.json();
-      for (const issue of issues) addIssue(issue);
-    }
   }
 
   return allIssues;

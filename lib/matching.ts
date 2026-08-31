@@ -134,6 +134,29 @@ export function matchInterestsByTopics(
   );
 }
 
+function analyzeMatch(
+  languages: string[],
+  interests: string[],
+  repo: { language: string | null; topics: string },
+  readme: ReadmeIntelligence | null,
+): {
+  primaryLanguage: string | null;
+  topicLangMatch: string | null;
+  matchedInterests: string[];
+  stackMatch: string[];
+} {
+  const lowerTopics = parseStoredList<string>(repo.topics).map((t) =>
+    t.toLowerCase(),
+  );
+  const primaryLanguage = matchPrimaryLanguage(languages, repo.language);
+  const topicLangMatch = primaryLanguage
+    ? null
+    : matchTopicLanguage(languages, lowerTopics);
+  const matchedInterests = matchInterestsByTopics(interests, lowerTopics);
+  const stackMatch = matchTechStack(languages, readme?.techStack ?? []);
+  return { primaryLanguage, topicLangMatch, matchedInterests, stackMatch };
+}
+
 export function generateWhyRecommended(
   languages: string[],
   interests: string[],
@@ -146,22 +169,18 @@ export function generateWhyRecommended(
   goals: string[],
 ): string[] {
   const reasons: string[] = [];
-  const topics = parseStoredList<string>(repo.topics);
-  const lowerTopics = topics.map((t) => t.toLowerCase());
 
-  const primaryLanguage = matchPrimaryLanguage(languages, repo.language);
+  const { primaryLanguage, topicLangMatch, matchedInterests, stackMatch } =
+    analyzeMatch(languages, interests, repo, readme);
+
   if (primaryLanguage) {
     reasons.push(
       `Primary language is ${primaryLanguage} — matches your stack.`,
     );
-  } else {
-    const topicLangMatch = matchTopicLanguage(languages, lowerTopics);
-    if (topicLangMatch) {
-      reasons.push(`Uses ${topicLangMatch} (via project topics).`);
-    }
+  } else if (topicLangMatch) {
+    reasons.push(`Uses ${topicLangMatch} (via project topics).`);
   }
 
-  const matchedInterests = matchInterestsByTopics(interests, lowerTopics);
   if (matchedInterests.length > 1) {
     reasons.push(
       `Matches ${matchedInterests.length} of your interests: ${matchedInterests.join(", ")}.`,
@@ -170,11 +189,8 @@ export function generateWhyRecommended(
     reasons.push(`Aligns with your interest in ${matchedInterests[0]}.`);
   }
 
-  if (readme?.techStack && readme.techStack.length > 0) {
-    const stackMatch = matchTechStack(languages, readme.techStack);
-    if (stackMatch.length > 0) {
-      reasons.push(`Tech stack includes ${stackMatch.join(", ")}.`);
-    }
+  if (stackMatch.length > 0) {
+    reasons.push(`Tech stack includes ${stackMatch.join(", ")}.`);
   }
 
   if (difficulty === "beginner") {
@@ -277,43 +293,35 @@ export function calculateMatchScore(
   goalSignals: { points: number; label: string }[],
 ): MatchScore {
   const breakdown: MatchScoreBreakdown[] = [];
-  const topics = parseStoredList<string>(repo.topics);
-  const lowerTopics = topics.map((t) => t.toLowerCase());
   const { isGoodFirstIssue, isHelpWanted, isDocumentation, isBug } = flags;
   const isBeginner = experienceLevel === "Beginner";
 
   // --- Language match (max 35) ---
-  const primaryLanguage = matchPrimaryLanguage(languages, repo.language);
+  const { primaryLanguage, topicLangMatch, matchedInterests, stackMatch } =
+    analyzeMatch(languages, interests, repo, readme);
   if (primaryLanguage) {
     breakdown.push({
       label: `${primaryLanguage} primary`,
       points: 30,
       category: "language",
     });
-  } else {
-    const topicLangMatch = matchTopicLanguage(languages, lowerTopics);
-    if (topicLangMatch) {
-      breakdown.push({
-        label: `${topicLangMatch} in topics`,
-        points: 15,
-        category: "language",
-      });
-    }
+  } else if (topicLangMatch) {
+    breakdown.push({
+      label: `${topicLangMatch} in topics`,
+      points: 15,
+      category: "language",
+    });
   }
 
-  if (readme?.techStack) {
-    const stackMatch = matchTechStack(languages, readme.techStack);
-    if (stackMatch.length > 0) {
-      breakdown.push({
-        label: `Tech: ${stackMatch[0]}`,
-        points: 5,
-        category: "language",
-      });
-    }
+  if (stackMatch.length > 0) {
+    breakdown.push({
+      label: `Tech: ${stackMatch[0]}`,
+      points: 5,
+      category: "language",
+    });
   }
 
   // --- Interest alignment (max 20) ---
-  const matchedInterests = matchInterestsByTopics(interests, lowerTopics);
   if (matchedInterests.length > 1) {
     breakdown.push({
       label: `${matchedInterests.length} interests matched`,

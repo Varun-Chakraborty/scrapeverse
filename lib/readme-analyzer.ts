@@ -15,6 +15,8 @@ const CONTRIBUTION_PATTERNS = [
   /hack on/i,
 ];
 
+type SetupTier = Exclude<SetupComplexity, "unknown">;
+
 const SETUP_SIMPLE = [
   /cargo install/i,
   /go install/i,
@@ -35,6 +37,18 @@ const SETUP_COMPLEX = [
   /system requirements/i,
   /compile from source/i,
   /build from source/i,
+];
+
+const SETUP_MODERATE = ["install", "setup"] as const;
+
+const SETUP_TIERS: {
+  tier: SetupTier;
+  patterns: RegExp[];
+  keywords: readonly string[];
+}[] = [
+  { tier: "simple", patterns: SETUP_SIMPLE, keywords: [] },
+  { tier: "complex", patterns: SETUP_COMPLEX, keywords: [] },
+  { tier: "moderate", patterns: [], keywords: SETUP_MODERATE },
 ];
 
 const TECH_STACK_KEYWORDS = [
@@ -150,16 +164,14 @@ function analyzeReadme(
   );
 
   let setupComplexity: SetupComplexity = "unknown";
-  if (SETUP_SIMPLE.some((p) => p.test(content))) {
-    setupComplexity = "simple";
-  } else if (SETUP_COMPLEX.some((p) => p.test(content))) {
-    setupComplexity = "complex";
-  } else if (
-    lower.includes("install") ||
-    lower.includes("setup") ||
-    lower.includes("getting started")
-  ) {
-    setupComplexity = "moderate";
+  for (const { tier, patterns, keywords } of SETUP_TIERS) {
+    if (
+      patterns.some((p) => p.test(content)) ||
+      keywords.some((kw) => lower.includes(kw))
+    ) {
+      setupComplexity = tier;
+      break;
+    }
   }
 
   const techStack = TECH_STACK_KEYWORDS.filter((kw) => lower.includes(kw));

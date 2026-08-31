@@ -1,7 +1,6 @@
 import { db } from "./db";
 import {
   discoverTrendingRepos,
-  fetchRepoDetails,
   fetchRepoDetailsBatch,
   fetchIssues,
   closeClient,
@@ -78,7 +77,7 @@ export async function runScrapePipeline(): Promise<{
         scraped++;
         trendingRepos.push(`${repoData.owner}/${repoData.repository_name}`);
 
-        const { issues, readmes } = await scrapeRepoResources(repoId, repoData);
+        const { issues, readmes } = await fetchRepoResources(repoId, repoData);
         issuesScraped += issues;
         readmesScraped += readmes;
       } catch (err) {
@@ -103,28 +102,7 @@ export async function runScrapePipeline(): Promise<{
   };
 }
 
-export async function runScrapeForRepo(fullName: string): Promise<boolean> {
-  try {
-    const match = fullName.match(/^([^/]+)\/([^/]+)$/);
-    if (!match) return false;
-
-    const [, owner, repo] = match;
-    const repoData = await fetchRepoDetails(owner, repo);
-    if (!repoData) return false;
-
-    const repoId = await upsertRepo(repoData);
-    await scrapeRepoResources(repoId, repoData);
-
-    return true;
-  } catch (err) {
-    console.error(`Failed to scrape ${fullName}:`, err);
-    return false;
-  } finally {
-    await closeClient();
-  }
-}
-
-async function scrapeRepoResources(
+async function fetchRepoResources(
   repoId: number,
   repoData: RepoData,
 ): Promise<{ issues: number; readmes: number }> {
