@@ -21,6 +21,13 @@ const columns = [
       { label: "Open source guides", href: "https://opensource.guide" },
     ],
   },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+    ],
+  },
 ];
 
 export function Footer() {
@@ -36,7 +43,7 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-10 sm:gap-16">
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 sm:gap-16">
             {columns.map((col) => (
               <div key={col.title}>
                 <h3 className="text-xs font-bold tracking-[0.15em] text-foreground uppercase">
