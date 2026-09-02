@@ -5,10 +5,9 @@ import type {
   MatchScoreBreakdown,
   ReadmeIntelligence,
 } from "@/lib/types";
+import { Difficulty } from "./constants";
 
-export function classifyDifficulty(
-  lower: string[],
-): "beginner" | "intermediate" | "advanced" {
+export function classifyDifficulty(lower: string[]): Difficulty {
   if (
     lower.some(
       (l) =>
@@ -83,7 +82,7 @@ export function daysSince(dateStr: string | null): number {
   return Math.floor((Date.now() - created.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export function starBand(
+function starBand(
   stars: number,
 ): "established" | "growing" | "emerging" | "small" {
   if (stars > 10000) return "established";
@@ -116,16 +115,13 @@ function matchTopicLanguage(
   );
 }
 
-export function matchTechStack(
-  languages: string[],
-  techStack: string[],
-): string[] {
+function matchTechStack(languages: string[], techStack: string[]): string[] {
   return (techStack ?? []).filter((s) =>
     languages.some((l) => l.toLowerCase() === s.toLowerCase()),
   );
 }
 
-export function matchInterestsByTopics(
+function matchInterestsByTopics(
   interests: string[],
   lowerTopics: string[],
 ): string[] {

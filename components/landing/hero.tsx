@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { GlowOrbs } from "@/components/ui/glow-orbs";
 import { languageColorMap } from "@/lib/languages";
-import { SCRAPE_INTERVAL_LABEL } from "@/lib/constants";
 
 interface HeroProps {
   onGetStarted: () => void;
@@ -123,9 +122,7 @@ function PreviewWindow() {
         </span>
         <div>
           <p className="text-xs font-semibold text-foreground">100+ issues</p>
-          <p className="text-[10px] text-muted-foreground">
-            scanned {SCRAPE_INTERVAL_LABEL}
-          </p>
+          <p className="text-[10px] text-muted-foreground">scanned regularly</p>
         </div>
       </div>
     </div>

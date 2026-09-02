@@ -12,7 +12,7 @@ Discover open-source projects that match your interests, skill level, and contri
 - **Filters** — Difficulty and language filters with a friendly empty state
 - **Direct GitHub Links** — Every card links to the live issue and its repository
 - **User Accounts** — Sign up / sign in with persistent preferences stored in PostgreSQL
-- **Scheduled Scraping** — GitHub Action re-scrapes every 6 hours; run manually via `scripts/scrape.ts`
+- **Scheduled Scraping** — GitHub Action re-scrapes regularly; run manually via `scripts/scrape.ts`
 - **Polished Theme** — Rose-accented design system with light/dark support via CSS variables
 
 ## Tech Stack
@@ -94,7 +94,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ```
 ├── .github/
 │   └── workflows/
-│       └── scrape.yml     # Scheduled scraper (every 6 hours)
+│       └── scrape.yml     # Scheduled scraper (regularly)
 ├── app/
 │   ├── api/
 │   │   ├── auth/
@@ -261,7 +261,7 @@ npm run scrape    # runs npx tsx --env-file=.env scripts/scrape.ts
 ```
 
 - `GET /api/scrape` triggers the full pipeline.
-- `.github/workflows/scrape.yml` runs the pipeline automatically every 6 hours.
+- `.github/workflows/scrape.yml` runs the pipeline automatically regularly.
 
 ## Docker Management
 

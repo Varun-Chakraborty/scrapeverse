@@ -21,6 +21,11 @@ interface AuthContextValue {
   signIn: (email: string, password: string) => Promise<User | null>;
   signOut: () => Promise<void>;
   updatePreferences: (prefs: OnboardingPreferences) => Promise<void>;
+  resetPassword: (email: string, newPassword: string) => Promise<void>;
+  changePassword: (
+    oldPassword: string,
+    newPassword: string,
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -106,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    await fetch("/api/auth/signout", { method: "POST" });
+    await apiFetch<void>("/api/auth/signout", { method: "POST" }, "Sign out failed");
     setUser(null);
   }, []);
 
@@ -127,9 +132,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  const resetPassword = useCallback(
+    async (email: string, password: string) =>
+      apiFetch<void>("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          newPassword: password,
+        }),
+      },
+      "Failed to reset password"
+    ),
+    [],
+  );
+
+  const changePassword = useCallback(
+    async (oldPassword: string, newPassword: string) =>
+      apiFetch<void>("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+        }),
+      },
+      "Failed to change password"
+    ),
+    [],
+  );
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, signUp, signIn, signOut, updatePreferences }}
+      value={{ user, isLoading, signUp, signIn, signOut, updatePreferences, resetPassword, changePassword }}
     >
       {children}
     </AuthContext.Provider>

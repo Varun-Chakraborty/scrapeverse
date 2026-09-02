@@ -8,7 +8,6 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Reveal } from "@/components/ui/reveal";
 import { Button } from "@/components/ui/button";
-import { SCRAPE_INTERVAL_LABEL } from "@/lib/constants";
 
 const steps = [
   {
@@ -22,7 +21,7 @@ const steps = [
     icon: SearchFocusIcon,
     step: "02",
     title: "We scan the ecosystem",
-    description: `Our pipeline scrapes live issues across major repositories ${SCRAPE_INTERVAL_LABEL} and scores them against your profile.`,
+    description: `Our pipeline scrapes live issues across major repositories regularly and scores them against your profile.`,
   },
   {
     icon: Rocket02Icon,

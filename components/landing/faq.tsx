@@ -4,7 +4,6 @@ import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, MinusSignIcon } from "@hugeicons/core-free-icons";
 import { Reveal } from "@/components/ui/reveal";
-import { SCRAPE_INTERVAL_LABEL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const faqs = [
@@ -15,7 +14,7 @@ const faqs = [
   },
   {
     question: "Where do the project recommendations come from?",
-    answer: `We scrape public issue trackers across major open-source repositories ${SCRAPE_INTERVAL_LABEL}, then score each issue against your profile: languages, interests, experience level, and goals.`,
+    answer: `We scrape public issue trackers across major open-source repositories regularly, then score each issue against your profile: languages, interests, experience level, and goals.`,
   },
   {
     question: "I'm a complete beginner. Is this for me?",
@@ -29,7 +28,7 @@ const faqs = [
   },
   {
     question: "How fresh is the issue data?",
-    answer: `The pipeline refreshes ${SCRAPE_INTERVAL_LABEL} and automatically re-scrapes when data goes stale, so you're always looking at live, open issues rather than stale snapshots.`,
+    answer: `The pipeline refreshes regularly and automatically re-scrapes when data goes stale, so you're always looking at live, open issues rather than stale snapshots.`,
   },
 ];
 

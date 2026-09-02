@@ -1,4 +1,3 @@
-export const SCRAPE_INTERVAL_LABEL = "every 6 hours";
 export const SESSION_COOKIE = "session";
 export const TOTAL_ONBOARDING_STEPS = 4;
 

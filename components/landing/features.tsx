@@ -10,7 +10,6 @@ import {
   GitPullRequestIcon,
 } from "@hugeicons/core-free-icons";
 import { Reveal } from "@/components/ui/reveal";
-import { SCRAPE_INTERVAL_LABEL } from "@/lib/constants";
 
 const features = [
   {
@@ -31,7 +30,7 @@ const features = [
     icon: Clock01Icon,
     tint: "bg-peach text-peach-foreground",
     title: "Always fresh data",
-    description: `Issues are scraped and refreshed ${SCRAPE_INTERVAL_LABEL}, so you never waste an evening on something merged weeks ago.`,
+    description: `Issues are scraped and refreshed regularly, so you never waste an evening on something merged weeks ago.`,
   },
   {
     icon: FilterHorizontalIcon,

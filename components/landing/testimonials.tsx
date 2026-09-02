@@ -3,12 +3,11 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { StarIcon, QuoteDownIcon } from "@hugeicons/core-free-icons";
 import { Reveal } from "@/components/ui/reveal";
-import { SCRAPE_INTERVAL_LABEL } from "@/lib/constants";
 
 const stats = [
   {
     value: "100+",
-    label: `Issues scanned ${SCRAPE_INTERVAL_LABEL}`,
+    label: `Issues scanned regularly`,
   },
   { value: "30s", label: "Average setup time" },
   { value: "4", label: "Profile dimensions matched" },

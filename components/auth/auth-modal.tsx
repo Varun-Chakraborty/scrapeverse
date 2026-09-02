@@ -39,7 +39,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
 
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn, resetPassword } = useAuth();
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEscapeKey(onClose, open);
@@ -123,24 +123,10 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
         return;
       }
 
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email.trim().toLowerCase(),
-          newPassword: password,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Failed to reset password");
-        return;
-      }
-
+      await resetPassword(email.trim().toLowerCase(), password);
       setResetSuccess(true);
-    } catch {
-      setError("Failed to reset password");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setIsSubmitting(false);
     }
