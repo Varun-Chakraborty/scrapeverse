@@ -9,23 +9,27 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: "The short version",
-    body: "We collect just enough information to make Scrapeverse work: your account details and your personal preferences. We use it only to give you better recommendations. We do not sell your data.",
+    body: "We collect just enough information to make Scrapeverse work: your GitHub account details (name, email, and avatar) and your personal preferences. We use it only to give you better recommendations. We do not sell your data.",
   },
   {
     title: "What we collect",
-    body: "When you create an account, we collect your name, email address, and a securely hashed password. When you complete the onboarding flow, we store your interests, experience level, contribution goals, and programming languages so we can recommend issues that fit you.",
+    body: "When you sign in with your GitHub account, we collect your name, email address, and avatar image from your GitHub profile. When you complete the onboarding flow, we store your interests, experience level, contribution goals, and programming languages so we can recommend issues that fit you.",
   },
   {
     title: "What we don't collect",
-    body: "We don't run analytics or tracking scripts, and we don't collect usage logs, location data, or anything else that isn't needed for the service to function.",
+    body: "We don't run analytics or tracking scripts, and we don't collect usage logs, location data, or anything else that isn't needed for the service to function. We don't have access to your GitHub password or private repositories — GitHub handles authentication itself and shares only the public profile information you've approved.",
+  },
+  {
+    title: "Rate limiting",
+    body: "We apply rate limiting to protect the service from abuse. We track requests by IP address and limit each IP to 100 requests per minute. If you exceed this limit, you'll receive a 429 response. This data is stored temporarily in memory and is automatically cleared after the rate limit window expires.",
   },
   {
     title: "How we use your information",
-    body: "We use your email and name to identify you and keep you logged in. We use your preferences to rank and recommend open-source issues for you. That's it.",
+    body: "We use your name and email to identify you and keep you logged in. We use your avatar to display your profile. We use your preferences to rank and recommend open-source issues for you. That's it.",
   },
   {
     title: "Cookies and sessions",
-    body: "We use a secure session cookie to keep you logged in. It contains a short-lived token, not your personal details, and expires automatically after a short time.",
+    body: "We use a secure session cookie to keep you logged in after you sign in with GitHub. It contains a short-lived token, not your personal details, and expires automatically after a short time.",
   },
   {
     title: "Where your data lives",
@@ -34,6 +38,10 @@ const sections = [
   {
     title: "Sharing",
     body: "We never sell your personal information. We only share data with the services needed to run this site (for example, our database provider), and only to the extent needed to provide the service.",
+  },
+  {
+    title: "GitHub authorization",
+    body: "Signing in with GitHub is the only way to create an account. When you sign in, GitHub shares with us the profile information you approve (your name, email, and avatar). We do not receive or store your GitHub password.",
   },
   {
     title: "How long we keep it",
@@ -62,7 +70,7 @@ export default function PrivacyPolicyPage() {
     <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl font-bold tracking-tight">Privacy Policy</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Last updated: September 1, 2026
+        Last updated: September 3, 2026
       </p>
       <p className="mt-6 text-muted-foreground">
         This policy explains in plain English what information Scrapeverse

@@ -11,7 +11,7 @@ Discover open-source projects that match your interests, skill level, and contri
 - **README Intelligence** — Contribution guide detection, setup complexity, tech stack, and architecture analysis
 - **Filters** — Difficulty and language filters with a friendly empty state
 - **Direct GitHub Links** — Every card links to the live issue and its repository
-- **User Accounts** — Sign up / sign in with persistent preferences stored in PostgreSQL
+- **User Accounts** — GitHub OAuth sign-in with persistent preferences stored in PostgreSQL
 - **Scheduled Scraping** — GitHub Action re-scrapes regularly; run manually via `scripts/scrape.ts`
 - **Polished Theme** — Rose-accented design system with light/dark support via CSS variables
 
@@ -22,7 +22,7 @@ Discover open-source projects that match your interests, skill level, and contri
 | Framework | Next.js 16 (App Router) |
 | UI | React 19, TypeScript, Tailwind CSS v4, ShadCN (base-mira) |
 | Database | PostgreSQL 17 via Prisma 6 |
-| Auth | JWT (jose) + bcryptjs, httpOnly cookies |
+| Auth | GitHub OAuth + JWT (jose), httpOnly cookies |
 | Data Sources | GitHub API (details, issues, READMEs), Bright Data (trending discovery) |
 | Proxy | Next.js 16 `proxy.ts` (middleware replacement) |
 
@@ -71,9 +71,14 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/osof?schema=public"
 SESSION_SECRET="your-random-secret-here"
 BRIGHTDATA_API_KEY="your-brightdata-api-key"
 GITHUB_TOKEN="your-github-personal-access-token"
+GITHUB_CLIENT_ID="your-github-oauth-client-id"
+GITHUB_CLIENT_SECRET="your-github-oauth-client-secret"
+GITHUB_REDIRECT_URI="http://localhost:3000/api/auth/callback"
 ```
 
 A GitHub Personal Access Token is recommended for reliable scraping (5,000 req/hr vs 60 unauthenticated).
+
+To enable GitHub OAuth sign-in, create a GitHub OAuth App at developer settings and set the callback URL to match `GITHUB_REDIRECT_URI`.
 
 ### 4. Run migrations
 
@@ -91,166 +96,44 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Project Structure
 
-```
-├── .github/
-│   └── workflows/
-│       └── scrape.yml     # Scheduled scraper (regularly)
-├── app/
-│   ├── api/
-│   │   ├── auth/
-│   │   │   ├── change-password/route.ts
-│   │   │   ├── reset-password/route.ts
-│   │   │   ├── session/route.ts
-│   │   │   ├── signin/route.ts
-│   │   │   ├── signout/route.ts
-│   │   │   └── signup/route.ts
-│   │   ├── recommendations/route.ts
-│   │   ├── scrape/
-│   │   │   ├── route.ts
-│   │   │   └── status/route.ts
-│   │   └── user/
-│   │       └── preferences/route.ts
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── onboarding/page.tsx
-│   └── page.tsx
-├── components/
-│   ├── account/
-│   │   └── user-menu.tsx
-│   ├── auth/
-│   │   └── auth-modal.tsx
-│   ├── landing/
-│   │   ├── cta.tsx
-│   │   ├── faq.tsx
-│   │   ├── features.tsx
-│   │   ├── footer.tsx
-│   │   ├── hero.tsx
-│   │   ├── how-it-works.tsx
-│   │   ├── landing-page.tsx
-│   │   ├── logo.tsx
-│   │   ├── navbar.tsx
-│   │   └── testimonials.tsx
-│   ├── onboarding/
-│   │   ├── onboarding-flow.tsx
-│   │   ├── progress-bar.tsx
-│   │   ├── step-experience.tsx
-│   │   ├── step-goals.tsx
-│   │   ├── step-interests.tsx
-│   │   └── step-languages.tsx
-│   ├── recommendations/
-│   │   ├── empty-state.tsx
-│   │   ├── filter-sidebar.tsx
-│   │   ├── recommendation-card.tsx
-│   │   ├── recommendation-grid.tsx
-│   │   └── results-page.tsx
-│   └── ui/              # ShadCN components + reveal/select primitives
-├── lib/
-│   ├── auth-context.tsx
-│   ├── brightdata.ts
-│   ├── db.ts
-│   ├── github-api.ts
-│   ├── mock-data.ts
-│   ├── readme-analyzer.ts
-│   ├── scraper-pipeline.ts
-│   ├── session.ts
-│   ├── types.ts
-│   └── utils.ts
-├── prisma/
-│   ├── schema.prisma
-│   └── migrations/
-├── scripts/
-│   └── scrape.ts        # Manual pipeline runner
-├── proxy.ts             # Next.js 16 middleware (auth protection)
-├── docker-compose.yml
-└── .env.example
-```
+The project is organized as a Next.js 16 App Router application:
+
+- **`app/`** — pages and API routes. Pages include the landing page, onboarding, results, privacy policy, and terms. API routes under `app/api/` handle auth (GitHub OAuth, session, signout), recommendations, scraping, and user preferences.
+- **`components/`** — React components grouped by feature: landing, auth (GitHub sign-in modal), onboarding flow, recommendations, account menu, theme, and shared UI primitives.
+- **`lib/`** — server and client utilities: Prisma client, GitHub API client, Bright Data integration, scraper pipeline, README analyzer, matching logic, session/JWT handling, auth context, types, and validation.
+- **`prisma/`** — database schema and migrations.
+- **`scripts/`** — the scraper pipeline runner.
+- **`proxy.ts`** — Next.js 16 middleware for auth protection and rate limiting.
+- **`.github/workflows/`** — scheduled scraper.
 
 ## API Routes
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| POST | `/api/auth/signup` | No | Create account |
-| POST | `/api/auth/signin` | No | Sign in |
+| GET | `/api/auth/github` | No | Redirect to GitHub OAuth authorize |
+| GET | `/api/auth/callback` | No | GitHub OAuth callback (exchanges code, sets session) |
 | POST | `/api/auth/signout` | No | Sign out |
 | GET | `/api/auth/session` | No | Get current session |
-| POST | `/api/auth/change-password` | Yes | Change password (verifies current password) |
-| POST | `/api/auth/reset-password` | No | Reset password with email + new password (no verification) |
 | GET | `/api/recommendations` | Yes | Get issue recommendations with README intelligence |
 | GET | `/api/scrape/status` | Yes | Scrape stats (repos, open issues, readmes, last scrape time) |
 | GET | `/api/scrape` | Yes | Trigger the full scrape pipeline |
 | GET | `/api/user/preferences` | Yes | Get user preferences |
 | PUT | `/api/user/preferences` | Yes | Update user preferences |
 
+## Rate Limiting
+
+All API endpoints are rate limited to **100 requests per minute per IP address**. When the limit is exceeded, the API returns a `429 Too Many Requests` response. The `X-RateLimit-Remaining` header indicates remaining requests in the current window.
+
 ## Database Schema
 
-```prisma
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String              // bcrypt hashed
-  createdAt DateTime @default(now())
-  preferences UserPreferences?
-}
+The database is PostgreSQL managed via Prisma. It stores:
 
-model UserPreferences {
-  id              String   @id @default(cuid())
-  userId          String   @unique
-  interests       String   @default("[]")   // JSON array
-  experienceLevel String?
-  goals           String   @default("[]")   // JSON array
-  languages       String   @default("[]")   // JSON array
-  customLanguages String   @default("[]")   // JSON array
-  updatedAt       DateTime @updatedAt
-}
-
-model ScrapedRepo {
-  id            Int      @id
-  fullName      String   @unique
-  owner         String
-  name          String
-  description   String?
-  language      String?
-  stars         Int      @default(0)
-  forks         Int      @default(0)
-  topics        String   @default("[]")   // JSON array
-  license       String?
-  defaultBranch String?
-  pushedAt      DateTime?
-  scrapedAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  issues        ScrapedIssue[]
-  readme        ScrapedReadme?
-}
-
-model ScrapedIssue {
-  id        Int      @id @default(autoincrement())
-  repoId    Int
-  repo      ScrapedRepo @relation(fields: [repoId], references: [id], onDelete: Cascade)
-  number    Int
-  title     String
-  url       String
-  labels    String   @default("[]")   // JSON array
-  state     String   @default("open")
-  comments  Int      @default(0)
-  author    String?
-  createdAt DateTime?
-  scrapedAt DateTime @default(now())
-  @@unique([repoId, number])
-}
-
-model ScrapedReadme {
-  id                   Int      @id @default(autoincrement())
-  repoId               Int      @unique
-  repo                 ScrapedRepo @relation(fields: [repoId], references: [id], onDelete: Cascade)
-  rawContent           String
-  hasContributionGuide Boolean  @default(false)
-  setupComplexity      String   @default("unknown")
-  techStack            String   @default("[]")   // JSON array
-  architectureKeywords String   @default("[]")   // JSON array
-  scrapedAt            DateTime @default(now())
-}
-```
+- **`User`** — id, unique email, name, GitHub avatar URL, unique GitHub ID, and creation time, related to preferences and consents.
+- **`UserPreferences`** — one-to-one with a user; stores interests, experience level, goals, languages, and custom languages (as JSON arrays).
+- **`ScrapedRepo`** — scraped GitHub repositories with metadata (stars, forks, language, topics, license) and related issues and README.
+- **`ScrapedIssue`** — issues scraped per repo (number, title, URL, labels, state, comments, author).
+- **`ScrapedReadme`** — one-to-one README content per repo with computed intelligence (contribution guide, setup complexity, tech stack, architecture keywords).
+- **`UserConsent`** — records user consent (type, granted, IP address, timestamp), unique per user and consent type.
 
 ## Scraping
 

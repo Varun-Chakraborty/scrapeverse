@@ -17,7 +17,11 @@ const sections = [
   },
   {
     title: "Your account",
-    body: "To use the full experience, you create an account with a name, email, and password. You're responsible for what happens under your account, so don't share your password with others.",
+    body: "To use the full experience, you sign in with your GitHub account. We don't create or manage your login credentials — GitHub does. You're responsible for keeping your GitHub account secure, and for what happens under your GitHub account.",
+  },
+  {
+    title: "Sign-in method",
+    body: "Scrapeverse sign-in is available only through GitHub OAuth. We no longer offer email/password sign-up, sign-in, or password reset features. When you sign in with GitHub, you authorize us to receive your basic public profile information (name, email, and avatar). We don't store your GitHub password.",
   },
   {
     title: "Content from third parties",
@@ -26,6 +30,10 @@ const sections = [
   {
     title: "Acceptable use",
     body: "Please use the site sensibly. Don't scrape our site beyond normal use, don't try to access other users' accounts, and don't use the service to do anything harmful or illegal.",
+  },
+  {
+    title: "Rate limiting",
+    body: "To ensure fair usage and protect the service, we apply rate limits of 100 requests per minute per IP address. Exceeding this limit will result in a temporary block with a 429 status code. If you need higher limits for legitimate use, please contact us.",
   },
   {
     title: "No guarantees",
@@ -58,7 +66,7 @@ export default function TermsOfServicePage() {
     <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl font-bold tracking-tight">Terms of Service</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Last updated: September 1, 2026
+        Last updated: September 3, 2026
       </p>
       <p className="mt-6 text-muted-foreground">
         These terms, in plain English, cover your use of the Scrapeverse website
