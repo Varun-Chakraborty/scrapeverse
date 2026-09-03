@@ -89,14 +89,9 @@ export function Navbar({ onGetStarted }: NavbarProps) {
               </Button>
             </>
           ) : (
-            <>
-              <Button variant="ghost" size="sm" onClick={onGetStarted}>
-                Sign in
-              </Button>
-              <Button size="sm" onClick={onGetStarted}>
-                Get started free
-              </Button>
-            </>
+            <Button size="sm" onClick={onGetStarted}>
+              Get started free
+            </Button>
           )}
         </div>
 
@@ -156,28 +151,16 @@ export function Navbar({ onGetStarted }: NavbarProps) {
                   </Button>
                 </>
               ) : (
-                <>
-                  <Button
-                    onClick={() => {
-                      setMenuOpen(false);
-                      onGetStarted();
-                    }}
-                    size="lg"
-                  >
-                    Get started free
-                    <HugeiconsIcon icon={ArrowRight01Icon} />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      onGetStarted();
-                    }}
-                  >
-                    Sign in
-                  </Button>
-                </>
+                <Button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onGetStarted();
+                  }}
+                  size="lg"
+                >
+                  Get started free
+                  <HugeiconsIcon icon={ArrowRight01Icon} />
+                </Button>
               )}
             </div>
           </div>

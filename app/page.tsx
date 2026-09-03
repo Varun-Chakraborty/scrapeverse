@@ -6,7 +6,6 @@ import { LandingPage } from "@/components/landing/landing-page";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { LoadingScreen } from "@/components/ui/loading-screen";
 import { useAuth } from "@/lib/auth-context";
-import type { OnboardingPreferences } from "@/lib/types";
 
 export default function Home() {
   const router = useRouter();
@@ -21,19 +20,6 @@ export default function Home() {
     setAuthModalOpen(true);
   };
 
-  const handleAuthSuccess = (authUser: {
-    name: string;
-    email: string;
-    preferences: OnboardingPreferences | null;
-  }) => {
-    setAuthModalOpen(false);
-    if (authUser.preferences) {
-      router.push("/results");
-    } else {
-      router.push("/onboarding");
-    }
-  };
-
   if (isLoading) {
     return <LoadingScreen label="Loading your workspace…" />;
   }
@@ -41,11 +27,7 @@ export default function Home() {
   return (
     <>
       <LandingPage onGetStarted={handleGetStarted} />
-      <AuthModal
-        open={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        onSuccess={handleAuthSuccess}
-      />
+      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>
   );
 }

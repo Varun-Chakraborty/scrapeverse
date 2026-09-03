@@ -1,45 +1,18 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Cancel01Icon,
-  Alert02Icon,
-  TickDouble02Icon,
-  LockIcon,
-  Mail01Icon,
-} from "@hugeicons/core-free-icons";
+import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/landing/logo";
-import { useAuth } from "@/lib/auth-context";
-import { validateEmail, validatePassword } from "@/lib/validate";
 import { useBodyScrollLock, useEscapeKey } from "@/lib/use-dismissible";
-import type { OnboardingPreferences } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 interface AuthModalProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: (user: {
-    name: string;
-    email: string;
-    preferences: OnboardingPreferences | null;
-  }) => void;
 }
 
-type Tab = "sign-in" | "sign-up" | "forgot-password";
-
-export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
-  const [tab, setTab] = useState<Tab>("sign-in");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [resetSuccess, setResetSuccess] = useState(false);
-
-  const { signUp, signIn, resetPassword } = useAuth();
+export function AuthModal({ open, onClose }: AuthModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEscapeKey(onClose, open);
@@ -47,109 +20,12 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
 
   if (!open) return null;
 
-  const reset = () => {
-    setName("");
-    setEmail("");
-    setPassword("");
-    setError("");
-    setResetSuccess(false);
-  };
-
-  const handleTabSwitch = (newTab: Tab) => {
-    reset();
-    setTab(newTab);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
-
-    try {
-      if (tab === "sign-up") {
-        if (!name.trim()) {
-          setError("Name is required");
-          return;
-        }
-        const emailError = validateEmail(email.trim());
-        if (emailError) {
-          setError(emailError);
-          return;
-        }
-        const passwordError = validatePassword(password);
-        if (passwordError) {
-          setError(passwordError);
-          return;
-        }
-        const newUser = await signUp(
-          name.trim(),
-          email.trim().toLowerCase(),
-          password,
-        );
-        if (newUser) {
-          onSuccess(newUser);
-        }
-      } else {
-        const emailError = validateEmail(email.trim());
-        if (emailError) {
-          setError(emailError);
-          return;
-        }
-        const user = await signIn(email.trim().toLowerCase(), password);
-        if (user) {
-          onSuccess(user);
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
-
-    try {
-      if (validateEmail(email.trim())) {
-        setError("Valid email is required");
-        return;
-      }
-      const passwordError = validatePassword(password, "New password");
-      if (passwordError) {
-        setError(passwordError);
-        return;
-      }
-
-      await resetPassword(email.trim().toLowerCase(), password);
-      setResetSuccess(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const titles: Record<Tab, string> = {
-    "sign-in": "Welcome back",
-    "sign-up": "Create your account",
-    "forgot-password": "Reset your password",
-  };
-
-  const descriptions: Record<Tab, string> = {
-    "sign-in": "Sign in to access your saved preferences.",
-    "sign-up": "Save your preferences and pick up where you left off.",
-    "forgot-password": "Enter your email and choose a new password.",
-  };
-
   return (
     <div
       className="animate-overlay-in fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
-      aria-label={titles[tab]}
+      aria-label="Sign in"
     >
       <div
         className="absolute inset-0 bg-black/45 backdrop-blur-sm"
@@ -161,7 +37,6 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
         ref={dialogRef}
         className="animate-modal-in relative z-10 max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-3xl border border-border/70 bg-popover shadow-[0_32px_80px_-16px_rgb(61_31_43/0.3)]"
       >
-        {/* Decorative top gradient */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-28 rounded-t-3xl bg-linear-to-b from-primary-softer to-transparent"
@@ -180,273 +55,50 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           <div className="mb-6 flex flex-col items-center text-center">
             <Logo />
             <h2 className="font-heading mt-5 text-xl font-bold tracking-tight text-foreground">
-              {titles[tab]}
+              Welcome to Scrapeverse
             </h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              {descriptions[tab]}
+              Sign in to save your preferences and get personalized
+              recommendations.
             </p>
           </div>
 
-          {tab !== "forgot-password" && (
-            <div
-              className="mb-5 flex rounded-full border border-border bg-secondary/60 p-1"
-              role="tablist"
-              aria-label="Authentication options"
+          <a href="/api/auth/github" className="block w-full">
+            <Button variant="gradient" className="w-full">
+              <svg
+                className="mr-2 h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+              </svg>
+              Continue with GitHub
+            </Button>
+          </a>
+
+          <p className="mt-5 text-center text-xs text-muted-foreground">
+            By continuing, you agree to our{" "}
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary underline-offset-2 hover:underline"
             >
-              {(["sign-in", "sign-up"] as const).map((t) => (
-                <button
-                  key={t}
-                  role="tab"
-                  aria-selected={tab === t}
-                  onClick={() => handleTabSwitch(t)}
-                  className={cn(
-                    "flex-1 cursor-pointer rounded-full py-2.5 text-xs font-semibold transition-all duration-300",
-                    tab === t
-                      ? "bg-background text-primary shadow-soft"
-                      : "text-muted-foreground hover:text-secondary-foreground",
-                  )}
-                >
-                  {t === "sign-in" ? "Sign in" : "Sign up"}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {tab === "forgot-password" && !resetSuccess && (
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              <Field
-                label="Email"
-                icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}
-              >
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                />
-              </Field>
-
-              <Field
-                label="New password"
-                icon={<HugeiconsIcon icon={LockIcon} size={15} />}
-              >
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  autoComplete="new-password"
-                />
-              </Field>
-
-              {error && <ErrorAlert message={error} />}
-
-              <Button
-                type="submit"
-                variant="gradient"
-                className="w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Resetting…" : "Reset password"}
-              </Button>
-
-              <BackToSignIn onBack={() => handleTabSwitch("sign-in")} />
-            </form>
-          )}
-
-          {tab === "forgot-password" && resetSuccess && (
-            <div className="animate-scale-in flex flex-col items-center py-4 text-center">
-              <span className="flex size-14 items-center justify-center rounded-full bg-mint text-mint-foreground">
-                <HugeiconsIcon icon={TickDouble02Icon} size={26} />
-              </span>
-              <p className="mt-4 text-sm font-semibold text-foreground">
-                Password reset successfully
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                You can now sign in with your new password.
-              </p>
-              <Button
-                onClick={() => handleTabSwitch("sign-in")}
-                variant="gradient"
-                className="mt-6 w-full"
-              >
-                Sign in with new password
-              </Button>
-            </div>
-          )}
-
-          {tab !== "forgot-password" && (
-            <>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {tab === "sign-up" && (
-                  <Field label="Name">
-                    <Input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Your name"
-                      autoComplete="name"
-                    />
-                  </Field>
-                )}
-
-                <Field
-                  label="Email"
-                  icon={<HugeiconsIcon icon={Mail01Icon} size={15} />}
-                >
-                  <Input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-                </Field>
-
-                <Field
-                  label="Password"
-                  icon={<HugeiconsIcon icon={LockIcon} size={15} />}
-                >
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    autoComplete={
-                      tab === "sign-up" ? "new-password" : "current-password"
-                    }
-                  />
-                </Field>
-
-                {tab === "sign-in" && (
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => handleTabSwitch("forgot-password")}
-                      className="cursor-pointer text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-                )}
-
-                {error && <ErrorAlert message={error} />}
-
-                <Button
-                  type="submit"
-                  variant="gradient"
-                  className="w-full"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting
-                    ? tab === "sign-up"
-                      ? "Creating account…"
-                      : "Signing in…"
-                    : tab === "sign-up"
-                      ? "Create account"
-                      : "Sign in"}
-                </Button>
-              </form>
-
-              <p className="mt-5 text-center text-xs text-muted-foreground">
-                {tab === "sign-in" ? (
-                  <>
-                    Don&apos;t have an account?{" "}
-                    <button
-                      type="button"
-                      onClick={() => handleTabSwitch("sign-up")}
-                      className="cursor-pointer font-semibold text-primary underline-offset-2 hover:underline"
-                    >
-                      Sign up
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    Already have an account?{" "}
-                    <button
-                      type="button"
-                      onClick={() => handleTabSwitch("sign-in")}
-                      className="cursor-pointer font-semibold text-primary underline-offset-2 hover:underline"
-                    >
-                      Sign in
-                    </button>
-                  </>
-                )}
-              </p>
-
-              <div className="relative my-5">
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 flex items-center"
-                >
-                  <div className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-popover px-3 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
-                    or
-                  </span>
-                </div>
-              </div>
-
-              <Button variant="outline" className="w-full" onClick={onClose}>
-                Continue without account
-              </Button>
-            </>
-          )}
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary underline-offset-2 hover:underline"
+            >
+              Terms of Service
+            </a>
+            .
+          </p>
         </div>
       </div>
     </div>
-  );
-}
-
-function Field({
-  label,
-  children,
-  icon,
-}: {
-  label: string;
-  children: React.ReactNode;
-  icon?: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-foreground">
-        {icon && <span className="text-muted-foreground">{icon}</span>}
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-function ErrorAlert({ message }: { message: string }) {
-  return (
-    <div
-      role="alert"
-      className="animate-slide-up-sm flex items-start gap-2.5 rounded-xl border border-destructive/20 bg-destructive-soft px-3.5 py-2.5"
-    >
-      <HugeiconsIcon
-        icon={Alert02Icon}
-        size={15}
-        className="mt-px shrink-0 text-destructive"
-      />
-      <p className="text-xs font-medium leading-relaxed text-destructive">
-        {message}
-      </p>
-    </div>
-  );
-}
-
-function BackToSignIn({ onBack }: { onBack: () => void }) {
-  return (
-    <p className="mt-4 text-center">
-      <button
-        type="button"
-        onClick={onBack}
-        className="cursor-pointer text-xs font-semibold text-primary underline-offset-2 hover:underline"
-      >
-        Back to sign in
-      </button>
-    </p>
   );
 }
