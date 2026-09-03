@@ -9,13 +9,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  avatarUrl   String?
+  githubId    String?  @unique
+  createdAt   DateTime @default(now())
 
   preferences UserPreferences?
+  consents    UserConsent[]
 }
 
 model UserPreferences {
@@ -75,6 +77,18 @@ model ScrapedReadme {
   hasContributionGuide Boolean @default(false)
   setupComplexity String   @default("unknown")
   techStack       String   @default("[]")
-  architectureKeywords String @default("[]")
+  architectureKeywords String   @default("[]")
   scrapedAt       DateTime @default(now())
+}
+
+model UserConsent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType String
+  granted   Boolean  @default(false)
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, consentType])
 }
