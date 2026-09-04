@@ -21,7 +21,7 @@ const sections = [
   },
   {
     title: "Sign-in method",
-    body: "Scrapeverse sign-in is available only through GitHub OAuth. We no longer offer email/password sign-up, sign-in, or password reset features. When you sign in with GitHub, you authorize us to receive your basic public profile information (name, email, and avatar). We don't store your GitHub password.",
+    body: "Scrapeverse sign-in is available only through GitHub OAuth. When you sign in with GitHub, you authorize us to receive your basic information made available through GitHub OAuth based on the permissions you grant. We don't store your GitHub password.",
   },
   {
     title: "Content from third parties",
@@ -29,11 +29,11 @@ const sections = [
   },
   {
     title: "Acceptable use",
-    body: "Please use the site sensibly. Don't scrape our site beyond normal use, don't try to access other users' accounts, and don't use the service to do anything harmful or illegal.",
+    body: "You may not attempt to interfere with the operation of the service, bypass security measures, automate excessive requests, or use the service in a manner that places an unreasonable burden on our infrastructure.",
   },
   {
     title: "Rate limiting",
-    body: "To ensure fair usage and protect the service, we apply rate limits of 100 requests per minute per IP address. Exceeding this limit will result in a temporary block with a 429 status code. If you need higher limits for legitimate use, please contact us.",
+    body: "To protect the service and ensure fair use, Scrapeverse may apply rate limits and other usage restrictions. These limits may change over time without notice.",
   },
   {
     title: "No guarantees",
@@ -41,7 +41,7 @@ const sections = [
   },
   {
     title: "Limitation of liability",
-    body: "To the maximum extent allowed by law, Scrapeverse won't be liable for any indirect or incidental damages arising from your use of the service.",
+    body: "To the maximum extent permitted by law, Scrapeverse and its operators will not be liable for any indirect, incidental, special, consequential, or punitive damages arising from or related to your use of the service.",
   },
   {
     title: "Changes to these terms",
@@ -49,11 +49,19 @@ const sections = [
   },
   {
     title: "Ending the relationship",
-    body: "You can stop using Scrapeverse at any time. If you want your account and data removed, contact us and we'll delete it.",
+    body: "You can stop using Scrapeverse at any time. You may request deletion of your account and associated personal data by contacting us. We will process deletion requests in accordance with applicable law and our Privacy Policy.",
+  },
+  {
+    title: "Termination",
+    body: "We may suspend or terminate your access to Scrapeverse, with or without notice, if you violate these terms, abuse the service, or act in a way that endangers the service or other users. If we terminate your access for a breach of these terms, you may lose access to your account and any data associated with it. You can also end your relationship with us at any time by stopping use and requesting deletion of your account and data. The sections of these terms that by their nature should survive termination (including limitation of liability and governing law) will continue to apply.",
   },
   {
     title: "Open source license",
     body: "The Scrapeverse code itself is open source under the MIT License, found in the project repository. These terms cover your use of the hosted service, not the source code.",
+  },
+  {
+    title: "Governing law",
+    body: "These terms are governed by the laws of India. Any dispute arising out of or relating to these terms or your use of Scrapeverse shall be subject to the exclusive jurisdiction of the courts of India. If any part of these terms is found to be unenforceable, the rest will remain in effect.",
   },
   {
     title: "Contact",

@@ -9,23 +9,19 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: "The short version",
-    body: "We collect just enough information to make Scrapeverse work: your GitHub account details (name, email, and avatar) and your personal preferences. We use it only to give you better recommendations. We do not sell your data.",
+    body: "We collect just enough information to make Scrapeverse work: your GitHub account details made available through GitHub OAuth based on the permissions you grant and your personal preferences. We use it only to give you better recommendations and to secure your account. We do not sell your data.",
   },
   {
     title: "What we collect",
-    body: "When you sign in with your GitHub account, we collect your name, email address, and avatar image from your GitHub profile. When you complete the onboarding flow, we store your interests, experience level, contribution goals, and programming languages so we can recommend issues that fit you.",
-  },
-  {
-    title: "What we don't collect",
-    body: "We don't run analytics or tracking scripts, and we don't collect usage logs, location data, or anything else that isn't needed for the service to function. We don't have access to your GitHub password or private repositories — GitHub handles authentication itself and shares only the public profile information you've approved.",
+    body: "When you sign in with your GitHub account, we collect your GitHub information made available through GitHub OAuth. We store your GitHub user ID so we can match you back to the same account (and keep you logged in) across visits. We may use your email address to identify existing accounts and prevent duplicate accounts. When you complete the onboarding flow, we store your interests, experience level, contribution goals, and programming languages so we can recommend issues that fit you. When you grant optional consents, we record that consent along with the IP address used at the time. We don't use advertising trackers or analytics services. Our infrastructure providers and application may generate limited technical logs (such as request, error, and security logs) that are used solely to operate, secure, and troubleshoot the service.",
   },
   {
     title: "Rate limiting",
-    body: "We apply rate limiting to protect the service from abuse. We track requests by IP address and limit each IP to 100 requests per minute. If you exceed this limit, you'll receive a 429 response. This data is stored temporarily in memory and is automatically cleared after the rate limit window expires.",
+    body: "We may use IP-based rate limiting and abuse-prevention measures to protect the service. Information used for rate limiting is retained only for as long as necessary to enforce those limits.",
   },
   {
     title: "How we use your information",
-    body: "We use your name and email to identify you and keep you logged in. We use your avatar to display your profile. We use your preferences to rank and recommend open-source issues for you. That's it.",
+    body: "We use your account information to identify your account, authenticate you, personalize the service, and communicate with you when necessary. We use your avatar to display your profile. We match your GitHub user ID to your account so you can log in across visits. We use your preferences to rank and recommend open-source issues for you. We may use your email address to identify existing accounts and prevent duplicate accounts. That's it.",
   },
   {
     title: "Cookies and sessions",
@@ -33,27 +29,39 @@ const sections = [
   },
   {
     title: "Where your data lives",
-    body: "Your account information is stored in our database. We're built to run on Vercel's infrastructure and use a hosted PostgreSQL database.",
+    body: "Your account information is stored in our database. We're built to run on Vercel's infrastructure and use a hosted PostgreSQL database. Consent records (which include the IP address used when you granted them) are stored alongside your account.",
+  },
+  {
+    title: "International processing",
+    body: "Scrapeverse is built on Vercel's global infrastructure and uses a hosted PostgreSQL database. As a result, your personal information may be processed or stored on servers located in countries other than the one you reside in, including the United States and other regions where our infrastructure providers operate. We take reasonable steps to protect your information wherever it is processed.",
   },
   {
     title: "Sharing",
-    body: "We never sell your personal information. We only share data with the services needed to run this site (for example, our database provider), and only to the extent needed to provide the service.",
+    body: "We never sell your personal information. We only share data with the services needed to run this site (for example, our infrastructure and database providers), and only to the extent needed to provide the service. These providers process your data on our behalf and are expected to protect it.",
   },
   {
     title: "GitHub authorization",
-    body: "Signing in with GitHub is the only way to create an account. When you sign in, GitHub shares with us the profile information you approve (your name, email, and avatar). We do not receive or store your GitHub password.",
+    body: "Signing in with GitHub is the only way to create an account. When you sign in, GitHub shares with us the information made available through GitHub OAuth based on the permissions you grant. We do not receive or store your GitHub password, and we don't request access to your private repositories.",
   },
   {
     title: "How long we keep it",
     body: "We keep your account and preferences for as long as your account exists. If you decide to delete your account, contact us and we'll remove your data.",
   },
   {
+    title: "Security",
+    body: "We take reasonable technical and organizational measures to protect your personal information against unauthorized access, loss, or misuse. These include using HTTPS/encryption in transit, hashing and signing your session tokens, restricting database access, and following secure coding practices. No method of transmission or storage is completely secure, and we cannot guarantee absolute security, but we work to keep your data safe.",
+  },
+  {
     title: "Your rights",
-    body: "You can update your preferences in the app at any time. Depending on where you live, you may also have rights to access, correct, or delete your personal data. Contact us and we'll help.",
+    body: "You can update your preferences in the app at any time. You may request deletion of your account and associated personal information by contacting us. We will process deletion requests within a reasonable period, subject to any legal obligations requiring retention.",
+  },
+  {
+    title: "Your rights under the DPDP Act (India)",
+    body: "If you are a resident of India, the Digital Personal Data Protection Act, 2023 grants you certain rights over your personal data. Where applicable, you may exercise rights to access, correct, and erase your personal data, and to withdraw consent you have previously given. You may also have rights to obtain information about how your data is processed and to grievance redressal. To exercise any of these rights, contact us at varunchakraborty9526@outlook.com. We will respond within the timeframes required by applicable law. You may also be entitled to file a complaint with the Data Protection Board of India if you believe your rights have been violated.",
   },
   {
     title: "Children's privacy",
-    body: "Scrapeverse is not directed at children under 13, and we don't knowingly collect their data. If you believe a child has given us information, contact us and we'll delete it.",
+    body: "Scrapeverse is not intended for children under the age required to consent to data processing under applicable law. If you believe a child has provided us with personal information, please contact us and we will take reasonable steps to remove it.",
   },
   {
     title: "Changes to this policy",
