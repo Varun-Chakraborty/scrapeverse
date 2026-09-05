@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LEGAL_VERSIONS } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Scrapeverse",
@@ -78,7 +79,7 @@ export default function PrivacyPolicyPage() {
     <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl font-bold tracking-tight">Privacy Policy</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Last updated: September 3, 2026
+        Version {LEGAL_VERSIONS.privacy} · Last updated: September 3, 2026
       </p>
       <p className="mt-6 text-muted-foreground">
         This policy explains in plain English what information Scrapeverse

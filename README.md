@@ -12,6 +12,7 @@ Discover open-source projects that match your interests, skill level, and contri
 - **Filters** — Difficulty and language filters with a friendly empty state
 - **Direct GitHub Links** — Every card links to the live issue and its repository
 - **User Accounts** — GitHub OAuth sign-in with persistent preferences stored in PostgreSQL
+- **Versioned Legal Consent** — Records which version of the Privacy Policy / Terms each user consented to (with timestamp and history), and blocks the app until users accept the latest versions when legal docs are updated
 - **Scheduled Scraping** — GitHub Action re-scrapes regularly; run manually via `scripts/scrape.ts`
 - **Polished Theme** — Rose-accented design system with light/dark support via CSS variables
 
@@ -98,9 +99,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 The project is organized as a Next.js 16 App Router application:
 
-- **`app/`** — pages and API routes. Pages include the landing page, onboarding, results, privacy policy, and terms. API routes under `app/api/` handle auth (GitHub OAuth, session, signout), recommendations, scraping, and user preferences.
-- **`components/`** — React components grouped by feature: landing, auth (GitHub sign-in modal), onboarding flow, recommendations, account menu, theme, and shared UI primitives.
-- **`lib/`** — server and client utilities: Prisma client, GitHub API client, Bright Data integration, scraper pipeline, README analyzer, matching logic, session/JWT handling, auth context, types, and validation.
+- **`app/`** — pages and API routes. Pages include the landing page, onboarding, results, privacy policy, and terms. API routes under `app/api/` handle auth (GitHub OAuth, session, signout, consent), recommendations, scraping, and user preferences.
+- **`components/`** — React components grouped by feature: landing, auth (GitHub sign-in modal), consent (blocking consent gate), onboarding flow, recommendations, account menu, theme, and shared UI primitives.
+- **`lib/`** — server and client utilities: Prisma client, GitHub API client, Bright Data integration, scraper pipeline, README analyzer, matching logic, session/JWT handling, consent logic + client context, auth context, types, and validation.
 - **`prisma/`** — database schema and migrations.
 - **`scripts/`** — the scraper pipeline runner.
 - **`proxy.ts`** — Next.js 16 middleware for auth protection and rate limiting.
@@ -111,9 +112,11 @@ The project is organized as a Next.js 16 App Router application:
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | GET | `/api/auth/github` | No | Redirect to GitHub OAuth authorize |
-| GET | `/api/auth/callback` | No | GitHub OAuth callback (exchanges code, sets session) |
+| GET | `/api/auth/callback` | No | GitHub OAuth callback (exchanges code, sets session, records consent) |
 | POST | `/api/auth/signout` | No | Sign out |
 | GET | `/api/auth/session` | No | Get current session |
+| GET | `/api/auth/consent` | Yes | Get whether the current user has consented to the latest legal versions |
+| POST | `/api/auth/consent` | Yes | Record the current user's acceptance of the latest legal versions |
 | GET | `/api/recommendations` | Yes | Get issue recommendations with README intelligence |
 | GET | `/api/scrape/status` | Yes | Scrape stats (repos, open issues, readmes, last scrape time) |
 | GET | `/api/scrape` | Yes | Trigger the full scrape pipeline |
@@ -124,6 +127,20 @@ The project is organized as a Next.js 16 App Router application:
 
 All API endpoints are rate limited to **100 requests per minute per IP address**. When the limit is exceeded, the API returns a `429 Too Many Requests` response. The `X-RateLimit-Remaining` header indicates remaining requests in the current window.
 
+## Legal Consent
+
+The app records which version of the **Privacy Policy** and **Terms of Service** each user has consented to, along with when and from which IP. Current document versions live in a single shared constant:
+
+```ts
+// lib/constants.ts
+export const LEGAL_VERSIONS = {
+  terms: "1.0",
+  privacy: "1.0",
+};
+```
+
+When you edit a legal page, **bump the corresponding version** in `LEGAL_VERSIONS` (and update the version shown on the page). On the next visit, any logged-in user who hasn't consented to the latest version is blocked by a full-screen consent gate until they accept (which records a new consent row for that version) or decline (which signs them out). Each consent grant is stored per (user, document, version), preserving a full audit history — re-signing in to the same version doesn't create duplicates.
+
 ## Database Schema
 
 The database is PostgreSQL managed via Prisma. It stores:
@@ -133,7 +150,7 @@ The database is PostgreSQL managed via Prisma. It stores:
 - **`ScrapedRepo`** — scraped GitHub repositories with metadata (stars, forks, language, topics, license) and related issues and README.
 - **`ScrapedIssue`** — issues scraped per repo (number, title, URL, labels, state, comments, author).
 - **`ScrapedReadme`** — one-to-one README content per repo with computed intelligence (contribution guide, setup complexity, tech stack, architecture keywords).
-- **`UserConsent`** — records user consent (type, granted, IP address, timestamp), unique per user and consent type.
+- **`UserConsent`** — records each grant of legal consent (type, granted, version of the document, IP address, timestamp). One row is kept per (user, document, version) so a full consent history is retained; the current/latest consent is found by the latest timestamp.
 
 ## Scraping
 

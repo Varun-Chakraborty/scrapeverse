@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createSession } from "@/lib/session";
+import { recordConsent } from "@/lib/consent";
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
@@ -140,6 +141,11 @@ export async function GET(request: Request) {
         },
       });
     }
+
+    const ipAddress =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
+
+    await recordConsent(user.id, ipAddress);
 
     await createSession({ userId: user.id, email: user.email });
 

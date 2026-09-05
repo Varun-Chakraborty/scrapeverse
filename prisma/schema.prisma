@@ -82,13 +82,14 @@ model ScrapedReadme {
 }
 
 model UserConsent {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   consentType String
-  granted   Boolean  @default(false)
-  ipAddress String?
-  createdAt DateTime @default(now())
+  granted     Boolean  @default(false)
+  version     String
+  ipAddress   String?
+  createdAt   DateTime @default(now())
 
-  @@unique([userId, consentType])
+  @@index([userId, consentType, createdAt])
 }

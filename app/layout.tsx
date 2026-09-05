@@ -3,6 +3,8 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/lib/auth-context";
+import { ConsentProvider } from "@/lib/consent-context";
+import { ConsentGate } from "@/components/consent/consent-gate";
 import {
   ThemeProvider,
   ThemeInitScript,
@@ -48,7 +50,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <ConsentProvider>
+              {children}
+              <ConsentGate />
+            </ConsentProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

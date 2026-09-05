@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LEGAL_VERSIONS } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Terms of Service — Scrapeverse",
@@ -74,7 +75,7 @@ export default function TermsOfServicePage() {
     <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl font-bold tracking-tight">Terms of Service</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Last updated: September 3, 2026
+        Version {LEGAL_VERSIONS.terms} · Last updated: September 3, 2026
       </p>
       <p className="mt-6 text-muted-foreground">
         These terms, in plain English, cover your use of the Scrapeverse website
